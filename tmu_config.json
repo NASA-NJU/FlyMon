@@ -1,0 +1,130 @@
+{
+      "cu_configs": [
+            {
+                  "id": 0,
+                  "target_bits": [
+                        32,
+                        32,
+                        32
+                  ],
+                  "stage_loc": -1,
+                  "alias_id": -1
+            }
+      ],
+      "eu_configs": [
+            {
+                  "id": 0,
+                  "size": 65536,
+                  "bit_width": 16,
+                  "cu_id": 0,
+                  "bit_start": [
+                        0,
+                        0,
+                        0,
+                        0
+                  ],
+                  "bit_end": [
+                        15,
+                        15,
+                        15,
+                        15
+                  ],
+                  "stage_loc": -1,
+                  "alias_id": -1
+            },
+            {
+                  "id": 1,
+                  "size": 65536,
+                  "bit_width": 16,
+                  "cu_id": 0,
+                  "bit_start": [
+                        4,
+                        4,
+                        1,
+                        1
+                  ],
+                  "bit_end": [
+                        19,
+                        19,
+                        16,
+                        16
+                  ],
+                  "stage_loc": -1,
+                  "alias_id": -1
+            },
+            {
+                  "id": 2,
+                  "size": 65536,
+                  "bit_width": 16,
+                  "cu_id": 0,
+                  "bit_start": [
+                        8,
+                        8,
+                        2,
+                        2
+                  ],
+                  "bit_end": [
+                        23,
+                        23,
+                        17,
+                        17
+                  ],
+                  "stage_loc": -1,
+                  "alias_id": -1
+            },
+            {
+                  "id": 3,
+                  "size": 65536,
+                  "bit_width": 16,
+                  "cu_id": 0,
+                  "bit_start": [
+                        16,
+                        16,
+                        3,
+                        3
+                  ],
+                  "bit_end": [
+                        31,
+                        31,
+                        18,
+                        18
+                  ],
+                  "stage_loc": -1,
+                  "alias_id": -1
+            }
+      ],
+      "ru_configs": [
+            {
+                  "id": 0,
+                  "eu_list": [
+                        0,
+                        1,
+                        2,
+                        3
+                  ],
+                  "stage_loc": -1,
+                  "alias_id": -1
+            }
+      ],
+      "tmu_configs": [
+            {
+                  "id": 0,
+                  "cu_id": 0,
+                  "ru_id": 0,
+                  "eu_list": [
+                        0,
+                        1,
+                        2,
+                        3
+                  ],
+                  "stage_loc": -1
+            }
+      ],
+      "mem_size": 65536,
+      "cu_element_set": "hdr.ethernet.src_addr,hdr.ethernet.src_addr,hdr.tcp.window,hdr.ipv4.src_addr,hdr.ipv4.dst_addr,ig_md.elements.src_port,ig_md.elements.dst_port,hdr.ipv4.protocol",
+      "cu_target_bits": [
+            32,
+            32,
+            32
+      ]
+}

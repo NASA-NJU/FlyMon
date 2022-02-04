@@ -1,0 +1,48 @@
+#ifndef _TASK_REGISTER_P4_
+#define _TASK_REGISTER_P4_
+
+#include "headers.p4"
+#include "util.p4"
+#include "mdata.p4"
+
+
+{%for tmu in tmu_configs %}
+
+control TaskRegister_{{tmu.id}} ( in header_t hdr,
+                                  in ingress_intrinsic_metadata_t ig_intr_md,
+                                  inout ingress_metadata_t ig_md ) 
+{
+    action set_task_id(
+        {%for eu_id in tmu.eu_list %}
+        bit<8> id{{eu_id}},
+        {% endfor %}
+        bit<1> end
+        )
+    {
+        {%for eu_id in tmu.eu_list %}
+        ig_md.eu_{{eu_id}}.task_id = id{{eu_id}};
+        {% endfor %}
+    }
+
+    {%if tmu.stage_loc >= 0%}
+    @pragma stage {{tmu.stage_loc % 3}}
+    {%endif%}
+    table tbl_set_task_id {
+        key = {
+            //hdr.ipv4.src_addr : ternary @name("src_addr");
+            //hdr.ipv4.dst_addr : ternary @name("dst_addr");
+            hdr.ipv4.src_addr : ternary;
+            hdr.ipv4.dst_addr : ternary;
+        }
+        actions = {
+            set_task_id;
+        }
+        size = 32;
+    }
+    apply {
+        tbl_set_task_id.apply();
+    }
+}
+{% endfor %}
+
+#endif
