@@ -9,9 +9,9 @@ This is a reference implemetation of FlyMon. The functions include:
     * Collect bloom-filtered heavy-key digest infomation and output to std-out.
 The above codes cover most of the features refered in the paper, and we will add more tasks as soon as possible.
 
->> [Note] Since INTEL [Open-Tofino](https://github.com/barefootnetworks/Open-Tofino/tree/master/p4-examples/p4_16_programs/tna_dyn_hashing) has not open source the relevant code of the dynamic hash masking, we temporarily removed this part of the control plane code.
+> [Note] Since INTEL [Open-Tofino](https://github.com/barefootnetworks/Open-Tofino/tree/master/p4-examples/p4_16_programs/tna_dyn_hashing) has not open source the relevant code of the dynamic hash masking, we temporarily removed this part of the control plane code.
 
-For historical reasons, compression unit (CU) is refered to the shared compression stage, execution unit (eu) is refered to composable measurement unit (CMU). transformable measurement unit (TMU) is refered to CMU-Group.
+For historical reasons, the compression unit (CU) is refered to the shared compression stage. The execution unit (eu) is refered to composable measurement unit (CMU). The transformable measurement unit (TMU) is refered to CMU-Group.
 
 * To see the cross-stacking version of FlyMon, please checkout to the `stackable_cmug` branch.
 * To see the strawman solution, please checkout to the `strawman solution` branch.
