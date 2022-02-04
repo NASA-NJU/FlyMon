@@ -7,7 +7,6 @@ This is a reference implemetation of FlyMon. The functions include:
     * An example to install table rules to switch CMU to the frequency attribute.
     * An example to dynamically arrange the SRAM into several parts.
     * Collect bloom-filtered heavy-key digest infomation and output to std-out.
-The above codes cover most of the features refered in the paper, and we will add more tasks as soon as possible.
 
 > [Note 1] Since INTEL [Open-Tofino](https://github.com/barefootnetworks/Open-Tofino/tree/master/p4-examples/p4_16_programs/tna_dyn_hashing) has not open source the relevant code of the dynamic hash masking, we temporarily removed this part of the control plane code. Please update SDE to 9.7.0+ and get the sample code.
 > [Note 2] We delete headers.p4 and utils.p4, which can be obtained at [Open-Tofino](https://github.com/barefootnetworks/Open-Tofino/tree/master/p4-examples/p4_16_programs/tna_dyn_hashing).
