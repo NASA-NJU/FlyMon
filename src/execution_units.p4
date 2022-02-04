@@ -79,7 +79,6 @@ control ExecutionUnit_0 (in header_t hdr,
         size = 32;
     }
 
-    //mmh-trick: add overflow
     action key_add_offset(bit<32> offset){
        ig_md.eu_0.key = ig_md.eu_0.key + offset;
     }
@@ -266,7 +265,6 @@ control ExecutionUnit_1 (in header_t hdr,
         size = 32;
     }
 
-    //mmh-trick: add overflow
     action key_add_offset(bit<32> offset){
        ig_md.eu_1.key = ig_md.eu_1.key + offset;
     }
@@ -453,7 +451,6 @@ control ExecutionUnit_2 (in header_t hdr,
         size = 32;
     }
 
-    //mmh-trick: add overflow
     action key_add_offset(bit<32> offset){
        ig_md.eu_2.key = ig_md.eu_2.key + offset;
     }
@@ -640,7 +637,6 @@ control ExecutionUnit_3 (in header_t hdr,
         size = 32;
     }
 
-    //mmh-trick: add overflow
     action key_add_offset(bit<32> offset){
        ig_md.eu_3.key = ig_md.eu_3.key + offset;
     }
