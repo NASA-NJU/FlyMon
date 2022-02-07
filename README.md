@@ -12,7 +12,7 @@ This is a reference implemetation of FlyMon. The functions include:
 
 > [Note 2] We delete `headers.p4` and `utils.p4`, which can be obtained at [Open-Tofino](https://github.com/barefootnetworks/Open-Tofino/tree/master/p4-examples/p4_16_programs/tna_dyn_hashing).
 
-> [Note 3] The repositories is anonymous.
+> [Note 3] The repository is anonymous.
 
 For historical reasons, the compression unit (CU) is refered to the shared compression stage. The execution unit (eu) is refered to composable measurement unit (CMU). The transformable measurement unit (TMU) is refered to CMU-Group.
 
