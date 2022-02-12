@@ -25,7 +25,7 @@ def get_task_cmsketch_five_tuple(threshold= 1024, num_rows=4, memory_type_per_ro
                                     threshold=threshold)
     return task_instance
     
-def get_task_beaucoup_five_tuple(num_rows=3, memory_type_per_row=1):
+def get_task_beaucoup_ddos_victims(num_rows=3, memory_type_per_row=1):
     global g_task_id
     g_task_id += 1
     key_dst_ip = []
