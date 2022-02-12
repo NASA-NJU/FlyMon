@@ -147,9 +147,9 @@ control ExecutionUnit_0 (in header_t hdr,
             result = value;
         }
     };
-    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_set = {
+    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            value = ig_md.eu_0.val;
+            value = ig_md.eu_0.val | value;
             result = value;
         }
     };
@@ -163,8 +163,8 @@ control ExecutionUnit_0 (in header_t hdr,
     action op_and(){
         ig_md.eu_0.val = reg_op_and.execute(ig_md.eu_0.key);
     }
-    action op_set(){
-        ig_md.eu_0.val = reg_op_set.execute(ig_md.eu_0.key);
+    action op_or(){
+        ig_md.eu_0.val = reg_op_or.execute(ig_md.eu_0.key);
     }
     
     table tbl_select_op {
@@ -172,7 +172,7 @@ control ExecutionUnit_0 (in header_t hdr,
             ig_md.eu_0.task_id : exact;
         }
         actions = {
-            op_set;
+            op_or;
             op_add;
             op_max;
             op_and;
@@ -333,9 +333,9 @@ control ExecutionUnit_1 (in header_t hdr,
             result = value;
         }
     };
-    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_set = {
+    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            value = ig_md.eu_1.val;
+            value = ig_md.eu_1.val | value;
             result = value;
         }
     };
@@ -349,8 +349,8 @@ control ExecutionUnit_1 (in header_t hdr,
     action op_and(){
         ig_md.eu_1.val = reg_op_and.execute(ig_md.eu_1.key);
     }
-    action op_set(){
-        ig_md.eu_1.val = reg_op_set.execute(ig_md.eu_1.key);
+    action op_or(){
+        ig_md.eu_1.val = reg_op_or.execute(ig_md.eu_1.key);
     }
     
     table tbl_select_op {
@@ -358,7 +358,7 @@ control ExecutionUnit_1 (in header_t hdr,
             ig_md.eu_1.task_id : exact;
         }
         actions = {
-            op_set;
+            op_or;
             op_add;
             op_max;
             op_and;
@@ -519,9 +519,9 @@ control ExecutionUnit_2 (in header_t hdr,
             result = value;
         }
     };
-    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_set = {
+    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            value = ig_md.eu_2.val;
+            value = ig_md.eu_2.val | value;
             result = value;
         }
     };
@@ -535,8 +535,8 @@ control ExecutionUnit_2 (in header_t hdr,
     action op_and(){
         ig_md.eu_2.val = reg_op_and.execute(ig_md.eu_2.key);
     }
-    action op_set(){
-        ig_md.eu_2.val = reg_op_set.execute(ig_md.eu_2.key);
+    action op_or(){
+        ig_md.eu_2.val = reg_op_or.execute(ig_md.eu_2.key);
     }
     
     table tbl_select_op {
@@ -544,7 +544,7 @@ control ExecutionUnit_2 (in header_t hdr,
             ig_md.eu_2.task_id : exact;
         }
         actions = {
-            op_set;
+            op_or;
             op_add;
             op_max;
             op_and;
@@ -705,9 +705,9 @@ control ExecutionUnit_3 (in header_t hdr,
             result = value;
         }
     };
-    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_set = {
+    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            value = ig_md.eu_3.val;
+            value = ig_md.eu_3.val | value;
             result = value;
         }
     };
@@ -721,8 +721,8 @@ control ExecutionUnit_3 (in header_t hdr,
     action op_and(){
         ig_md.eu_3.val = reg_op_and.execute(ig_md.eu_3.key);
     }
-    action op_set(){
-        ig_md.eu_3.val = reg_op_set.execute(ig_md.eu_3.key);
+    action op_or(){
+        ig_md.eu_3.val = reg_op_or.execute(ig_md.eu_3.key);
     }
     
     table tbl_select_op {
@@ -730,7 +730,7 @@ control ExecutionUnit_3 (in header_t hdr,
             ig_md.eu_3.task_id : exact;
         }
         actions = {
-            op_set;
+            op_or;
             op_add;
             op_max;
             op_and;

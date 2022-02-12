@@ -132,9 +132,9 @@ control ExecutionUnit_{{eu.id}} (in header_t hdr,
             result = value;
         }
     };
-    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_set = {
+    RegisterAction<bit<16>, bit<32>, bit<16>>(pages) reg_op_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            value = ig_md.eu_{{eu.id}}.val;
+            value = ig_md.eu_{{eu.id}}.val | value;
             result = value;
         }
     };
@@ -148,8 +148,8 @@ control ExecutionUnit_{{eu.id}} (in header_t hdr,
     action op_and(){
         ig_md.eu_{{eu.id}}.val = reg_op_and.execute(ig_md.eu_{{eu.id}}.key);
     }
-    action op_set(){
-        ig_md.eu_{{eu.id}}.val = reg_op_set.execute(ig_md.eu_{{eu.id}}.key);
+    action op_or(){
+        ig_md.eu_{{eu.id}}.val = reg_op_or.execute(ig_md.eu_{{eu.id}}.key);
     }
     {%if eu.stage_loc >= 0%}
     @pragma stage {{eu.stage_loc + 2}}
@@ -159,7 +159,7 @@ control ExecutionUnit_{{eu.id}} (in header_t hdr,
             ig_md.eu_{{eu.id}}.task_id : exact;
         }
         actions = {
-            op_set;
+            op_or;
             op_add;
             op_max;
             op_and;
