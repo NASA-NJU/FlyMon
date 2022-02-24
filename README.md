@@ -5,7 +5,7 @@ This is a reference implementation of FlyMon. The repository includes P4 hardwar
 ## P4 Implemenatation
 We implement FlyMon based on P4-16, with the SDE Version 9.7.0. We opensource three versions of Flymon:
 
-**Single CMU-Group Implementation**
+### Single CMU-Group Implementation
 
 The main branch is a reference implementation of single CMU-Group, which includes:
 * P4-16 codes of the CMU-Group. We implement an additional task registration module and heavy key reporting module.
@@ -15,11 +15,11 @@ The main branch is a reference implementation of single CMU-Group, which include
     * collect deduplicated heavy keys and output to std-out.
     * configure the dynamic hash unit to generate an arbitrary compressed key in the compression stage (temporarily removed, see NOTE2 below). 
 
-**Cross-stacking 9 CMU-Groups**
+### Cross-stacking 9 CMU-Groups
 
 To see the cross-stacking version of FlyMon, please checkout to the `stackable_cmug` branch.
 
-**Strawman Implementation of CMU**
+### Strawman Implementation of CMU
 
 To see the strawman solution (without optimizations on key-selection and attribute-operation), please checkout to the `strawman_solution` branch.
 
@@ -31,4 +31,4 @@ We  also remove `headers.p4` and `utils.p4`, which can be obtained at [Open-Tofi
 ## Simulation
 
 For the convenience of experimentation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation.
-The simulation code is located in the [simulations](./simulations) directory.
+In addition, we constructed an automated testing framework to repeat the experiment. The simulation code is located in the [simulations](./simulations) directory.
