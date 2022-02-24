@@ -8,7 +8,7 @@ We implement FlyMon based on P4-16, with the SDE Version 9.7.0. We opensource th
 **Single CMU-Group**
 
 The main branch is a reference implementation of single CMU-Group, which includes:
-* P4-16 codes include four stages of the CMU-Group, as well as an additional task registration module and key reporting module.
+* P4-16 codes of the CMU-Group. We implement an additional task registration module and heavy key reporting module.
 * A demo control plane which shows how to:
     * dynamically install measurement tasks.
     * dynamically allocate memory with different size.
@@ -21,7 +21,7 @@ To see the cross-stacking version of FlyMon, please checkout to the `stackable_c
 
 **Strawman Implementation of CMU**
 
-To see the strawman solution (without  optimizations on key-selection and attribute-operation), please checkout to the `strawman_solution` branch.
+To see the strawman solution (without optimizations on key-selection and attribute-operation), please checkout to the `strawman_solution` branch.
 
 **NOTE#1** : for historical reasons, the compression unit (CU) is referred to as the shared compression stage. The execution unit (EU) is referred to as composable measurement unit (CMU). The transformable measurement unit (TMU) is referred to CMU-Group. We are working on refactoring the code to the correct component name.
 
@@ -32,6 +32,3 @@ We  also remove `headers.p4` and `utils.p4`, which can be obtained at [Open-Tofi
 
 For the convenience of experimentation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation.
 The simulation code is located in the [simulations](./simulations) directory.
-
----
-We are working on further improving this repository with more detailed use cases, as well as related documents.
