@@ -1,2 +1,1 @@
-## Notification
-
+We only reserve 1 second of trace, the full traffic can be downloaded from [WIDE](http://mawi.wide.ad.jp/mawi/).

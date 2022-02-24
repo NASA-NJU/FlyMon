@@ -15,3 +15,22 @@ This is the simulation implementation part of flymon. We have implemented relate
     * `TBC_MRAC` tests FlyMon-based MRAC.
     * `BeauCoup` tests original BeauCoup algorithm.
 * `test_xxx.py` are scripts to automate test measurement algorithms.
+
+## How to Build
+
+``` bash
+mkdir -p ./build
+cd build
+cmake ..
+make
+```
+
+## How to run test.
+
+```bash
+python test_xxxx.py
+```
+
+---
+
+**NOTE** : for historical reasons, the Transformable Measurement Block (TBC) is referred to as composable measurement unit (CMU).
