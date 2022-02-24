@@ -5,7 +5,7 @@ This is the simulation implementation part of flymon. We have implemented relate
 ## File Description
 
 * `include/tbc` contains the simulation of the CMU-Groups and builds a set of table structures, which can be configured as many measurement algorithms (in `include/tbc_manager.h`).
-* The other files in `include/` includes other measurement algorithms forked from [ElasticSketch](https://github.com/BlockLiu/ElasticSketchCode/tree/master/src/CPU).
+* The other files in `include/` includes other measurement algorithms and utilts.
 * `test/` contains test use cases to evaluate algorithms with [WIDE](http://mawi.wide.ad.jp/mawi/) traces. The main test cases are:
     * `TBC_BEAUCOUP_XXX` tests FlyMon-based BeauCoup.
     * `TBC_BLOOMFILTER` tests FlyMon-based BloomFilter.
