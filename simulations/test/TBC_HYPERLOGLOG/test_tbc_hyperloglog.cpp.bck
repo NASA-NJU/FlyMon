@@ -1,0 +1,187 @@
+
+#include <unordered_map>
+#include "tbc/tbc_manager.h"
+#include "DataTrace.h"
+#include "EMFSD.h"
+#include <fstream>
+#include <ctime>
+#include <bitset>
+
+
+#define FILE_MRAC_DSITRIBUTION "flow_distribution1.5.txt"  //1MB
+#define TEST_NUM  30
+
+vector<double> dist;
+
+template<uint32_t TBC_NUM, uint32_t BLOCK_NUM, uint32_t BLOCK_SIZE>
+double measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>& tbc_manager, int m){
+    FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
+    int hll_task_id = tbc_manager.allocate_hyperloglog(m, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_IPPAIR);
+    if(hll_task_id < 0) {
+        return -1;
+    }
+    unordered_map<string, int> Real_Freq;
+    for (auto it=trace.begin(); it!=trace.end(); ++it){
+        tbc_manager.apply(*it);
+        string str((const char*)((*it)->getFlowKey_IPPair()), 8);
+        Real_Freq[str]++;
+    } 
+    map<uint32_t, map<uint32_t, vector<uint32_t>>> hll_sketch;
+    tbc_manager.query(hll_task_id, hll_sketch);
+    double total_size = 0;
+    for(int i=0; i<dist.size(); ++i){
+        total_size += dist[i];
+    }
+    double a = 0.0;
+    double s = 1/coff;
+    for(uint32_t i=0; i<dist.size(); ++i){
+        uint32_t n = i;
+        double p = dist[i] / total_size;
+        a += p * (1-pow((1-s), n));
+    }
+    double estimate_distinct = 0.0;
+    for(auto& tbc : hll_sketch){
+        for(auto& block: tbc.second){
+            vector<uint32_t>& data = block.second;
+            double estimate = 0;                
+            double V = 0;
+            double dZ = 0;
+            double Z = 0;
+            double E = 0;
+            for(auto& bits : data){
+                if(bits == 0){
+                    V+=1;
+                }
+                int p = 0;
+                for(int i = 31; i >= 0; --i){
+                    uint32_t bit = (bits & (1<<i)) >> i;
+                    if(bit == 0){
+                        p = (31 - i) + 1;
+                        break;
+                    }
+                }
+                dZ += pow(2, -1*p);
+            }
+            Z = 1.0 / dZ;
+            E = 0.679 * pow(m, 2) * Z;
+            double E_star = 0;
+            if (E < 2.5*m){
+                E_star = (V != 0)? m * log2(m/V) : E;
+            }
+            double pow232 = pow(2, 32);
+            E_star = (E <= pow232/30)? E : -1*pow232*log2(1-E/pow232);
+            estimate_distinct = (coin=="***") ? E_star : E_star / a;
+        }
+    }
+    double real_distinct = static_cast<double>(Real_Freq.size());
+    double relative_error = abs(estimate_distinct - real_distinct) / real_distinct;
+    HOW_LOG(L_INFO, "Real Flow Num %.2f, Estimate Flow Num %.2f, Distinct Real : %.2f, Distinct Estimate: %.2f, RE : %.2f", 
+                     real_distinct, 
+                     total_size, 
+                     real_distinct, 
+                     estimate_distinct, 
+                     relative_error);
+    delete filter;
+    return relative_error;
+}
+
+void update_results(vector<map<string, vector<double>>>& results, uint32_t index, string coin, double re){
+    results[index][coin][0] += re;
+    results[index][coin][1] = results[index][coin][1] < re ? results[index][coin][1] : re;
+    results[index][coin][2] = results[index][coin][2] > re ? results[index][coin][2] : re;
+}
+
+int main(){
+    clock_t start = clock();
+    DataTrace trace;
+    // trace.LoadFromFile("../data/WIDE/one_sec_15.dat");
+    // trace.LoadFromFile("../data/WIDE/head1000.dat");
+    // trace.LoadFromFile("../data/WIDE/test.dat");
+    // trace.LoadFromFile("../data/WIDE/ten_sec_1.dat");
+    trace.LoadFromFile("../data/WIDE/fifteen1.dat");
+    // Load distribution.
+    ifstream infile;
+	infile.open(FILE_MRAC_DSITRIBUTION, ios::in);
+	//第五种读取方法
+	string s;
+	getline(infile,s);
+	infile >> s;
+    Split_String_Double(s, dist, " ");
+    HOW_LOG(L_INFO, "Load MRAC flow distribution %s, size %d", FILE_MRAC_DSITRIBUTION, dist.size());
+    auto& tbc_manager_16 = TBC_Manager<1, 1, 16>::getDataplane();
+    auto& tbc_manager_32 = TBC_Manager<1, 1, 32>::getDataplane();
+    auto& tbc_manager_64 = TBC_Manager<1, 1, 64>::getDataplane();
+    auto& tbc_manager_128 = TBC_Manager<1, 1, 128>::getDataplane();
+    auto& tbc_manager_256 = TBC_Manager<1, 1, 256>::getDataplane();
+    auto& tbc_manager_512 = TBC_Manager<1, 1, 512>::getDataplane();
+    auto& tbc_manager_1024 = TBC_Manager<1, 1, 1024>::getDataplane();
+    auto& tbc_manager_2048 = TBC_Manager<1, 1, 2048>::getDataplane();
+    auto& tbc_manager_4096 = TBC_Manager<1, 1, 4096>::getDataplane();
+    auto& tbc_manager_8192 = TBC_Manager<1, 1, 8192>::getDataplane();
+    vector<string> coins = {"***", "0**", "00*", "000"};
+    vector<double> coffs = {1, 2, 4, 8};
+    vector<map<string, vector<double>>> results; // [{16 | ***:{avg, min, max}, 0**:{avg, min, max}...}, ]
+    results.resize(10);
+    for(auto& re : results){
+        re["***"].resize(3);
+        re["0**"].resize(3);
+        re["00*"].resize(3);
+        re["000"].resize(3);
+        for(auto& item : re){
+            item.second[0] = 0;
+            item.second[1] = 0x1f1f1f1f;
+            item.second[2] = 0;
+        }
+    }
+    map<int, int> hll_map{ {0,16}, {1,32}, {2,64}, {3,128}, {4,256}, {5,512}, {6,1024}, {7,2048}, {8,4096}, {9,8192} };
+    for(int i=0; i<TEST_NUM; ++i){
+        HOW_LOG(L_INFO, "Test %d==========================================================================", i);
+        for(int t=0; t<4; ++t){
+            string coin = coins[t];
+            int coff = coffs[t];
+            HOW_LOG(L_INFO, "### Run Coin %s Test.", coin.c_str());
+            double re0 = measure_main<1,1,16>(trace, tbc_manager_16, 16, coin, coff);
+            update_results(results, 0, coin, re0);
+            double re1 = measure_main<1,1,32>(trace, tbc_manager_32, 32, coin, coff);
+            update_results(results, 1, coin, re1);
+            double re2 = measure_main<1,1,64>(trace, tbc_manager_64, 64, coin, coff);
+            update_results(results, 2, coin, re2);
+            double re3 = measure_main<1,1,128>(trace, tbc_manager_128, 128, coin, coff);
+            update_results(results, 3, coin, re3);
+            double re4 = measure_main<1,1,256>(trace, tbc_manager_256, 256, coin, coff);
+            update_results(results, 4, coin, re4);
+            double re5 = measure_main<1,1,512>(trace, tbc_manager_512, 512, coin, coff);
+            update_results(results, 5, coin, re5);
+            double re6 = measure_main<1,1,1024>(trace, tbc_manager_1024, 1024, coin, coff);
+            update_results(results, 6, coin, re6);
+            double re7 = measure_main<1,1,2048>(trace, tbc_manager_2048, 2048, coin, coff);
+            update_results(results, 7, coin, re7);
+            double re8 = measure_main<1,1,4096>(trace, tbc_manager_4096, 4096, coin, coff);
+            update_results(results, 8, coin, re8);
+            double re9 = measure_main<1,1,8192>(trace, tbc_manager_8192, 8192, coin, coff);
+            update_results(results, 9, coin, re9);
+            tbc_manager_16.reset();
+            tbc_manager_32.reset();
+            tbc_manager_64.reset();
+            tbc_manager_128.reset();
+            tbc_manager_256.reset();
+            tbc_manager_512.reset();
+            tbc_manager_1024.reset();
+            tbc_manager_2048.reset();
+            tbc_manager_4096.reset();
+            tbc_manager_8192.reset();
+        }
+    }
+    HOW_LOG(L_INFO, "Test Hyperloglog with distribution MRAC %s.", FILE_MRAC_DSITRIBUTION);
+    for(int i=0; i<10; ++i){
+        for(auto& coin: coins){
+            int re_name = hll_map[i];
+            double re_avg = results[i][coin][0] / TEST_NUM; // TEST_NUM;
+            double re_min = results[i][coin][1];
+            double re_max = results[i][coin][2];
+            HOW_LOG(L_INFO, "HyperLogLog M=%d, Coin %s, RE Average=%.2f, RE Min=%.2f, RE Max=%.2f.", re_name, coin.c_str(), re_avg, re_min, re_max);
+        }
+    }
+    clock_t ends = clock();
+    cout <<"Running Time : "<<(double)(ends - start)/ CLOCKS_PER_SEC << endl;
+}
