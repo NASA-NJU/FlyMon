@@ -8,7 +8,7 @@ We implement FlyMon based on P4-16, with the SDE Version 9.7.0. We opensource th
 **Single CMU-Group**
 
 The main branch is a reference implementation of single CMU-Group, which includes:
-* A set of jinja2 template P4 code used to generate data plane codes according to user-defined FlyMon configs.
+* P4-16 codes include four stages of the CMU-Group, as well as an additional task registration module and key reporting module.
 * A demo control plane which shows how to:
     * dynamically install measurement tasks.
     * dynamically allocate memory with different size.
@@ -34,4 +34,4 @@ For the convenience of experimentation, we implemented a simulated version of Fl
 The simulation code is located in the [simulations](./simulations) directory.
 
 ---
-At present, many sample codes, including the naming of components, the compiler of template codes and code comments are being refactoring. We are working on further improving this respository.
+We are working on further improving this repository with more detailed use cases, as well as related documents.
