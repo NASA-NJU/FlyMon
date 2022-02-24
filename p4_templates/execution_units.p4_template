@@ -59,7 +59,6 @@ control ExecutionUnit_{{eu.id}} (in header_t hdr,
         size = 32;
     }
 
-    //mmh-trick: add overflow
     action key_add_offset(bit<32> offset){
        ig_md.eu_{{eu.id}}.key = ig_md.eu_{{eu.id}}.key + offset;
     }
