@@ -5,7 +5,7 @@ This is a reference implementation of FlyMon. The repository includes P4 hardwar
 ## P4 Implemenatation
 We implement FlyMon based on P4-16, with the SDE Version 9.7.0. We opensource three versions of Flymon:
 
-**Single CMU-Group**
+**Single CMU-Group Implementation**
 
 The main branch is a reference implementation of single CMU-Group, which includes:
 * P4-16 codes of the CMU-Group. We implement an additional task registration module and heavy key reporting module.
