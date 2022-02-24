@@ -1,1 +1,17 @@
-# SketchLab
+# FlyMon Simulation
+
+This is the simulation implementation part of flymon. We have implemented related measurement algorithms based on CMU-Groups. In addition, we constructed an automated testing framework to repeat the experiment.
+
+## File Description
+
+* `include/tbc` contains the simulation of the CMU-Groups and builds a set of table structures, which can be configured as many measurement algorithms (in `include/tbc_manager.h`).
+* The other files in `include/` includes other measurement algorithms forked from [ElasticSketch](https://github.com/BlockLiu/ElasticSketchCode/tree/master/src/CPU).
+* `test/` contains test use cases to evaluate algorithms with [WIDE](http://mawi.wide.ad.jp/mawi/) traces. The main test cases are:
+    * `TBC_BEAUCOUP_XXX` tests FlyMon-based BeauCoup.
+    * `TBC_BLOOMFILTER` tests FlyMon-based BloomFilter.
+    * `TBC_CMSketch` and `TBC_CUSketch` tests FlyMon-based Count-min Sketch and SuMax(Sum).
+    * `TBC_HYPERLOGLOG` tests FlyMon-based HyperLogLog.
+    * `TBC_MAX_TABBLE` tests FlyMon-based SuMax(Max).
+    * `TBC_MRAC` tests FlyMon-based MRAC.
+    * `BeauCoup` tests original BeauCoup algorithm.
+* `test_xxx.py` are scripts to automate test measurement algorithms.
