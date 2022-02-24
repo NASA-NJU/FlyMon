@@ -6,6 +6,7 @@ This is a reference implementation of FlyMon. The repository includes P4 hardwar
 We implement FlyMon based on P4-16, with the SDE Version 9.7.0. We opensource three versions of Flymon:
 
 **Single CMU-Group**
+
 The main branch is a reference implementation of single CMU-Group, which includes:
 * A set of jinja2 template P4 code used to generate data plane codes according to user-defined FlyMon configs.
 * A demo control plane which shows how to:
@@ -15,9 +16,11 @@ The main branch is a reference implementation of single CMU-Group, which include
     * configure the dynamic hash unit to generate an arbitrary compressed key in the compression stage (temporarily removed, see NOTE2 below). 
 
 **Cross-stacking 9 CMU-Groups**
+
 To see the cross-stacking version of FlyMon, please checkout to the `stackable_cmug` branch.
 
 **Strawman Implementation of CMU**
+
 To see the strawman solution (without  optimizations on key-selection and attribute-operation), please checkout to the `strawman_solution` branch.
 
 **NOTE#1** : for historical reasons, the compression unit (CU) is referred to as the shared compression stage. The execution unit (EU) is referred to as composable measurement unit (CMU). The transformable measurement unit (TMU) is referred to CMU-Group. We are working on refactoring the code to the correct component name.
