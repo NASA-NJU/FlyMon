@@ -15,7 +15,7 @@ using namespace std;
 
 class Metadata{
 public:
-    //必须加虚函数，否则dynamic_pointer_cast会报错.
+    //
     virtual ~Metadata(){} 
 };
 
