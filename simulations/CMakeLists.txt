@@ -55,21 +55,6 @@ add_library(${LIB_COMMON} STATIC ${COMMON_SRC})
 # target_link_libraries(${LIB_COMMON} TSP_NS)
 link_directories(${COMMON_SRC})
 
-### Sketches
-set(LIB_CMHEAP CMHeap)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/CMHeap CMHEAP_SRC)
-add_library(${LIB_CMHEAP} STATIC ${CMHEAP_SRC})
-link_directories(${CMHEAP_SRC})
-
-set(LIB_CMSKETCH CMSketch)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/CMSketch CMSKETCH_SRC)
-add_library(${LIB_CMSKETCH} STATIC ${CMSKETCH_SRC})
-link_directories(${CMSKETCH_SRC})
-
-set(LIB_ESSKETCH ESSketch)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/ElasticSketch ESSKETCH_SRC)
-add_library(${LIB_ESSKETCH} STATIC ${ESSKETCH_SRC})
-link_directories(${ESSKETCH_SRC})
 
 set(LIB_TBC TBC)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/TBC TBC_SRC)
@@ -81,21 +66,6 @@ link_directories(${TBC_SRC})
 # SET OUTPUT PATH
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-# Test cm_heap
-set(TEST_CMHEAP test_cmheap)
-aux_source_directory(${PROJECT_SOURCE_DIR}/test/CMHeap TEST_CMHEAP_SRC)
-add_executable( ${TEST_CMHEAP} ${TEST_CMHEAP_SRC})
-target_link_libraries(${TEST_CMHEAP}  ${LIB_CMHEAP} ${LIB_CUCKOOHASH} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
-
-set(TEST_CMSKETCH test_cmsketch)
-aux_source_directory(${PROJECT_SOURCE_DIR}/test/CMSketch TEST_CMSKETCH_SRC)
-add_executable( ${TEST_CMSKETCH} ${TEST_CMSKETCH_SRC})
-target_link_libraries(${TEST_CMSKETCH}  ${LIB_CMSKETCH} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
-
-set(TEST_ESSKETCH test_essketch)
-aux_source_directory(${PROJECT_SOURCE_DIR}/test/ElasticSketch TEST_ESSKETCH_SRC)
-add_executable( ${TEST_ESSKETCH} ${TEST_ESSKETCH_SRC})
-target_link_libraries(${TEST_ESSKETCH} ${LIB_ESSKETCH} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
 
 set(TEST_UNIVMON test_univmon)
 aux_source_directory(${PROJECT_SOURCE_DIR}/test/UnivMon TEST_UNIVMON_SRC)
@@ -122,11 +92,6 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_HYPERLOGLOG TBC_HYPERLOGLOG_
 add_executable( ${TBC_HYPERLOGLOG} ${TBC_HYPERLOGLOG_SRC})
 target_link_libraries(${TBC_HYPERLOGLOG} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG})
 
-set(MRAC test_mrac)
-aux_source_directory(${PROJECT_SOURCE_DIR}/test/MRAC MRAC_SRC)
-add_executable( ${MRAC} ${MRAC_SRC})
-target_link_libraries(${MRAC} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG})
-
 # set(TBC_MEM_TEST test_tbc_mem_test)
 # aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_MEM_TEST TBC_MEM_TEST_SRC)
 # add_executable( ${TBC_MEM_TEST} ${TBC_MEM_TEST_SRC})
@@ -135,10 +100,8 @@ set(TBC_MRAC test_tbc_mrac)
 aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_MRAC TBC_MRAC_SRC)
 add_executable( ${TBC_MRAC} ${TBC_MRAC_SRC})
 target_link_libraries(${TBC_MRAC} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG})
-set(TBC_MRAC_HLL test_tbc_mrac_hll)
-aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_MRAC_HLL TBC_MRAC_HLL_SRC)
-add_executable( ${TBC_MRAC_HLL} ${TBC_MRAC_HLL_SRC})
-target_link_libraries(${TBC_MRAC_HLL} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG})
+
+
 set(TBC_DISTRIBUTION test_tbc_distribution)
 aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_DISTRIBUTION TBC_DISTRIBUTION_SRC)
 add_executable( ${TBC_DISTRIBUTION} ${TBC_DISTRIBUTION_SRC})
