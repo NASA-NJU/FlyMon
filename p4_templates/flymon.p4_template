@@ -1,0 +1,218 @@
+#include <core.p4>
+#if __TARGET_TOFINO__ == 2
+#include <t2na.p4>
+#else
+#include <tna.p4>
+#endif
+
+#include "headers.p4"
+#include "cmu_groups.p4"
+
+// ---------------------------------------------------------------------------
+// Ingress parser
+// ---------------------------------------------------------------------------
+parser FlyMonIngressParser(
+        packet_in pkt,
+        out header_t hdr,
+        out ingress_metadata_t ig_md,
+        out ingress_intrinsic_metadata_t ig_intr_md) {
+    state start {
+        pkt.extract(ig_intr_md);
+        transition select(ig_intr_md.resubmit_flag) {
+            1 : parse_resubmit;
+            0 : parse_port_metadata;
+        }
+    }
+    state parse_resubmit {
+        // Parse resubmitted packet here.
+        transition reject;
+    }
+    state parse_port_metadata {
+        pkt.advance(PORT_METADATA_SIZE);
+        transition parse_ethernet;
+    }
+
+    state parse_ethernet {
+        pkt.extract(hdr.ethernet);
+        transition select (hdr.ethernet.ether_type) {
+            IPV4 : parse_ipv4;
+            IPV6 : parse_ipv6;
+            default : reject;
+        }
+    }
+    state parse_ipv4 {
+        pkt.extract(hdr.ipv4);
+        transition select (hdr.ipv4.protocol) {
+            TCP : parse_tcp;
+            UDP : parse_udp;
+            default : reject;
+        }
+    }
+    state parse_ipv6 {
+        pkt.extract(hdr.ipv6);
+        transition select (hdr.ipv6.next_hdr) {
+            TCP : parse_tcp;
+            UDP : parse_udp;
+            default : reject;
+        }
+    }
+    state parse_tcp {
+        pkt.extract(hdr.ports);
+        pkt.extract(hdr.tcp);
+        transition accept;
+    }
+    state parse_udp {
+        pkt.extract(hdr.ports);
+        pkt.extract(hdr.udp);
+        transition accept;
+    }
+}
+
+control FlyMonIngress(
+        inout header_t hdr,
+        inout ingress_metadata_t ig_md,
+        in ingress_intrinsic_metadata_t ig_intr_md,
+        in ingress_intrinsic_metadata_from_parser_t ig_intr_prsr_md,
+        inout ingress_intrinsic_metadata_for_deparser_t ig_intr_dprsr_md,
+        inout ingress_intrinsic_metadata_for_tm_t ig_intr_tm_md) {
+
+    action hit(PortId_t port) {
+        ig_intr_tm_md.ucast_egress_port = port;
+    }
+    action miss() {
+        ig_intr_dprsr_md.drop_ctl = 0x1; // Drop packet.
+    }
+    // Simple port-forwarding is used for testing.
+    table simple_fwd {
+        key = {
+            ig_intr_md.ingress_port : exact;
+        }
+        actions = {
+            hit;
+            miss;
+        }
+        const default_action = miss;
+        size = 64;
+    }
+    {%for CMUG in CMUG_GROUP_CONFIGS %}
+    {%if CMUG.type == 1 %}
+    CMU_Group{{CMUG.id}}() cmu_group{{CMUG.id}};
+    {% endif %}
+    {%endfor%}
+    apply {
+        simple_fwd.apply();
+        {%for CMUG in CMUG_GROUP_CONFIGS %}
+        {%if CMUG.type == 1 %}
+        cmu_group{{CMUG.id}}.apply(hdr, ig_intr_md, ig_md);
+        {% endif %}
+        {%endfor%}
+    }
+}
+
+
+// ---------------------------------------------------------------------------
+// Ingress Deparser
+// ---------------------------------------------------------------------------
+control FlyMonIngressDeparser(
+        packet_out pkt,
+        inout header_t hdr,
+        in ingress_metadata_t ig_md,
+        in ingress_intrinsic_metadata_for_deparser_t ig_intr_dprsr_md) {
+    apply {
+        pkt.emit(hdr);
+    }
+}
+
+
+// ---------------------------------------------------------------------------
+// Egress parser
+// ---------------------------------------------------------------------------
+parser FlyMonEgressParser(
+        packet_in pkt,
+        out header_t hdr,
+        out egress_metadata_t eg_md,
+        out egress_intrinsic_metadata_t eg_intr_md) {
+    state start {
+        pkt.extract(eg_intr_md);
+        transition parse_ethernet;
+    }
+
+    state parse_ethernet {
+        pkt.extract(hdr.ethernet);
+        transition select (hdr.ethernet.ether_type) {
+            IPV4 : parse_ipv4;
+            IPV6 : parse_ipv6;
+            default : reject;
+        }
+    }
+    state parse_ipv4 {
+        pkt.extract(hdr.ipv4);
+        transition select (hdr.ipv4.protocol) {
+            TCP : parse_tcp;
+            UDP : parse_udp;
+            default : reject;
+        }
+    }
+    state parse_ipv6 {
+        pkt.extract(hdr.ipv6);
+        transition select (hdr.ipv6.next_hdr) {
+            TCP : parse_tcp;
+            UDP : parse_udp;
+            default : reject;
+        }
+    }
+    state parse_tcp {
+        pkt.extract(hdr.ports);
+        pkt.extract(hdr.tcp);
+        transition accept;
+    }
+    state parse_udp {
+        pkt.extract(hdr.ports);
+        pkt.extract(hdr.udp);
+        transition accept;
+    }
+}
+
+control FlyMonEgress(
+        inout header_t hdr,
+        inout egress_metadata_t eg_md,
+        in egress_intrinsic_metadata_t eg_intr_md,
+        in egress_intrinsic_metadata_from_parser_t eg_intr_from_prsr,
+        inout egress_intrinsic_metadata_for_deparser_t eg_intr_md_for_dprsr,
+        inout egress_intrinsic_metadata_for_output_port_t eg_intr_md_for_oport) {
+
+    {%for CMUG in CMUG_GROUP_CONFIGS %}
+    {%if CMUG.type == 2 %}
+    CMU_Group{{CMUG.id}}() cmu_group{{CMUG.id}};
+    {% endif %}
+    {%endfor%}
+    apply {
+        {%for CMUG in CMUG_GROUP_CONFIGS %}
+        {%if CMUG.type == 2 %}
+        cmu_group{{CMUG.id}}.apply(hdr, eg_intr_md, eg_md);
+        {% endif %}
+        {%endfor%}
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Egress Deparser
+// ---------------------------------------------------------------------------
+control FlyMonEgressDeparser(
+        packet_out pkt,
+        inout header_t hdr,
+        in egress_metadata_t eg_md,
+        in egress_intrinsic_metadata_for_deparser_t eg_dprsr_md) {
+    apply {
+        pkt.emit(hdr);
+    }
+}
+
+Pipeline(FlyMonIngressParser(),
+         FlyMonIngress(),
+         FlyMonIngressDeparser(),
+         FlyMonEgressParser(),
+         FlyMonEgress(),
+         FlyMonEgressDeparser()) pipe;
+         
+Switch(pipe) main;
