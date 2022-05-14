@@ -1,9 +1,32 @@
-# FlyMon Hardware Reference Implementation
+<h1 align="center">
+  <br>
+  FlyMon
+  <br>
+</h1>
 
-This is a reference implementation of FlyMon. The repository includes P4 hardware implementations and CPU simulations for algorithms accuracy.
+<h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
 
-## P4 Implemenatation
-We implement FlyMon based on P4-16, with the SDE Version 9.7.0. We opensource three versions of Flymon:
+<p align="center">
+  <a href="#key-features">Key Features</a> •
+  <a href="#how-to-use">How To Use</a> •
+  <a href="#simulation">Simulation</a> •
+  <a href="#license">License</a>
+</p>
+
+## Key Features
+
+* P4-16 based hardware implementation.
+* Jinja2 templates used to generate P4 codes according to variable configurations (e.g., CMU-Groups, Memory Size, Candidate Key Set).
+* A reference control plane framework realizing task reconfiguration, resource management, data collection.
+* Several built-in algorithms used to measure various flow attributes.
+
+
+## How To Use
+
+We implement FlyMon based on P4-16, with the SDE Version 9.7.0. Other versions of SDE (e.g., 9.1.1) can also pass the compilation, but we are unsure if the control plane functions correctly in these older versions.
+
+
+## Simulation
 
 ### Single CMU-Group Implementation
 
