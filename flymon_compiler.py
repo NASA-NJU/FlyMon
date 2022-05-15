@@ -27,7 +27,7 @@ MEM_CONFIGS = {
 # ===================================================
 # CMU_GROUPS configs.
 # ===================================================
-TOTAL_CMU_GROUP_NUM     = 9
+TOTAL_CMU_GROUP_NUM     = 1
 INGRESS_CMU_GROUP_NUM   = int(TOTAL_CMU_GROUP_NUM/2)
 EGRESS_CMU_GROUP_NUM    = TOTAL_CMU_GROUP_NUM - INGRESS_CMU_GROUP_NUM
 
