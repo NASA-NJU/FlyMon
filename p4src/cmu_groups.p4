@@ -1,8 +1,3 @@
-/**
-* Control block definations for CMU-Groups.
-* Author: Hao Zheng.
-**/
-
 #ifndef _CMU_GROUP_P4_
 #define _CMU_GROUP_P4_
 
@@ -23,13 +18,13 @@ control CMU_Group1 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
     action hash1(){
-        meta.cmu_group1.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group1.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group1.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group1.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash3(){
-        meta.cmu_group1.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group1.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 0
@@ -620,13 +615,13 @@ control CMU_Group2 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
     action hash1(){
-        meta.cmu_group2.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group2.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group2.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group2.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash3(){
-        meta.cmu_group2.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group2.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 1
@@ -1199,13 +1194,13 @@ control CMU_Group3 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
     action hash1(){
-        meta.cmu_group3.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group3.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group3.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group3.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash3(){
-        meta.cmu_group3.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group3.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 2
@@ -1778,13 +1773,13 @@ control CMU_Group4 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
     action hash1(){
-        meta.cmu_group4.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group4.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group4.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group4.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash3(){
-        meta.cmu_group4.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group4.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 3
@@ -2356,10 +2351,10 @@ control CMU_Group5 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
     action hash1(){
-        meta.cmu_group5.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group5.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group5.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group5.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 4
@@ -2919,10 +2914,10 @@ control CMU_Group6 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
     action hash1(){
-        meta.cmu_group6.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group6.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group6.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group6.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 5
@@ -3422,10 +3417,10 @@ control CMU_Group7 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
     action hash1(){
-        meta.cmu_group7.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group7.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group7.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group7.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 6
@@ -3925,10 +3920,10 @@ control CMU_Group8 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
     action hash1(){
-        meta.cmu_group8.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group8.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group8.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group8.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 7
@@ -4428,10 +4423,10 @@ control CMU_Group9 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
     action hash1(){
-        meta.cmu_group9.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group9.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group9.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ipv4.protocol,hdr.ports.src_port,hdr.ports.dst_port });
+        meta.cmu_group9.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 8
