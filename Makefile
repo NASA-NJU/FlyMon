@@ -4,7 +4,7 @@ configure: configure
 export P4_PATH=${SDE}/2work_dir/FlyMon/p4src/flymon.p4
 
 generate:
-	cd p4_templates; python3 flymon_compiler.py; cd -
+	python3 flymon_compiler.py; cd -
 
 configure:
 	mkdir -p build; cd build; ${SDE}/pkgsrc/p4-build/configure  \

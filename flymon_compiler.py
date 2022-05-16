@@ -27,7 +27,7 @@ MEM_CONFIGS = {
 # ===================================================
 # CMU_GROUPS configs.
 # ===================================================
-TOTAL_CMU_GROUP_NUM     = 1
+TOTAL_CMU_GROUP_NUM     = 9
 INGRESS_CMU_GROUP_NUM   = int(TOTAL_CMU_GROUP_NUM/2)
 EGRESS_CMU_GROUP_NUM    = TOTAL_CMU_GROUP_NUM - INGRESS_CMU_GROUP_NUM
 
@@ -39,6 +39,16 @@ CANDIDATE_KEY_SET = ",".join([  "hdr.ipv4.src_addr",
                                 "hdr.ports.dst_port",
                                 "hdr.ipv4.protocol"
                              ])
+
+INGRESS_STDMETA_PARAM_SET = { 
+    "timestamp" :  "intr_md.ingress_mac_tstamp[15:0]"
+}
+
+EGRESS_STDMETA_PARAM_SET  = { 
+    "pktsize" : "(bit<16>) intr_md.pkt_length",
+    "queue_size" : "intr_md.enq_qdepth[15:0]",
+    "queue_length" : "intr_md.enq_tstamp[15:0];"
+}
                              
 CMUG_GROUP_CONFIGS = []
 CMUG_GROUP_CONFIGS += ([
@@ -63,6 +73,14 @@ CMUG_GROUP_CONFIGS += ([
     }
     for id in range(EGRESS_CMU_GROUP_NUM) 
 ])
+
+for CMUG in CMUG_GROUP_CONFIGS:
+    if CMUG["type"] == 1  and CMUG["id"] == 1:
+        CMUG["std_params"] = INGRESS_STDMETA_PARAM_SET
+    elif CMUG["type"] == 2 and CMUG["id"] == int(len(CMUG_GROUP_CONFIGS)/2) + 1:
+        CMUG["std_params"] = EGRESS_STDMETA_PARAM_SET
+    else:
+        CMUG["std_params"] = {}
 
 # ===================================================
 

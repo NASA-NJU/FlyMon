@@ -6,17 +6,6 @@
 // ---------------------------------------------------------------------------
 
 
-/** Jinja2 variable list.
- * CMUG_GROUP_CONFIGS: [CMUG] ~ A list of CMU-Group configurations.
- * - CMUG: {id, type, mau_start, cmu_num, cmu_size, candidate_key_set}
- * - - id: identifier of CMU-Group.
- * - - type: 1~ ingress, 2~ egrss.
- * - - mau_start: start stage (compression stage) placement of the CMU-Group.
- * - - cmu_num: number of CMU in each CMU-Group.
- * - - candidate_key_set: candida
-**/
-
-
 // CMU with 2 paramters.
 struct cmu_metadata_t{
     bit<8> task_id;
@@ -24,7 +13,6 @@ struct cmu_metadata_t{
     bit<16>    param1;
     bit<16>    param2;  // also used as the output of SALU.
 }
-
 
 
 struct cmu_group_metadata_a_t{
@@ -43,7 +31,6 @@ struct cmu_group_metadata_b_t{
     cmu_metadata_t cmu{{id+1}};
     {% endfor %}
 }
-
 
 struct ingress_metadata_t {
     {%for CMUG in CMUG_GROUP_CONFIGS %}
