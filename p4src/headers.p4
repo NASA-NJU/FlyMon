@@ -15,7 +15,6 @@ struct cmu_metadata_t{
 }
 
 
-
 struct cmu_group_metadata_a_t{
     bit<16> compressed_key1; 
     bit<16> compressed_key2;  
@@ -32,7 +31,6 @@ struct cmu_group_metadata_b_t{
     cmu_metadata_t cmu2;
     cmu_metadata_t cmu3;
 }
-
 
 struct ingress_metadata_t {
     cmu_group_metadata_a_t cmu_group1;

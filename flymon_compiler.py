@@ -33,12 +33,15 @@ EGRESS_CMU_GROUP_NUM    = TOTAL_CMU_GROUP_NUM - INGRESS_CMU_GROUP_NUM
 
 CMU_PER_GROUP   = 3
 MEMORY_PER_CMU  = MEM_CONFIGS["memory_level_6"]["size"]
-CANDIDATE_KEY_SET = ",".join([  "hdr.ipv4.src_addr", 
-                                "hdr.ipv4.dst_addr", 
-                                "hdr.ports.src_port", 
-                                "hdr.ports.dst_port",
-                                "hdr.ipv4.protocol"
-                             ])
+
+CANDIDATE_KEY_LIST = {
+    "hdr.ipv4.src_addr" : 32,
+    "hdr.ipv4.dst_addr" : 32,
+    "hdr.ports.src_port": 16,
+    "hdr.ports.dst_port": 16,
+    "hdr.ipv4.protocol" :  8
+}
+CANDIDATE_KEY_SET = ",".join(CANDIDATE_KEY_LIST.keys())
 
 INGRESS_STDMETA_PARAM_SET = { 
     "timestamp" :  "intr_md.ingress_mac_tstamp[15:0]"
@@ -58,7 +61,7 @@ CMUG_GROUP_CONFIGS += ([
         "mau_start" : id,
         "cmu_num" : CMU_PER_GROUP,
         "cmu_size" : MEMORY_PER_CMU,
-        "candidate_key_set" : CANDIDATE_KEY_SET
+        "candidate_key_list" : CANDIDATE_KEY_LIST
     }
     for id in range(INGRESS_CMU_GROUP_NUM) 
 ])
@@ -69,7 +72,7 @@ CMUG_GROUP_CONFIGS += ([
         "mau_start" : id + INGRESS_CMU_GROUP_NUM,
         "cmu_num" : CMU_PER_GROUP,
         "cmu_size" : MEMORY_PER_CMU,
-        "candidate_key_set" : CANDIDATE_KEY_SET
+        "candidate_key_list" : CANDIDATE_KEY_LIST
     }
     for id in range(EGRESS_CMU_GROUP_NUM) 
 ])

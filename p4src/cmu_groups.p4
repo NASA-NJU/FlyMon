@@ -17,14 +17,17 @@ control CMU_Group1 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group1.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group1.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group1.compressed_key2 = hash_unit2.get({  });
     }
     action hash3(){
-        meta.cmu_group1.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group1.compressed_key3 = hash_unit3.get({  });
     }
 
     @pragma stage 0
@@ -647,14 +650,17 @@ control CMU_Group2 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group2.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group2.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group2.compressed_key2 = hash_unit2.get({  });
     }
     action hash3(){
-        meta.cmu_group2.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group2.compressed_key3 = hash_unit3.get({  });
     }
 
     @pragma stage 1
@@ -1256,14 +1262,17 @@ control CMU_Group3 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group3.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group3.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group3.compressed_key2 = hash_unit2.get({  });
     }
     action hash3(){
-        meta.cmu_group3.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group3.compressed_key3 = hash_unit3.get({  });
     }
 
     @pragma stage 2
@@ -1865,14 +1874,17 @@ control CMU_Group4 ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit3;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group4.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group4.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group4.compressed_key2 = hash_unit2.get({  });
     }
     action hash3(){
-        meta.cmu_group4.compressed_key3 = hash_unit3.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group4.compressed_key3 = hash_unit3.get({  });
     }
 
     @pragma stage 3
@@ -2473,11 +2485,14 @@ control CMU_Group5 ( in header_t hdr,
     Hash<bit<32>>(HashAlgorithm_t.CRC32) hash_unit1;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group5.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group5.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group5.compressed_key2 = hash_unit2.get({  });
     }
 
     @pragma stage 4
@@ -2541,16 +2556,16 @@ control CMU_Group5 ( in header_t hdr,
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
-    action set_cmu1_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu1.param2 =  param2;
-    }
     action set_cmu1_hkey1_queue_length(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param1 =  intr_md.enq_tstamp[15:0];;
+            meta.cmu_group5.cmu1.param2 =  param2;
+    }
+    action set_cmu1_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu1.task_id = task_id;
+            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
+            meta.cmu_group5.cmu1.param1 =  intr_md.enq_qdepth[15:0];
             meta.cmu_group5.cmu1.param2 =  param2;
     }
     action set_cmu1_hkey1_pktsize(bit<8> task_id, bit<16> param2) {
@@ -2577,8 +2592,8 @@ control CMU_Group5 ( in header_t hdr,
             set_cmu1_hkey2_hparam2;
 
 
-            set_cmu1_hkey1_queue_size;
             set_cmu1_hkey1_queue_length;
+            set_cmu1_hkey1_queue_size;
             set_cmu1_hkey1_pktsize;
         }
         size = 32;
@@ -2714,16 +2729,16 @@ control CMU_Group5 ( in header_t hdr,
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
-    action set_cmu2_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
-            meta.cmu_group5.cmu2.param1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu2.param2 =  param2;
-    }
     action set_cmu2_hkey1_queue_length(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
             meta.cmu_group5.cmu2.param1 =  intr_md.enq_tstamp[15:0];;
+            meta.cmu_group5.cmu2.param2 =  param2;
+    }
+    action set_cmu2_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu2.task_id = task_id;
+            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
+            meta.cmu_group5.cmu2.param1 =  intr_md.enq_qdepth[15:0];
             meta.cmu_group5.cmu2.param2 =  param2;
     }
     action set_cmu2_hkey1_pktsize(bit<8> task_id, bit<16> param2) {
@@ -2750,8 +2765,8 @@ control CMU_Group5 ( in header_t hdr,
             set_cmu2_hkey2_hparam2;
 
 
-            set_cmu2_hkey1_queue_size;
             set_cmu2_hkey1_queue_length;
+            set_cmu2_hkey1_queue_size;
             set_cmu2_hkey1_pktsize;
         }
         size = 32;
@@ -2887,16 +2902,16 @@ control CMU_Group5 ( in header_t hdr,
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
-    action set_cmu3_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
-            meta.cmu_group5.cmu3.param1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu3.param2 =  param2;
-    }
     action set_cmu3_hkey1_queue_length(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
             meta.cmu_group5.cmu3.param1 =  intr_md.enq_tstamp[15:0];;
+            meta.cmu_group5.cmu3.param2 =  param2;
+    }
+    action set_cmu3_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu3.task_id = task_id;
+            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
+            meta.cmu_group5.cmu3.param1 =  intr_md.enq_qdepth[15:0];
             meta.cmu_group5.cmu3.param2 =  param2;
     }
     action set_cmu3_hkey1_pktsize(bit<8> task_id, bit<16> param2) {
@@ -2923,8 +2938,8 @@ control CMU_Group5 ( in header_t hdr,
             set_cmu3_hkey2_hparam2;
 
 
-            set_cmu3_hkey1_queue_size;
             set_cmu3_hkey1_queue_length;
+            set_cmu3_hkey1_queue_size;
             set_cmu3_hkey1_pktsize;
         }
         size = 32;
@@ -3048,11 +3063,14 @@ control CMU_Group6 ( in header_t hdr,
     Hash<bit<32>>(HashAlgorithm_t.CRC32) hash_unit1;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group6.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group6.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group6.compressed_key2 = hash_unit2.get({  });
     }
 
     @pragma stage 5
@@ -3560,11 +3578,14 @@ control CMU_Group7 ( in header_t hdr,
     Hash<bit<32>>(HashAlgorithm_t.CRC32) hash_unit1;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group7.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group7.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group7.compressed_key2 = hash_unit2.get({  });
     }
 
     @pragma stage 6
@@ -4072,11 +4093,14 @@ control CMU_Group8 ( in header_t hdr,
     Hash<bit<32>>(HashAlgorithm_t.CRC32) hash_unit1;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group8.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group8.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group8.compressed_key2 = hash_unit2.get({  });
     }
 
     @pragma stage 7
@@ -4584,11 +4608,14 @@ control CMU_Group9 ( in header_t hdr,
     Hash<bit<32>>(HashAlgorithm_t.CRC32) hash_unit1;
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
         meta.cmu_group9.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group9.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group9.compressed_key2 = hash_unit2.get({  });
     }
 
     @pragma stage 8

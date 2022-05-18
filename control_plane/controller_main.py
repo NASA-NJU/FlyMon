@@ -2,27 +2,74 @@
 import os
 import logging
 from collections import namedtuple
+from flymon_manager import FlyMonManager
 import bfrt_grpc.client as client
 import time
 import traceback
 import json
 import cmd
+import argparse
+import sys
 
 logger = logging.getLogger('FlyMon')
 if not len(logger.handlers):
     logger.addHandler(logging.StreamHandler())
 
 
+class FlyMonArgumentParser(argparse.ArgumentParser):
+    """
+    Arg parser used for FlyMonRuntime.
+    """
+    def __init__(self, *args, **kwargs):
+        super(FlyMonArgumentParser, self).__init__(*args, **kwargs)
+
+        self.error_message = ''
+
+    def error(self, message):
+        self.error_message = message
+
+    def parse_args(self, *args, **kwargs):
+        # catch SystemExit exception to prevent closing the application
+        result = None
+        try:
+            result = super(FlyMonArgumentParser, self).parse_args(*args, **kwargs)
+        except SystemExit:
+            pass
+        return result
+
 class FlyMonRuntime(cmd.Cmd):
-    intro = 'FlyMonRuntime: Interactive control plane utility of FlyMon. \n'
-    prompt = 'flymon>'
+    intro = """
+----------------------------------------------------
+    ______   __            __  ___                
+   / ____/  / /  __  __   /  |/  /  ____     ____ 
+  / /_     / /  / / / /  / /|_/ /  / __ \   / __ \\
+ / __/    / /  / /_/ /  / /  / /  / /_/ /  / / / /
+/_/      /_/   \__, /  /_/  /_/   \____/  /_/ /_/ 
+              /____/                                 
+----------------------------------------------------
+    An on-the-fly network measurement system.               
+    """
+    prompt = 'flymon> '
 
     def __init__(self):
         cmd.Cmd.__init__(self)
-        self.flymon_manager = "This is resource manager"
+        self.flymon_manager = FlyMonManager("./cmu_groups.json")
 
     # cmd 1: add port.
-    def do_add_port(self, port, speed):
+    def do_show_status(self, arg):
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
+        args = parser.parse_args(arg.split())
+        if parser.error_message:
+            print(parser.error_message)
+        else:
+            self.flymon_manager.show_status(args.group_id)
+
+    def complete_show_status(self):
+        pass
+
+    # cmd 1: add port.
+    def do_add_port(self):
         pass
     def complete_add_port(self):
         pass
@@ -59,9 +106,9 @@ class FlyMonRuntime(cmd.Cmd):
     
     def do_shell(self, line):
         "Run a shell command"
-        print "running shell command:", line
+        print("running shell command:", line)
         output = os.popen(line).read()
-        print output
+        print(output)
         self.last_output = output
 
 if __name__ == "__main__":

@@ -30,15 +30,17 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     Hash<bit<16>>(HashAlgorithm_t.CRC32) hash_unit2;
     {% endif %}
 
+    // The hash inputs are fixed here. There are two ways to generate different hash values.
+    //  a) Firstly, use different sub-range in the initialization stage.
+    //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
-        meta.cmu_group{{CMUG.id}}.compressed_key1 = hash_unit1.get({ {{CMUG.candidate_key_set}} });
+        meta.cmu_group{{CMUG.id}}.compressed_key1 = hash_unit1.get({ {{",".join(CMUG.candidate_key_list.keys())}} });
     }
     action hash2(){
-        meta.cmu_group{{CMUG.id}}.compressed_key2 = hash_unit2.get({ {{CMUG.candidate_key_set}} });
-    }
+        meta.cmu_group{{CMUG.id}}.compressed_key2 = hash_unit2.get({ {{",".join(CMUG.candidate_key_list.keys())}} });
     {%if CMUG.type == 1 %}
     action hash3(){
-        meta.cmu_group{{CMUG.id}}.compressed_key3 = hash_unit3.get({ {{CMUG.candidate_key_set}} });
+        meta.cmu_group{{CMUG.id}}.compressed_key3 = hash_unit3.get({ {{",".join(CMUG.candidate_key_list.keys())}} });
     }
     {% endif %}
 
