@@ -39,7 +39,7 @@ Below are running steps of the codes.
 
 
 <div align="center">
-<img src="docs/roadmap.png" width=80% />
+<img src="docs/roadmap.svg" width=90% />
 </div>
 
 
