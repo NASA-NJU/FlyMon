@@ -9,7 +9,8 @@
 <p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
-  <a href="#simulation">Simulation</a> •
+  <a href="#hardware">Hardware Implementation</a> •
+  <a href="#simulation">Simulation Framework</a> •
   <a href="#license">License</a>
 </p>
 
@@ -17,13 +18,35 @@
 
 * P4-16 based hardware implementation.
 * Jinja2 templates used to generate P4 codes according to variable configurations (e.g., CMU-Groups, Memory Size, Candidate Key Set).
-* A reference control plane framework realizing task reconfiguration, resource management, data collection.
 * Several built-in algorithms used to measure various flow attributes.
+* A reference control plane framework realizing task reconfiguration, resource management, data collection.
+* A simulation framework to fast explore algorithms' accuracy.
 
 
 ## How To Use
 
+### Environment
+
 We implement FlyMon based on P4-16, with the SDE Version 9.7.0. Other versions of SDE (e.g., 9.1.1) can also pass the compilation, but we are unsure if the control plane functions correctly in these older versions.
+
+There are some dependencies for control plane functions. To install them.
+```bash
+pip install -r ./requirements.txt
+```
+
+### Get Started
+Below are running steps of the codes.
+
+![Roadmap](docs/roadmap.png)
+
+**Step 1**. Generate a customized FlyMon dataplane and build them.
+
+```bash
+python flymon_compiler.py -n 1 
+```
+
+The above command will generate two types of files. a) P4-based data plane codes located in [p4src](p4src/). b) Json-based Data plane configurations used to help initialize the control plane interfaces.
+
 
 
 ## Simulation

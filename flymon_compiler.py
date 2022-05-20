@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 import jinja2
 import json
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-n", "--num_group", dest="group_num", type=int, required=True, help="How many cmu-groups in data plane?")
+args = parser.parse_args()
 
 # ===================================================
 # P4 Path infomation.
@@ -27,7 +32,7 @@ MEM_CONFIGS = {
 # ===================================================
 # CMU_GROUPS configs.
 # ===================================================
-TOTAL_CMU_GROUP_NUM     = 9
+TOTAL_CMU_GROUP_NUM     = args.group_num
 INGRESS_CMU_GROUP_NUM   = int(TOTAL_CMU_GROUP_NUM/2)
 EGRESS_CMU_GROUP_NUM    = TOTAL_CMU_GROUP_NUM - INGRESS_CMU_GROUP_NUM
 

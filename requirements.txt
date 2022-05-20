@@ -1,2 +1,2 @@
-jinja2=2.11.3
-bitstring=3.1.9
+jinja2==2.11.3
+bitstring==3.1.9

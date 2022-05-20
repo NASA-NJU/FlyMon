@@ -57,6 +57,11 @@ class FlyMonRuntime(cmd.Cmd):
 
     # cmd 1: add port.
     def do_show_status(self, arg):
+        """
+        Show the status of a CMU-Group.
+        Args list:
+            "-g", "--cmu_group" type=int, required=True, show wich CMU-Group?
+        """
         parser = FlyMonArgumentParser()
         parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
         args = parser.parse_args(arg.split())
@@ -65,41 +70,51 @@ class FlyMonRuntime(cmd.Cmd):
         else:
             self.flymon_manager.show_status(args.group_id)
 
-    def complete_show_status(self):
+    def do_add_task(self, arg):
+        """
+        Add a task to CMU-Group.
+        Args list:
+            "-k", "--key" type=int, required=True
+            "-a", "--attribute" type=[frequency, distinct, max, existence], required=True
+            "-m", "--memory" type=int, required=True
+        Return:
+            Added task id or -1.
+        """
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
+        args = self.parser.parse_args(arg.split())
+        if self.parser.error_message:
+            print(self.parser.error_message)
+        else:
+            self.flymon_manager.show_status(args.group_id)
+
+    def do_del_task(self, arg):
+        """
+        Delete a task.
+        Args list:
+            "-t", "--task" type=int, required=True
+        Return:
+            Deleted task id or -1.
+        """
         pass
 
-    # cmd 1: add port.
     def do_add_port(self):
         pass
-    def complete_add_port(self):
-        pass
     
-    # cmd 2: add task.
-    def do_add_task(self):
-        print(self.resource_manager)
-        pass
-    def complete_add_task(self):
-        pass
 
-    # cmd 3: del task.
-    def do_del_task(self):
-        pass
-    def complete_del_task(self):
-        pass
 
-    # cmd 4: read data
+
+
     def do_read_data(self):
         pass
     def complete_read_data(self):
         pass
 
-    # cmd 5: query task.
     def do_query_task(self):
         pass
     def complete_query_task(self):
         pass
 
-    # Other cmds.
     def do_EOF(self, line):
         print("")
         return True
