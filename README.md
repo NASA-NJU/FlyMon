@@ -37,7 +37,11 @@ pip install -r ./requirements.txt
 ### Get Started
 Below are running steps of the codes.
 
-![Roadmap](docs/roadmap.png)
+
+<div align="center">
+<img src="docs/roadmap.png" width=80% />
+</div>
+
 
 **Step #1**. Generate a customized FlyMon dataplane and build them.
 
