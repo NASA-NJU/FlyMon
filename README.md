@@ -39,7 +39,7 @@ Below are running steps of the codes.
 
 ![Roadmap](docs/roadmap.png)
 
-**Step 1**. Generate a customized FlyMon dataplane and build them.
+**Step #1**. Generate a customized FlyMon dataplane and build them.
 
 ```bash
 python flymon_compiler.py -n 1 
@@ -47,6 +47,56 @@ python flymon_compiler.py -n 1
 
 The above command will generate two types of files. a) P4-based data plane codes located in [p4src](p4src/). b) Json-based Data plane configurations used to help initialize the control plane interfaces.
 
+Then, you can build the p4 codes with bf-sde. Here we give a setup script if you don't known how to compile the codes.
+
+```bash
+# If we are working are SDE 9.7.0
+./setup.sh
+```
+
+**Step #2**. Run the p4 program and login to FlyMon interactive command line.
+
+```bash
+# Load the P4 program
+$SDE/run_switchd.sh -p <FlyMon>
+
+# Login to FlyMon console
+python control_plane/main_loop.py
+
+flymon> show_status -g 1
+
+----------------------------------------------------
+    ______   __            __  ___                
+   / ____/  / /  __  __   /  |/  /  ____     ____ 
+  / /_     / /  / / / /  / /|_/ /  / __ \   / __ \
+ / __/    / /  / /_/ /  / /  / /  / /_/ /  / / / /
+/_/      /_/   \__, /  /_/  /_/   \____/  /_/ /_/ 
+              /____/                                 
+----------------------------------------------------
+    An on-the-fly network measurement system.               
+    
+flymon> show_status -g 1
+--------------------------------------------------------------------------------
+                             Status of CMU-Group 1                              
+--------------------------------------------------------------------------------
+Compressed Key 1 (32b): hdr.ipv4.src_addr(0x00000000) - hdr.ipv4.dst_addr(0x00000000) - hdr.ports.src_port(0x0000) - hdr.ports.dst_port(0x0000) - hdr.ipv4.protocol(0x00)
+Compressed Key 2 (16b): hdr.ipv4.src_addr(0x00000000) - hdr.ipv4.dst_addr(0x00000000) - hdr.ports.src_port(0x0000) - hdr.ports.dst_port(0x0000) - hdr.ipv4.protocol(0x00)
+--------------------------------------------------------------------------------
+Memory Status of CMU 1
+| 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  |
+Memory Status of CMU 2
+| 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  |
+Memory Status of CMU 3
+| 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  |
+--------------------------------------------------------------------------------
+```
+
+**Step #3**. Dynamically deploy a measurement task and view the CMU-Group status.
+
+```bash
+flymon> add_task key=hdr.ipv4.src_addr/32 attribute=frequency memory_size=65536
+task 1 added.
+```
 
 
 ## Simulation
