@@ -7,8 +7,10 @@ import json
 import cmd
 import argparse
 import sys
-import bfrt_grpc.client as client
-from task_manager import TaskManager
+# import bfrt_grpc.client as client
+# from task_manager import TaskManager
+# from resource_manager import ResourceManager
+# from data_collector import DataCollector
 
 logger = logging.getLogger('FlyMon')
 if not len(logger.handlers):
@@ -50,10 +52,17 @@ class FlyMonController(cmd.Cmd):
     """
     prompt = 'flymon> '
 
-    def __init__(self):
+    def __init__(self, config_file = 'cmu_groups.json'):
         cmd.Cmd.__init__(self)
-        self.task_manager = TaskManager()
-        self.data_collector = None
+        try:
+            cmug_configs = json.load(open(config_file, 'r'))
+            # self.task_manager = TaskManager(cmug_configs)
+            # self.resource_manager = ResourceManager(cmug_configs)
+            # self.data_collector = DataCollector(cmug_configs)
+            self.cnt = 0
+        except Exception as e:
+            print(f"{e} when loading configure file.")
+            exit(1)
 
     # cmd 1: add port.
     def do_show_status(self, arg):
@@ -65,10 +74,12 @@ class FlyMonController(cmd.Cmd):
         parser = FlyMonArgumentParser()
         parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
         args = parser.parse_args(arg.split())
+        self.cnt += 1
         if parser.error_message:
             print(parser.error_message)
-        else:
-            self.resource_manager.show_status(args.group_id)
+            return
+        # Normal Logic
+        self.resource_manager.show_status(args.group_id)
 
     def do_add_task(self, arg):
         """
@@ -88,9 +99,10 @@ class FlyMonController(cmd.Cmd):
         parser.add_argument("-n", "--mem_num", dest="mem_num", type=int, required=False, help="3")
         args = self.parser.parse_args(arg.split())
         if self.parser.error_message:
-            print(self.parser.error_message)
-        else:
-            return None
+            print(parser.error_message)
+            return
+        # Normal Logic
+        task_manager.
 
     def do_del_task(self, arg):
         """
@@ -115,6 +127,9 @@ class FlyMonController(cmd.Cmd):
     def complete_query_task(self):
         pass
 
+    def emptyline(self):
+        pass
+    
     def do_EOF(self, line):
         print("")
         return True
@@ -128,7 +143,7 @@ class FlyMonController(cmd.Cmd):
 
 if __name__ == "__main__":
     # setup()
-    FlyMonRuntime().cmdloop()
+    FlyMonController().cmdloop()
 
 # class TMUController(BfRuntimeTest):
 #     def setUp(self):

@@ -53,9 +53,9 @@ INGRESS_STDMETA_PARAM_SET = {
 }
 
 EGRESS_STDMETA_PARAM_SET  = { 
-    "pktsize" : "(bit<16>) intr_md.pkt_length",
+    "pkt_size" : "(bit<16>) intr_md.pkt_length",
     "queue_size" : "intr_md.enq_qdepth[15:0]",
-    "queue_length" : "intr_md.enq_tstamp[15:0];"
+    "timestamp" : "intr_md.enq_tstamp[15:0];"
 }
                              
 CMUG_GROUP_CONFIGS = []

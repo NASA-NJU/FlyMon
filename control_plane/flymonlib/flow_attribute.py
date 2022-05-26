@@ -1,24 +1,45 @@
-class FlowAttribute:
+from enum import Enum
+from operation import *
+from param import *
+
+class FlowAttribute(Enum):
     """
-    A base class for flow attributes
-    NOTE: This is a abstract class, used as a template for different runtime environments.
+    A enum class for flow attributes
     """
-    def __init__(self):
-        pass
+    Frequency = 1
+    SingleKeyDistinct  = 2
+    MultiKeyDistinct  = 2
+    Existence = 3
+    Max = 4 # Not every CMU-Groups support all standard metadata.
 
-
-    def install(self, runtime, task_id, resource_lists):
-        """
-        Given a runtime interfaces and resource lists, you need to install flow rules to CMU-Group(s)
-        - resource_lists: [(group_id, group_type, cmu_id)]
-        NOTE: how to resolve data address translation here?
-        Answer: We need not to resolve data address translation here. This should be implemented in resource manager.
-                Here we just modify [set params, preprocessing params, select operations]
-        """
+class Frequency:
+    def __init__(self, param_str):
+        if param_name == 'pkt_size':
+            self.param1 = PktSizeParam()
+        else:
+            try:
+                self.param1 = ConstParam(int(param_str))
+            except Exception as e:
+                print(f"{e} when set a const param for the frequency attribute.")
+                print(f"WARN: Set the param to Frequency(1).")
+                self.param1 = ConstParam(1)
         pass
+    @property
+    def type(self):
+        return FlowAttribute.Frequency
 
-    def parse(self, data, flowkey):
-        """
-        You need to implement how to read the data according to the given flow key.
-        """
-        pass
+    @property
+    def memory_num(self):
+        return 3
+    
+    @property
+    def param1(self):
+        return self.param1
+    
+    @property
+    def param2(self):
+        return ConstParam(65535)
+
+    @property
+    def operation(self):
+        return Operation.CondADD

@@ -3,19 +3,24 @@
 from enum import Enum
 from bitstring import BitArray, BitStream
 from flow_key import FlowKey
+from flow_attr import FlowAttribute
+
+
+def parse_key(key_str):
+    return None
+
+def parse_attribute(attribute_str):
+    return None
 
 class FlyMonTask:
     """ 
     Task instance in FlyMon 
-    NOTE: Currently, we use a stupid param 'mem_num', which should not seen to users.
-    TODO: make the mem_num (number of CMUs) transparent to users.
     """
-    def __init__(self, task_id, flow_key, flow_attr, mem_size, mem_num=1):
+    def __init__(self, task_id, flow_key, flow_attr, mem_size):
         self.id = task_id
-        self.key = flow_key
-        self.attribute = flow_attr
+        self.key = parse_key(flow_key)
+        self.attribute = parse_attribute(flow_attr)
         self.mem_size = mem_size
-        self.mem_num = mem_num
         pass
 
     def get_id(self):
