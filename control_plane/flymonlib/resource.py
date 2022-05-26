@@ -1,45 +1,48 @@
 from enum import Enum
 
-class Resource(Enum):
+class ResourceType(Enum):
     """
-    A class to represent resource in FlyMon DataPlane.
+    A enum class to represent resource in FlyMon DataPlane.
     """
     CompressedKey = 1
     Memory = 2
     StdParam = 3 # Not every CMU-Groups support all standard metadata.
 
-class CompressedKeyResource:
+class Resource():
+    """
+    Base class for resources.
+    """
+    def __init__(self, content):
+        return self.content = const_val
+    
+    @property
+    def content(self):
+        return self.content
+
+    def __str__(self):
+        return str(self.content)
+
+class CompressedKeyResource(Resource):
     def __init__(self, flow_key):
-        self.content = flow_key
+         super(CompressedKeyResource, self).__init__(flow_key)
 
     @property
     def type(self):
         return Resource.CompressedKey
-    
-    @property
-    def content(self):
-        return self.content
 
-class MemoryResource:
+class MemoryResource(Resource):
     def __init__(self, size):
-        self.content = size
+         super(MemoryResource, self).__init__(size)
 
     @property
     def type(self):
         return Resource.Memory
-    
-    @property
-    def content(self):
-        return self.content
-    
-class ParamResource:
+
+class ParamResource(Resource):
     def __init__(self, param_name):
-        self.content = param_name
+        super(ParamResource, self).__init__(param_name)
 
     @property
     def type(self):
         return Resource.StdParam
     
-    @property
-    def content(self):
-        return self.content

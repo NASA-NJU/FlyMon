@@ -14,6 +14,8 @@ class FlowKey:
     def set_mask(self, key_name, mask):
         """
         Set a mask to one of the candidate key.
+        Input example:
+         - key_name : 
         """
         if mask[0:2] != "0x":
             print("Invalid mask without leading '0x' or invalid mask length.") 

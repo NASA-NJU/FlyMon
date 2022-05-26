@@ -43,3 +43,6 @@ class Frequency:
     @property
     def operation(self):
         return Operation.CondADD
+
+    def __str__(self):
+        return f"frequency({self.param1})"

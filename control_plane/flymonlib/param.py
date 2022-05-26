@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Param(Enum):
+class ParamType(Enum):
     """
     A class to represent params in FlyMon.
     """
@@ -10,62 +10,57 @@ class Param(Enum):
     PacketSize = 4
     QueueLen = 5
 
-class ConstParam:
-    def __init__(self, const_val):
-        self.content = const_val
-
-    @property
-    def type(self):
-        return Param.Const
+class Param:
+    def __init__(self, content):
+        return self.content = content
     
     @property
     def content(self):
         return self.content
 
-class CompressedKeyParam:
-    def __init__(self, flow_key):
-        self.content = flow_key
+    @property
+    def resource_type(self):
+        pass
+
+    def __str__(self):
+        return str(self.content)
+
+class ConstParam(Param):
+    def __init__(self, const_val):
+         super(ConstParam, self).__init__(const_val)
 
     @property
-    def type(self):
-        return Param.CompressedKey
-    
+    def resource_type(self):
+        return ParamType.Const
+
+class CompressedKeyParam:
+    def __init__(self, key_name):
+         super(CompressedKeyParam, self).__init__(key_name)
+
     @property
-    def content(self):
-        return self.StdMeta
+    def resource_type(self):
+        return ParamType.CompressedKey
 
 class TimestampParam:
     def __init__(self):
-        self.content = "timestamp"
+         super(TimestampParam, self).__init__("timestamp")
 
     @property
-    def type(self):
-        return Param.Timestamp
+    def resource_type(self):
+        return ParamType.Timestamp
     
-    @property
-    def content(self):
-        return self.content
-
 class PktSizeParam:
     def __init__(self):
-        self.content = "pkt_size"
+         super(PktSizeParam, self).__init__("pkt_size")
 
     @property
-    def type(self):
-        return Param.PacketSize
-    
-    @property
-    def content(self):
-        return self.content
+    def resource_type(self):
+        return ParamType.PacketSize
 
 class QueueLenParam:
     def __init__(self):
-        self.content = "queue_size"
+         super(QueueLenParam, self).__init__("queue_size")
 
     @property
-    def type(self):
-        return Param.QueueLen
-    
-    @property
-    def content(self):
-        return self.content
+    def resource_type(self):
+        return ParamType.QueueLen
