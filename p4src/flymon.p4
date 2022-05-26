@@ -94,8 +94,10 @@ control FlyMonIngress(
         const default_action = miss;
         size = 64;
     }
+    CMU_Group1() cmu_group1;
     apply {
         simple_fwd.apply();
+        cmu_group1.apply(hdr, ig_intr_md, ig_md);
     }
 }
 
@@ -171,9 +173,9 @@ control FlyMonEgress(
         inout egress_intrinsic_metadata_for_deparser_t eg_intr_md_for_dprsr,
         inout egress_intrinsic_metadata_for_output_port_t eg_intr_md_for_oport) {
 
-    CMU_Group1() cmu_group1;
+    CMU_Group2() cmu_group2;
     apply {
-        cmu_group1.apply(hdr, eg_intr_md, eg_md);
+        cmu_group2.apply(hdr, eg_intr_md, eg_md);
     }
 }
 

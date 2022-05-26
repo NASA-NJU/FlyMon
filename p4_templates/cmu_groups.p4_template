@@ -38,6 +38,7 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     }
     action hash2(){
         meta.cmu_group{{CMUG.id}}.compressed_key2 = hash_unit2.get({ {{",".join(CMUG.candidate_key_list.keys())}} });
+    }
     {%if CMUG.type == 1 %}
     action hash3(){
         meta.cmu_group{{CMUG.id}}.compressed_key3 = hash_unit3.get({ {{",".join(CMUG.candidate_key_list.keys())}} });
@@ -182,7 +183,12 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     {%endif%}
     table tbl_cmu{{id+1}}_initialization {
         key = {
+            // Here we use IP Pair as the filter.
             hdr.ipv4.src_addr : ternary;
+            hdr.ipv4.dst_addr : ternary;
+            // Other fields can be added here.
+            // We only use the filter in the initialization stage, and select a task id.
+            // We use task_id to identify tasks to save TCAM resources in the initialization stage.
         }
         actions = {
             set_cmu{{id+1}}_hkey1_cparam;

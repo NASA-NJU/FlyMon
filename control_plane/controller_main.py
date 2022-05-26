@@ -1,15 +1,14 @@
 # -*- coding:UTF-8 -*-
 import os
 import logging
-from collections import namedtuple
-from flymon_manager import FlyMonManager
-import bfrt_grpc.client as client
 import time
 import traceback
 import json
 import cmd
 import argparse
 import sys
+import bfrt_grpc.client as client
+from task_manager import TaskManager
 
 logger = logging.getLogger('FlyMon')
 if not len(logger.handlers):
@@ -37,7 +36,7 @@ class FlyMonArgumentParser(argparse.ArgumentParser):
             pass
         return result
 
-class FlyMonRuntime(cmd.Cmd):
+class FlyMonController(cmd.Cmd):
     intro = """
 ----------------------------------------------------
     ______   __            __  ___                
@@ -53,7 +52,8 @@ class FlyMonRuntime(cmd.Cmd):
 
     def __init__(self):
         cmd.Cmd.__init__(self)
-        self.flymon_manager = FlyMonManager("./cmu_groups.json")
+        self.task_manager = TaskManager()
+        self.data_collector = None
 
     # cmd 1: add port.
     def do_show_status(self, arg):
@@ -68,25 +68,29 @@ class FlyMonRuntime(cmd.Cmd):
         if parser.error_message:
             print(parser.error_message)
         else:
-            self.flymon_manager.show_status(args.group_id)
+            self.resource_manager.show_status(args.group_id)
 
     def do_add_task(self, arg):
         """
         Add a task to CMU-Group.
         Args list:
-            "-k", "--key" type=int, required=True
-            "-a", "--attribute" type=[frequency, distinct, max, existence], required=True
-            "-m", "--memory" type=int, required=True
+            "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24
+            "-a", "--attribute" type=[frequency, distinct, max, existence], required=True,
+            "-m", "--mem_size" type=int, required=True
+            "-n", "--mem_num" type=int, required=False, default=1
         Return:
             Added task id or -1.
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
+        parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24")
+        parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
+        parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="32768")
+        parser.add_argument("-n", "--mem_num", dest="mem_num", type=int, required=False, help="3")
         args = self.parser.parse_args(arg.split())
         if self.parser.error_message:
             print(self.parser.error_message)
         else:
-            self.flymon_manager.show_status(args.group_id)
+            return None
 
     def do_del_task(self, arg):
         """
@@ -101,10 +105,6 @@ class FlyMonRuntime(cmd.Cmd):
     def do_add_port(self):
         pass
     
-
-
-
-
     def do_read_data(self):
         pass
     def complete_read_data(self):

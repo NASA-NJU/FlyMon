@@ -2,8 +2,8 @@
 from __future__ import print_function 
 import math
 from bitstring import BitArray, BitStream
-from utils.perfect_tree import PerfectBinaryTree
-from utils.task import FlowKey
+from perfect_tree import PerfectBinaryTree
+from task import FlowKey
 
 class CMU:
     """
@@ -71,6 +71,8 @@ class CMU:
             print("|{:^4}".format(node.data[1]), end = '')
         print('|')
 
+
+
 class CMU_Group():
     """Status of CMU_Group instance in control plane"""
     def __init__(self, group_id, group_type, cmu_num, memory_size, stage_start, candidate_key_list, std_params):
@@ -95,12 +97,13 @@ class CMU_Group():
 
         # Member Status.
         if group_type == 1:
-            self.compressed_keys = [(FlowKey(candidate_key_list), 16)] * 3
+            self.compressed_keys = [(FlowKey(candidate_key_list), 16, True)] * 3   # key, bitw, status.
         else:
-            self.compressed_keys = [(FlowKey(candidate_key_list), 32), (FlowKey(candidate_key_list), 16)] 
-        self.cmus = self.cmu_num * [CMU()]  # Currently we only support 32 divisions.
+            self.compressed_keys = [(FlowKey(candidate_key_list), 32, True), (FlowKey(candidate_key_list), 16, True)] 
+        self.cmus = self.cmu_num * [(CMU(), self.memory_size)]  # Currently we only support 32 divisions.
         pass
-    
+        
+
     def show_status(self):
         """
         show current status of CMU-Group.
@@ -117,6 +120,18 @@ class CMU_Group():
             cmu.show_memory()
         print('-'*LINE_LEN)
     
+    def get_compressed_keys(self):
+        """
+        Return a list of compressed keys (flowkey, bits, status).
+        """
+        return self.compressed_keys
+    
+    def get_memorys(self):
+        """
+        Return a list of rest memory size (by CMU).
+        - [ CMU1 Rest Memory, ...]
+        """
+        return [(idx+1, memory) for idx, (_, memory) in enumerate(self.cmus)]
 
     def allocate_compressed_key(self, key_list):
         """
@@ -124,8 +139,8 @@ class CMU_Group():
         e.g., [("hdr.ipv4.src_addr", "0xffffffff"), ("hdr.ipv4.dst_addr", "0xffffffff")] is a valid key (IP Pair).
         """
         try:
-            for ck in self.compressed_keys:
-                if ck.get_status() == True:
+            for ck, _, status in self.compressed_keys:
+                if status == True:
                     for key_name, key_mask in key_list:
                         re = ck.set_mask(key_name, key_mask)
                         if not re:
@@ -154,16 +169,20 @@ class CMU_Group():
             # TODO: need to implement a simple efficient mode.
             pass
         count = 0
-        for cmu in self.cmus:
+        for idx in len(self.cmus):
+            cmu = self.cmus[idx][0]
             if count < mem_num:
                 re = cmu.alloc_memory(memory_type, task_id)
                 if re is True:
                     count += 1
+                    self.cmus[idx][1] -= (mem_size/memory_type)
         if count < mem_num:
             print("No enough memory {}x{}".format(mem_num, mem_size))
             for cmu in self.cmus:
                 cmu.release_memory(task_id)
+                self.cmus[idx][1] += (mem_size/memory_type)
             return False
+        
         return True
 
     def release_memory(self, task_id):
@@ -171,5 +190,5 @@ class CMU_Group():
         Release memory for task_id.
         """
         for cmu in self.cmus:
-                cmu.release_memory(task_id)
+            cmu.release_memory(task_id)
         pass
