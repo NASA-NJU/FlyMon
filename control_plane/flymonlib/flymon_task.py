@@ -69,8 +69,9 @@ class FlyMonTask:
         memory_num = self.attribute.memory_num
         for i in range(mem_num):
             resource_list.append(MemoryResource(self.mem_size/memory_num))
-        if self.attribute.param1.
-        resource_list.append(ParamResource(self.key))
+        if self.attribute.param1.param_type == ParamType.CompressedKey:
+            resource_list.append(ParamResource(self.key))
+        elif self.attribute.param1.param_type == ParamType.CompressedKey:
         pass
     
     def querier(self, key, memories):

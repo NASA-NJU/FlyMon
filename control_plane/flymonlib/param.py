@@ -19,7 +19,7 @@ class Param:
         return self.content
 
     @property
-    def resource_type(self):
+    def param_type(self):
         pass
 
     def __str__(self):
@@ -30,7 +30,7 @@ class ConstParam(Param):
          super(ConstParam, self).__init__(const_val)
 
     @property
-    def resource_type(self):
+    def param_type(self):
         return ParamType.Const
 
 class CompressedKeyParam:
@@ -38,7 +38,7 @@ class CompressedKeyParam:
          super(CompressedKeyParam, self).__init__(key_name)
 
     @property
-    def resource_type(self):
+    def param_type(self):
         return ParamType.CompressedKey
 
 class TimestampParam:
@@ -46,7 +46,7 @@ class TimestampParam:
          super(TimestampParam, self).__init__("timestamp")
 
     @property
-    def resource_type(self):
+    def param_type(self):
         return ParamType.Timestamp
     
 class PktSizeParam:
@@ -54,7 +54,7 @@ class PktSizeParam:
          super(PktSizeParam, self).__init__("pkt_size")
 
     @property
-    def resource_type(self):
+    def param_type(self):
         return ParamType.PacketSize
 
 class QueueLenParam:
@@ -62,5 +62,5 @@ class QueueLenParam:
          super(QueueLenParam, self).__init__("queue_size")
 
     @property
-    def resource_type(self):
+    def param_type(self):
         return ParamType.QueueLen
