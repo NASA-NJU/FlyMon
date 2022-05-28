@@ -7,10 +7,10 @@ import json
 import cmd
 import argparse
 import sys
-# import bfrt_grpc.client as client
-# from task_manager import TaskManager
-# from resource_manager import ResourceManager
-# from data_collector import DataCollector
+import bfrt_grpc.client as client
+from task_manager import TaskManager
+from resource_manager import ResourceManager
+from data_collector import DataCollector
 
 logger = logging.getLogger('FlyMon')
 if not len(logger.handlers):
@@ -56,9 +56,10 @@ class FlyMonController(cmd.Cmd):
         cmd.Cmd.__init__(self)
         try:
             cmug_configs = json.load(open(config_file, 'r'))
-            # self.task_manager = TaskManager(cmug_configs)
-            # self.resource_manager = ResourceManager(cmug_configs)
-            # self.data_collector = DataCollector(cmug_configs)
+            # Z seem no need to pass it to TaskManager
+            self.task_manager = TaskManager(cmug_configs)
+            self.resource_manager = ResourceManager(cmug_configs)
+            self.data_collector = DataCollector(cmug_configs)
             self.cnt = 0
         except Exception as e:
             print(f"{e} when loading configure file.")
@@ -96,13 +97,22 @@ class FlyMonController(cmd.Cmd):
         parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24")
         parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
         parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="32768")
-        parser.add_argument("-n", "--mem_num", dest="mem_num", type=int, required=False, help="3")
-        args = self.parser.parse_args(arg.split())
-        if self.parser.error_message:
+        args = parser.parse_args(arg.split())
+        task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
+        # 分配到哪些 (CMU_GROUP, CMU_ID)
+        locations = self.resource_manager.allocate_resources(task_instance.resource_list())
+        # 根据locations 下发规则
+        task_instance.install(locations)
+        # self.data_collector.xxxx(querier)
+        if parser.error_message:
             print(parser.error_message)
             return
         # Normal Logic
-        task_manager.
+        # task_manager.
+
+    def do_read_data(self):
+        # read data
+        pass
 
     def do_del_task(self, arg):
         """
@@ -117,8 +127,7 @@ class FlyMonController(cmd.Cmd):
     def do_add_port(self):
         pass
     
-    def do_read_data(self):
-        pass
+
     def complete_read_data(self):
         pass
 

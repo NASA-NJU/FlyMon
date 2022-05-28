@@ -25,12 +25,8 @@ class TaskManager:
         task_id = self.TASK_INC + 1
         self.TASK_INC += 1
         task_instance = FlyMonTask(task_id, key, attribute, mem_size)
-        
-        
-        self.idle_tasks[task_id] = (task, resource_list)
+        self.idle_tasks[task_id] = task_instance
         return task_instance
-
-    def analy
 
     def query_task(self, task_id, query_key):
         return 0

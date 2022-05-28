@@ -30,7 +30,7 @@ class ResourceManager():
             print("Invalid CMU-Group id: {}".format(group_id))
         self.cmu_groups[group_id-1].show_status()
     
-    def allocate_resources(self, task, mode=1):
+    def allocate_resources(self, resource_list, mode=1):
         """
         Dynamic allocate resources for a task.
         TODO: Implement Smart Allocation strategy. 
@@ -42,16 +42,17 @@ class ResourceManager():
          -  type : ['compressed_key', 'hash_param', 'std_param', 'memory']
          -  content : 
         """
-        task_id = task.get_id()
-        key = task.get_flowkey()
-        memory_size, memory_num = task.get_memory()
-        for cmug in self.cmu_groups:
-            if False == cmug.allocate_memory(task_id, memory_size, memory_num):
-                continue
-            if False == cmug.allocate_compressed_key(key.to_config_dict()):
-                cmug.release_memory(task_id)
-                continue
-            break
+        # 
+        # task_id = task.get_id()
+        # key = task.get_flowkey()
+        # memory_size, memory_num = task.get_memory()
+        # for cmug in self.cmu_groups:
+        #     if False == cmug.allocate_memory(task_id, memory_size, memory_num):
+        #         continue
+        #     if False == cmug.allocate_compressed_key(key.to_config_dict()):
+        #         cmug.release_memory(task_id)
+        #         continue
+        #     break
         pass
 
     def release_task(self, task):

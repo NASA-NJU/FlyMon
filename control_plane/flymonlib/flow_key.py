@@ -4,8 +4,10 @@ class FlowKey:
     """Flow key definition"""
     def __init__(self, candidate_key_list):
         """
-        Initially are key are not enabled.
+        Initially are key are not enabled (the mask is all-0).
         """
+        # Z it is already a dict ?
+        # Z turn entry {key, bits} to {key, (bits, mask)}
         self.key_list = dict(candidate_key_list)
         for key in self.key_list.keys():
             bits = self.key_list[key]
@@ -17,6 +19,7 @@ class FlowKey:
         Input example:
          - key_name : 
         """
+        # Z the mask should be a string who is a '0x...' repreasents the mask
         if mask[0:2] != "0x":
             print("Invalid mask without leading '0x' or invalid mask length.") 
             return False

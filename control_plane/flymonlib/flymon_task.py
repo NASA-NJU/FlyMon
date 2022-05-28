@@ -3,7 +3,8 @@
 from enum import Enum
 from bitstring import BitArray, BitStream
 from flow_key import FlowKey
-from flow_attr import FlowAttribute
+from flow_attribute import FlowAttribute
+from resource import *
 
 
 def parse_key(key_str):
@@ -12,15 +13,15 @@ def parse_key(key_str):
     # TODO: parse key.
 
 
-    flow_key = {
+    flow_key = FlowKey({
         "hdr.ipv4.src_addr" : 32,
         "hdr.ipv4.dst_addr" : 32,
         "hdr.ports.src_port": 16,
         "hdr.ports.dst_port": 16,
         "hdr.ipv4.protocol" :  8
-    }
+    })
     flow_key.set_mask("hdr.ipv4.src_addr", 32)
-    return FlowKey(flow_key)
+    return flow_key
 
 def parse_attribute(attribute_str):
     attribute = None
@@ -70,8 +71,9 @@ class FlyMonTask:
         for i in range(mem_num):
             resource_list.append(MemoryResource(self.mem_size/memory_num))
         if self.attribute.param1.param_type == ParamType.CompressedKey:
-            resource_list.append(ParamResource(self.key))
-        elif self.attribute.param1.param_type == ParamType.CompressedKey:
+            resource_list.append(ParamResource(self.attribute.param1))
+        # TODO other resources.
+        # elif self.attribute.param1.param_type == ParamType.CompressedKey:
         pass
     
     def querier(self, key, memories):
