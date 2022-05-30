@@ -42,7 +42,6 @@ class ResourceManager():
          -  type : ['compressed_key', 'hash_param', 'std_param', 'memory']
          -  content : 
         """
-        # 
         # task_id = task.get_id()
         # key = task.get_flowkey()
         # memory_size, memory_num = task.get_memory()
