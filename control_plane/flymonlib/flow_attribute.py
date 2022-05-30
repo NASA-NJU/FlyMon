@@ -1,8 +1,8 @@
 from enum import Enum
-from operation import *
-from param import *
+from flymonlib.operation import *
+from flymonlib.param import *
 
-class FlowAttribute(Enum):
+class AttributeType(Enum):
     """
     A enum class for flow attributes
     """
@@ -10,7 +10,12 @@ class FlowAttribute(Enum):
     SingleKeyDistinct  = 2
     MultiKeyDistinct  = 2
     Existence = 3
-    Max = 4 # Not every CMU-Groups support all standard metadata.
+    Max = 4 
+
+
+class Attribute():
+
+    def __ 
 
 class Frequency:
     def __init__(self, param_str):

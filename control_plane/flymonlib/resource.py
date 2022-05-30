@@ -13,11 +13,15 @@ class Resource():
     Base class for resources.
     """
     def __init__(self, content):
-        return self.content = const_val
+        self._content = content
     
     @property
     def content(self):
-        return self.content
+        return self._content
+    
+    @content.setter
+    def content(self, content):
+        self._content = content
 
     def __str__(self):
         return str(self.content)

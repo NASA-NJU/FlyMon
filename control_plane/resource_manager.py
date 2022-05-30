@@ -5,8 +5,7 @@ class ResourceManager():
     """
     ResourceManager manage all hardware resources.
     """
-    def __init__(self, config_file):
-        cmug_configs = json.load(open(config_file, 'r'))
+    def __init__(self, cmug_configs):
         self.cmu_groups = []
         for cmug in cmug_configs:
             cmu_num = cmug["cmu_num"]

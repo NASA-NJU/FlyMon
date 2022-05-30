@@ -4,7 +4,7 @@ from resource_manager import ResourceManager
 from data_collector import DataCollector
 
 class TaskManager:
-    def __init__(self):
+    def __init__(self, cmug_configs):
         self.active_tasks={
             # tasi_id : (task_instance, [resource_list], data_querier)
         }
@@ -16,11 +16,13 @@ class TaskManager:
     def register_task(self, key, attribute, mem_size):
         """
         Input Example:
-         - flow_key: SrcIP/<mask:int>, DstIP/<mask:int>
-         - flow_attr: Frequency(1)
+         - flow_key: hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32
+         - flow_attr: frequency(1)
          - memory_size: 65536
         Return:
          - A task object with resource lists and data querier.
+        Exceptrion:
+         - may rase some exception.
         """
         task_id = self.TASK_INC + 1
         self.TASK_INC += 1

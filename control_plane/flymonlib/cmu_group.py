@@ -2,8 +2,8 @@
 from __future__ import print_function 
 import math
 from bitstring import BitArray, BitStream
-from perfect_tree import PerfectBinaryTree
-from task import FlowKey
+from flymonlib.utils import PerfectBinaryTree
+from flymonlib.flow_key import FlowKey
 
 class CMU:
     """

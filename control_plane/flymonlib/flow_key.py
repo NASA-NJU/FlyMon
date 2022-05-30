@@ -11,23 +11,21 @@ class FlowKey:
         self.key_list = dict(candidate_key_list)
         for key in self.key_list.keys():
             bits = self.key_list[key]
-            self.key_list[key] = (bits, BitArray(int=0, length=bits))
+            self.key_list[key] = (bits, 0) # original bits and prefix_mask
     
-    def set_mask(self, key_name, mask):
+    def set_mask(self, key_name, key_mask):
         """
         Set a mask to one of the candidate key.
         Input example:
-         - key_name : 
+         - key_name : e.g., hdr.ipv4.src_addr
+         - key_mask : an integer.
+        TODO: current we only support prefix-style masks.
         """
-        # Z the mask should be a string who is a '0x...' repreasents the mask
-        if mask[0:2] != "0x":
-            print("Invalid mask without leading '0x' or invalid mask length.") 
-            return False
         origin_bits, _ = self.key_list[key_name]
-        if len(mask[2:]) != origin_bits/4:
-            print("Expected length: {}, given: {}.".format(origin_bits), len(mask[2:])*4)
+        if key_mask < 0 or key_mask > origin_bits:
+            print("Invalid mask length.") 
             return False
-        self.key_list[key_name] = (origin_bits, BitArray(mask))
+        self.key_list[key_name] = (origin_bits, key_mask)
         return True
 
     def reset(self):
@@ -36,13 +34,13 @@ class FlowKey:
         """
         for key in self.key_list.keys():
             bits,_ = self.key_list[key]
-            self.key_list[key] = (bits, BitArray(int=0, length=bits))
+            self.key_list[key] = (bits, 0)
 
     def to_string(self):
         """
         Formally return a string of the key. Only the enabled key are listed,
         """
-        key_string = " - ".join(["{}({})".format(key, self.key_list[key][1]) for key in self.key_list])
+        key_string = " - ".join(["{}/{}".format(key, self.key_list[key][1]) for key in self.key_list.keys() if self.key_list[key][1] != 0])
         return key_string
 
     def to_config_dict(self):

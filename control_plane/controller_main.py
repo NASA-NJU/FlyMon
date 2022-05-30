@@ -7,7 +7,7 @@ import json
 import cmd
 import argparse
 import sys
-import bfrt_grpc.client as client
+# import bfrt_grpc.client as client
 from task_manager import TaskManager
 from resource_manager import ResourceManager
 from data_collector import DataCollector
@@ -60,7 +60,6 @@ class FlyMonController(cmd.Cmd):
             self.task_manager = TaskManager(cmug_configs)
             self.resource_manager = ResourceManager(cmug_configs)
             self.data_collector = DataCollector(cmug_configs)
-            self.cnt = 0
         except Exception as e:
             print(f"{e} when loading configure file.")
             exit(1)
@@ -75,8 +74,7 @@ class FlyMonController(cmd.Cmd):
         parser = FlyMonArgumentParser()
         parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
         args = parser.parse_args(arg.split())
-        self.cnt += 1
-        if parser.error_message:
+        if parser.error_message or args is None:
             print(parser.error_message)
             return
         # Normal Logic
@@ -94,21 +92,22 @@ class FlyMonController(cmd.Cmd):
             Added task id or -1.
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24")
+        parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32")
         parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
-        parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="32768")
+        parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="e.g., 32768")
         args = parser.parse_args(arg.split())
-        task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
-        # 分配到哪些 (CMU_GROUP, CMU_ID)
-        locations = self.resource_manager.allocate_resources(task_instance.resource_list())
-        # 根据locations 下发规则
-        task_instance.install(locations)
-        # self.data_collector.xxxx(querier)
-        if parser.error_message:
+        if parser.error_message or args is None:
             print(parser.error_message)
             return
-        # Normal Logic
-        # task_manager.
+        try:
+            task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
+            # 分配到哪些 (CMU_GROUP, CMU_ID)
+            locations = self.resource_manager.allocate_resources(task_instance.resource_list())
+            # 根据locations 下发规则
+            task_instance.install(locations)
+        except RuntimeError as e:
+            print(e)
+            return
 
     def do_read_data(self):
         # read data
@@ -151,7 +150,6 @@ class FlyMonController(cmd.Cmd):
         self.last_output = output
 
 if __name__ == "__main__":
-    # setup()
     FlyMonController().cmdloop()
 
 # class TMUController(BfRuntimeTest):

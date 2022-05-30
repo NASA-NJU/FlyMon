@@ -12,7 +12,7 @@ class ParamType(Enum):
 
 class Param:
     def __init__(self, content):
-        return self.content = content
+        self.content = content
     
     @property
     def content(self):
