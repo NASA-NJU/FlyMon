@@ -169,7 +169,7 @@ class CMU_Group():
             # TODO: need to implement a simple efficient mode.
             pass
         count = 0
-        for idx in len(self.cmus):
+        for idx in range(len(self.cmus)):
             cmu = self.cmus[idx][0]
             if count < mem_num:
                 re = cmu.alloc_memory(memory_type, task_id)
