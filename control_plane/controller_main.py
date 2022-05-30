@@ -101,10 +101,8 @@ class FlyMonController(cmd.Cmd):
             return
         try:
             task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
-            # 分配到哪些 (CMU_GROUP, CMU_ID)
             locations = self.resource_manager.allocate_resources(task_instance.resource_list())
-            # 根据locations 下发规则
-            task_instance.install(locations)
+            # task_instance.install(locations)
         except RuntimeError as e:
             print(e)
             return

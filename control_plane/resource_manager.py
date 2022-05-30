@@ -1,3 +1,4 @@
+from flymonlib.resource import ResourceType
 from flymonlib.cmu_group import CMU_Group
 import json
 
@@ -37,20 +38,24 @@ class ResourceManager():
          - If the compressed keys already exists in a CMU-Group, we need to allocate the task to the CMU-Group.
          - If the required compressed key can be generated from XOR from existing keys, we should also reuse the hash results.
         return:
-        [resource_list], each resource includes:
-         -  type : ['compressed_key', 'hash_param', 'std_param', 'memory']
-         -  content : 
+         - [locations] : a list of (group_type, group_id, cmu_id)
         """
+        if resource_list is None:
+            return None
+        for cmug in self.cmu_groups:
+            for resource in resource_list:
+                if resource.type == ResourceType.CompressedKey:
+                    cmug.all
+                elif resource.type == ResourceType.Memory:
+                    print("Need a Memory")
+                elif resource.type == ResourceType.StdParam:
+                    print("Need a StdParam")
+            break
+
         # task_id = task.get_id()
         # key = task.get_flowkey()
         # memory_size, memory_num = task.get_memory()
-        # for cmug in self.cmu_groups:
-        #     if False == cmug.allocate_memory(task_id, memory_size, memory_num):
-        #         continue
-        #     if False == cmug.allocate_compressed_key(key.to_config_dict()):
-        #         cmug.release_memory(task_id)
-        #         continue
-        #     break
+
         pass
 
     def release_task(self, task):

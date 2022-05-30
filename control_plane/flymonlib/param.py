@@ -12,25 +12,29 @@ class ParamType(Enum):
 
 class Param:
     def __init__(self, content):
-        self.content = content
+        self._content = content
     
     @property
     def content(self):
-        return self.content
+        return self._content
+
+    @content.setter
+    def content(self):
+        return self._content
 
     @property
-    def param_type(self):
+    def type(self):
         pass
 
     def __str__(self):
-        return str(self.content)
+        return str(self._content)
 
 class ConstParam(Param):
     def __init__(self, const_val):
          super(ConstParam, self).__init__(const_val)
 
     @property
-    def param_type(self):
+    def type(self):
         return ParamType.Const
 
 class CompressedKeyParam:
@@ -38,7 +42,7 @@ class CompressedKeyParam:
          super(CompressedKeyParam, self).__init__(key_name)
 
     @property
-    def param_type(self):
+    def type(self):
         return ParamType.CompressedKey
 
 class TimestampParam:
@@ -46,7 +50,7 @@ class TimestampParam:
          super(TimestampParam, self).__init__("timestamp")
 
     @property
-    def param_type(self):
+    def type(self):
         return ParamType.Timestamp
     
 class PktSizeParam:
@@ -54,7 +58,7 @@ class PktSizeParam:
          super(PktSizeParam, self).__init__("pkt_size")
 
     @property
-    def param_type(self):
+    def type(self):
         return ParamType.PacketSize
 
 class QueueLenParam:
@@ -62,5 +66,5 @@ class QueueLenParam:
          super(QueueLenParam, self).__init__("queue_size")
 
     @property
-    def param_type(self):
+    def type(self):
         return ParamType.QueueLen

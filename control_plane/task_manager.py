@@ -21,7 +21,7 @@ class TaskManager:
          - memory_size: 65536
         Return:
          - A task object with resource lists and data querier.
-        Exceptrion:
+        Exception:
          - may rase some exception.
         """
         task_id = self.TASK_INC + 1

@@ -36,7 +36,7 @@ class FlowKey:
             bits,_ = self.key_list[key]
             self.key_list[key] = (bits, 0)
 
-    def to_string(self):
+    def __str__(self):
         """
         Formally return a string of the key. Only the enabled key are listed,
         """

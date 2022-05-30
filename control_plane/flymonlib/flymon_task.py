@@ -1,8 +1,7 @@
 # -*- coding:UTF-8 -*-
 
-from enum import Enum
 from flymonlib.flow_key import FlowKey
-from flymonlib.flow_attribute import FlowAttribute
+from flymonlib.flow_attribute import *
 from flymonlib.resource import *
 from flymonlib.utils import match_format_string
 
@@ -36,8 +35,11 @@ def parse_attribute(attribute_str):
     try:
         re = match_format_string("{attr_name}({param})", attribute_str)
     except Exception as e:
-        raise RuntimeError(f"Invalid attribute {attribute_str}")
-    return FlowAttribute 
+        raise RuntimeError(f"Invalid attribute format {attribute_str}")
+    if re['attr_name'] == 'frequency':
+        return Frequency(re['param'])
+    else:
+        raise RuntimeError(f"Invalid attribute name {re['attr_name']}")
 
 
 class FlyMonTask:
@@ -86,25 +88,53 @@ class FlyMonTask:
         self._attribute = attr
         
     @property
-    def memory(self):
+    def mem_size(self):
         return self._mem_size
     
-    @memory.setter
-    def memory(self, mem):
+    @mem_size.setter
+    def mem_size(self, mem):
         self._mem_size = mem
     
+    @property
+    def mem_num(self):
+        return self._attribute.memory_num
+    
+    def __str__(self) -> str:
+        return f"ID={self._id}, Key={str(self._key)}, Attribute={str(self._attribute)}, Memory={self.mem_num}*{int(self.mem_size/self.mem_num)}"
+        
     def resource_list(self):
         resource_list = []
         resource_list.append(CompressedKeyResource(self.key))
-        memory_num = self.attribute.memory_num
-        for i in range(memory_num):
+        memory_num = self.mem_num
+        for _ in range(memory_num):
             resource_list.append(MemoryResource(self.mem_size/memory_num))
-        if self.attribute.param1.param_type == ParamType.CompressedKey:
-            resource_list.append(ParamResource(self.attribute.param1))
-        # TODO other resources.
-        # elif self.attribute.param1.param_type == ParamType.CompressedKey:
-        pass
+        resource_list.append(ParamResource(self.attribute.param1))
+        return resource_list
     
+class TimestampParam:
+    def __init__(self):
+         super(TimestampParam, self).__init__("timestamp")
+
+    @property
+    def param_type(self):
+        return ParamType.Timestamp
+    
+class PktSizeParam:
+    def __init__(self):
+         super(PktSizeParam, self).__init__("pkt_size")
+
+    @property
+    def param_type(self):
+        return ParamType.PacketSize
+
+class QueueLenParam:
+    def __init__(self):
+         super(QueueLenParam, self).__init__("queue_size")
+
+    @property
+    def param_type(self):
+        return ParamType.QueueLen
+
     def querier(self, key, memories):
         """
         Given a list of memory block, return a result according to underlayer algorithms.

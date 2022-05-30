@@ -18,6 +18,10 @@ class Resource():
     @property
     def content(self):
         return self._content
+
+    @property
+    def type(self):
+        pass
     
     @content.setter
     def content(self, content):
@@ -32,7 +36,7 @@ class CompressedKeyResource(Resource):
 
     @property
     def type(self):
-        return Resource.CompressedKey
+        return ResourceType.CompressedKey
 
 class MemoryResource(Resource):
     def __init__(self, size):
@@ -40,7 +44,7 @@ class MemoryResource(Resource):
 
     @property
     def type(self):
-        return Resource.Memory
+        return ResourceType.Memory
 
 class ParamResource(Resource):
     def __init__(self, param_name):
@@ -48,5 +52,5 @@ class ParamResource(Resource):
 
     @property
     def type(self):
-        return Resource.StdParam
+        return ResourceType.StdParam
     
