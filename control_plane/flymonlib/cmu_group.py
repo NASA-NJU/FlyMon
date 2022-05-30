@@ -1,9 +1,9 @@
 # -*- coding:UTF-8 -*-
 from __future__ import print_function 
 import math
-from bitstring import BitArray, BitStream
 from flymonlib.utils import PerfectBinaryTree
 from flymonlib.flow_key import FlowKey
+
 
 class CMU:
     """
@@ -34,9 +34,11 @@ class CMU:
         root = self.mem_tree.root()
         nodes = self.mem_tree.inorderTraversal(root)
         for node in nodes:
+            # Z the node's size suitable and the node is available
             if node.data[0] == type and node.data[1] == 0:
                 sub_nodes = self.mem_tree.inorderTraversal(node)
                 is_ok = True
+                # Z check if all the subnode is available
                 for snode in sub_nodes:
                     if snode.data[1] != 0:
                         is_ok = False
@@ -100,6 +102,7 @@ class CMU_Group():
             self.compressed_keys = [(FlowKey(candidate_key_list), 16, True)] * 3   # key, bitw, status.
         else:
             self.compressed_keys = [(FlowKey(candidate_key_list), 32, True), (FlowKey(candidate_key_list), 16, True)] 
+        # Z [(CMU, remaining memory size)]
         self.cmus = self.cmu_num * [(CMU(), self.memory_size)]  # Currently we only support 32 divisions.
         pass
         
