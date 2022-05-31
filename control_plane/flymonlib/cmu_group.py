@@ -5,6 +5,16 @@ from flymonlib.resource import *
 from flymonlib.utils import PerfectBinaryTree
 from flymonlib.flow_key import FlowKey
 
+class MemoryType(Enum):
+    """
+    A class to represent memory types for each CMU.
+    """
+    WHOLE       = 1      #  1
+    HALF        = 2      #  1/2
+    QUARTAR     = 3      #  1/4
+    EIGHTH      = 4      #  1/8
+    SIXTEENTH   = 5      #  1/16
+    THIRTY      = 6      #  1/32
 
 class CMU:
     """
@@ -23,10 +33,9 @@ class CMU:
     def alloc_memory(self, type, task_id):
         """
         Allocate memory for task_id with memory type.
-        Valid memory types are:
-            0 : 1/1 | 1 : 1/2 | 2 : 1/4 | 3 : 1/8 | 4 : 1/16 | 5 : 1/32
+        Valid memory types are listed in MemoryType.
         Here we only consider memory fractions. The absolute memory size should
-        be considered in flymon manager.
+             be considered in resource manager.
         The memory are tagged with the task id and should be checked 
         when call the `show_memory()'
         """
@@ -136,28 +145,37 @@ class CMU_Group():
         print('-'*LINE_LEN)
     
 
-    def get_std_params(self):
+    def check_compressed_key(self, required_key):
         """
-        Return support params.
+        Check if there are avaliable key resources.
+        Empty or Equal key are valid.
         """
-        
-    
-    def allocate_compressed_key(self, key_list):
+        for ck, _, status in self.compressed_keys:
+            if status == True:
+                return True
+            else:
+                # The key as already be allocated.
+                # Check if it is a valid key?
+                if ck == required_key:
+                    return True
+        return False
+
+    def allocate_compressed_key(self, required_key):
         """
-        The key list should be a list of (key_name, mask_string).
-        e.g., [("hdr.ipv4.src_addr", "0xffffffff"), ("hdr.ipv4.dst_addr", "0xffffffff")] is a valid key (IP Pair).
+        The required_key should be a flow_key object.
+        TODO: need to consider bit size of key (for measurement accuracy reason)
         """
-        try:
-            for ck, _, status in self.compressed_keys:
-                if status == True:
-                    for key_name, key_mask in key_list:
-                        re = ck.set_mask(key_name, key_mask)
-                        if not re:
-                            return False
-        except Exception as e:
-            print("Errors occur when allocate a compressed key {}", e)
-            return False
-        return True
+        for idx in range(len(self.compressed_keys)):
+            status = self.compressed_keys[idx][2]
+            if status == True:
+                self.compressed_keys[idx][0].set(required_key)
+                self.compressed_keys[idx][2] = False
+            else:
+                # The key as already be allocated.
+                # Check if it is a valid key?
+                if self.compressed_keys[idx][0] == required_key:
+                    return True
+        return False
 
     def allocate_memory(self, task_id, mem_size, mem_num, mode=1):
         """
@@ -191,7 +209,6 @@ class CMU_Group():
                 cmu.release_memory(task_id)
                 self.cmus[idx][1] += (mem_size/memory_type)
             return False
-        
         return True
 
     def release_memory(self, task_id):

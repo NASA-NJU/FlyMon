@@ -1,5 +1,6 @@
 from enum import Enum
 from termios import PARMRK
+from FlyMon.control_plane.flymonlib.resource import Resource, ResourceType
 from flymonlib.operation import *
 from flymonlib.param import *
 
@@ -37,13 +38,55 @@ def parse_param(param_str):
             param = Param(ParamType.Const, 1)
     return param
 
-class Frequency:
+
+class FlowAttribute():
+    """
+    This is an abstrace class!
+    Do not use it.
+    TODO: use a standard ABC defination.
+    """
     def __init__(self, param_str):
         """
         Exception:
          - No exception.
         """
         self._param1 = parse_param(param_str)
+    
+    @property
+    def type(self):
+        return None
+
+    @property
+    def memory_num(self):
+        return None
+    
+    @property
+    def param1(self):
+        return self._param1
+
+    @property
+    def operation(self):
+        return None
+
+    @property
+    def resource_list(self):
+        resource_ist = []
+        if self._param1.type == ParamType.CompressedKey:
+            resource_ist.append(Resource(ResourceType.CompressedKey, self._param1))
+        elif self._param1.type != ParamType.Const:
+            resource_ist.append(Resource(ResourceType.StdParam, self._param1))
+
+    def __str__(self):
+        return "Unknown"
+    
+
+class Frequency(FlowAttribute):
+    def __init__(self, param_str):
+        """
+        Exception:
+         - No exception.
+        """
+        super(Frequency, self).__init__(param_str)
         self._param2 = Param(ParamType.Const, 65535)
 
     @property
@@ -51,16 +94,12 @@ class Frequency:
         return AttributeType.Frequency
 
     @property
-    def memory_num(self):
-        return 3
-    
-    @property
-    def param1(self):
-        return self._param1
-    
-    @property
     def param2(self):
         return self._param2
+
+    @property
+    def memory_num(self):
+        return 3
 
     @property
     def operation(self):

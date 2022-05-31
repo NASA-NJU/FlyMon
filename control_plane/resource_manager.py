@@ -34,30 +34,47 @@ class ResourceManager():
     def allocate_resources(self, resource_list, mode=1):
         """
         Dynamic allocate resources for a task.
-        TODO: Implement Smart Allocation strategy. 
+        Input: 
+         - A list of resource object.
+        Return:
+         - [locations] : a list of (group_type, group_id, cmu_id, segment_type, segment_id)
+        --------------------------------------------------------------------------------
+        Current Strategy: 
+            a) Try to allocate them in a CMU-Group.
+            b) Iterate all CMU-Group one by one.
+                b1) Check Key Resources
+                b2) Check Param Resources.
+                c) If b1 && b2 are satisfied, inerate alls CMU in this group one by one:
+                    c1) Read a memory resource, if the CMU has enough memory, append 
+                        (group_id, group_type, cmu_id, segment_type, segment_id) to locations.
+                        then remove the memory resource.
+                d) If all the memory resources are removed: return locations.
+                e) Else, iterate the next CMU-Group.
+        --------------------------------------------------------------------------------
+        TODO: Implement a Smarter Allocation strategy. 
         For example, we need to carefully allocate compressed keys to save hash resources.
-         - If the compressed keys already exists in a CMU-Group, we need to allocate the task to the CMU-Group.
          - If the required compressed key can be generated from XOR from existing keys, we should also reuse the hash results.
-        return:
-         - [locations] : a list of (group_type, group_id, cmu_id)
+         - How to efficient allocate the memory (I mean, improved memory utilization)?
         """
         locations = []
         if resource_list is None:
             return locations
-        
+        required_key = []
+        required_param = []
+        required_memory = []
+        for resource in resource_list:
+            if resource.type == ResourceType.Memory:
+                required_memory.append(resource)
+            elif resource.type == ResourceType.CompressedKey:
+                required_key.append(resource)
+            elif resource.type == ResourceType.StdParam:
+                required_param.append(resource)
+                
         for cmug in self.cmu_groups:
-            """
-            Current Strategy: 
-                a) Try to allocate them in a CMU-Group.
-                b) 
-            """
-            # avaliable_keys = cmug.get_compressed_keys()
-            # avaliable_mems = cmug.get
-            for resource in resource_list:
-                if resource.type == ResourceType.CompressedKey:
-                    pass
-                elif resource.type == ResourceType.Memory:
-                    print("Need a Memory")
+            if cmug.allocat
+
+                resource.type == ResourceType.CompressedKey:
+
                 elif resource.type == ResourceType.StdParam:
                     print("Need a StdParam")
             break

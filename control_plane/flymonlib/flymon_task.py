@@ -107,9 +107,12 @@ class FlyMonTask:
         
     def resource_list(self):
         resource_list = []
+        # Add key resource.
         resource_list.append(Resource(ResourceType.CompressedKey, self.key))
+        # Add memory resource.
         memory_num = self.mem_num
         for _ in range(memory_num):
             resource_list.append(Resource(ResourceType.Memory, self.mem_size/memory_num))
-        resource_list.append(Resource(ResourceType.StdParam, self.attribute.param1))
+        # Add attribute resource (param)
+        resource_list.extend(self._attribute.resource_list)
         return resource_list

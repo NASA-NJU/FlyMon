@@ -28,6 +28,15 @@ class FlowKey:
         self.key_list[key_name] = (origin_bits, key_mask)
         return True
 
+
+    def set(self, another):
+        """
+        Deep copy.
+        """
+        for key in another.keys():
+            bits, prefix = another[key]
+            self.key_list[key] = (bits, prefix)
+        
     def reset(self):
         """
         Reset a compressed key.
@@ -42,6 +51,19 @@ class FlowKey:
         """
         key_string = " - ".join(["{}/{}".format(key, self.key_list[key][1]) for key in self.key_list.keys() if self.key_list[key][1] != 0])
         return key_string
+    
+    def __eq__(self, __o) -> bool:
+        try:
+            for key in self.key_list.keys():
+                _, prefix = self.key_list[key]
+                _, __o_prefix = __o.key_list[key]
+                if prefix != __o_prefix:
+                    return False
+            return True
+        except Exception as e:
+            print(f"Invalid key: {str(__o)}， caused {str(e)}, when allocate compressed key.")
+            return False
+
 
     def to_config_dict(self):
         """
