@@ -7,6 +7,9 @@ import json
 import cmd
 import argparse
 import sys
+
+import bfrt_grpc.client as gc
+
 # import bfrt_grpc.client as client
 from task_manager import TaskManager
 from resource_manager import ResourceManager
@@ -60,6 +63,7 @@ class FlyMonController(cmd.Cmd):
             self.task_manager = TaskManager(cmug_configs)
             self.resource_manager = ResourceManager(cmug_configs)
             self.data_collector = DataCollector(cmug_configs)
+            self.do_grpc_setup(0, 'flymon')
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when loading configure file.")
@@ -133,7 +137,6 @@ class FlyMonController(cmd.Cmd):
     def do_add_port(self):
         pass
     
-
     def complete_read_data(self):
         pass
 
@@ -155,6 +158,49 @@ class FlyMonController(cmd.Cmd):
         output = os.popen(line).read()
         print(output)
         self.last_output = output
+
+    def do_grpc_setup(self, client_id=0, p4_name=None, notifications=None, 
+            perform_bind=True, perform_subscribe=True):
+        '''
+        @brief Set up  connection to gRPC server and bind
+        @param client_id Client ID
+        @param p4_name Name of P4 program. If none is given,
+        then the test performs a bfrt_info_get() and binds to the first
+        P4 that comes as part of the bfrt_info_get()
+        @param notifications A Notifications object.
+        If you need to disable any notifications, then do the below as example,
+        gc.Notifications(enable_learn=False)
+        else default value is sent as below
+            enable_learn = True
+            enable_idletimeout = True
+            enable_port_status_change = True
+        @param perform_bind Set this to false if binding is not required
+        @param perform_subscribe Set this to false if client does not need to 
+        subscribe for any notifications
+        '''
+        self.bfrt_info = None
+
+        grpc_addr = 'localhost'        
+        if grpc_addr is None or grpc_addr == 'localhost':
+            grpc_addr = 'localhost:50052'
+        else:
+            grpc_addr = grpc_addr + ":50052"
+
+        self.interface = gc.ClientInterface(grpc_addr, client_id=client_id,
+                device_id=0, notifications=notifications,
+        perform_subscribe=perform_subscribe)
+
+        # If p4_name wasn't specified, then perform a bfrt_info_get and set p4_name
+        # to it
+        if not p4_name:
+            self.bfrt_info = self.interface.bfrt_info_get()
+            p4_name = self.bfrt_info.p4_name_get()
+
+        # Set forwarding pipeline config (For the time being we are just
+        # associating a client with a p4). Currently the grpc server supports
+        # only one client to be in-charge of one p4.
+        if perform_bind:
+            self.interface.bind_pipeline_config(p4_name)
 
 if __name__ == "__main__":
     FlyMonController().cmdloop()
