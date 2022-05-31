@@ -70,7 +70,7 @@ class FlyMonTask:
     def id(self, id):
         try:
             int_id = int(id)
-            self_id = int_id
+            self._id = int_id
         except Exception as e:
             raise RuntimeError("Invalid id.")
         
@@ -112,7 +112,7 @@ class FlyMonTask:
         # Add memory resource.
         memory_num = self.mem_num
         for _ in range(memory_num):
-            resource_list.append(Resource(ResourceType.Memory, self.mem_size/memory_num))
+            resource_list.append(Resource(ResourceType.Memory, int(self.mem_size/memory_num)))
         # Add attribute resource (param)
         resource_list.extend(self._attribute.resource_list)
         return resource_list

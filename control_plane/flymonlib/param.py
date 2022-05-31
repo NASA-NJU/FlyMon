@@ -33,3 +33,6 @@ class Param:
 
     def __str__(self):
         return str(self._content)
+
+    def __eq__(self, another):
+        return self._type == another._type and self._content == another._content

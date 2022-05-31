@@ -16,11 +16,13 @@ class MemoryType(Enum):
     SIXTEENTH   = 5      #  1/16
     THIRTY      = 6      #  1/32
 
+MAX_DIV = 32
+
 class CMU:
     """
     A register memory in FlyMon is mananged by a binary tree.
     """
-    def __init__(self, max_div=32):
+    def __init__(self, max_div=MAX_DIV):
         """
         max_div is the maximum memory divisions of a CMU, 32 is the default.
         """
@@ -28,7 +30,12 @@ class CMU:
         self.mem_tree = PerfectBinaryTree()
         for i in range(self.max_type + 1):
             for j in range(2**i):
-                self.mem_tree.append([i, 0]) # (type, status)
+                # (type, type_idx/mem_idx, task_id)
+                #  - type is 1,2,3,...,MIX_DIV
+                #  - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF), the mem_idx should be 1 or 2.
+                #  - task_id, who uses this memory block?
+                self.mem_tree.append([i+1, j+1, 0]) 
+               
     
     def alloc_memory(self, type, task_id):
         """
@@ -38,25 +45,26 @@ class CMU:
              be considered in resource manager.
         The memory are tagged with the task id and should be checked 
         when call the `show_memory()'
+        -------------------------------------------------------------
+        Input: Memory Type Enum, and Task ID (Type is always right). 
+        Output: Memory Idx based on the input memory type.
         """
-        if type < 0 or type > self.max_type:
-            return False
         root = self.mem_tree.root()
         nodes = self.mem_tree.inorderTraversal(root)
         for node in nodes:
             # Z the node's size suitable and the node is available
-            if node.data[0] == type and node.data[1] == 0:
+            if node.data[0] == type and node.data[2] == 0:
                 sub_nodes = self.mem_tree.inorderTraversal(node)
                 is_ok = True
                 # Z check if all the subnode is available
                 for snode in sub_nodes:
-                    if snode.data[1] != 0:
+                    if snode.data[2] != 0:
                         is_ok = False
                 if is_ok:
                     for snode in sub_nodes:
-                        snode.data[1] = task_id
-                    return True
-        return False
+                        snode.data[2] = task_id
+                    return node.data[1]
+        return 0
     
     def release_memory(self, task_id):
         """
@@ -100,30 +108,41 @@ class CMU_Group():
           - standard parameters
         """
         # Properties.
-        self.group_id = group_id
-        self.group_type = group_type
-        self.cmu_num = cmu_num
-        self.memory_size = memory_size
-        self.stage_start = stage_start
+        self._group_id = group_id
+        self._group_type = group_type
+        self._cmu_num = cmu_num
+        self._memory_size = memory_size
+        self._stage_start = stage_start
 
         ## Param Resources.
-        self.std_params = []
-        for param_name in std_params:
-            # self.std_params.append()
-            pass
+        self._std_params = []
+        for param_name in std_params.keys():
+            # param_str to Param Resources.
+            self._std_params.append(Resource(ResourceType.StdParam, param_name))
 
         ## Compressed Key Resources.
         key_template = FlowKey(candidate_key_list)
         if group_type == 1:
-            self.compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 16, True)] * 3   # key, bitw, status.
+            self._compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 16, True)] * 3   # key, bitw, status.
         else:
-            self.compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 32, True), 
+            self._compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 32, True), 
                                     (Resource(ResourceType.CompressedKey, key_template), 16, True)] 
         
         ## CMU and Memory Resources.
-        self.cmus = self.cmu_num * [(CMU(), self.memory_size)]  # Currently we only support 32 divisions.
+        self._cmus = self._cmu_num * [[CMU(), self._memory_size]]  # Currently we only support 32 divisions.
         pass
         
+    @property
+    def cmu_num(self):
+        return self._cmu_num
+    
+    @property
+    def group_id(self):
+        return self._group_id
+
+    @property
+    def group_type(self):
+        return self._group_type
 
     def show_status(self):
         """
@@ -131,90 +150,113 @@ class CMU_Group():
         """
         LINE_LEN = 60
         print('-'*LINE_LEN)
-        print("Status of CMU-Group {}".format(self.group_id).center(LINE_LEN))
+        print("Status of CMU-Group {}".format(self._group_id).center(LINE_LEN))
         print('-'*LINE_LEN)
-        for idx, ck in enumerate(self.compressed_keys):
+        for idx, ck in enumerate(self._compressed_keys):
             if str(ck[0].content) == "":
                 print("Compressed Key {} ({}b): Empty".format(idx+1, ck[1]))
             else:
                 print("Compressed Key {} ({}b): {}".format(idx+1, ck[1], str(ck[0].content)))
         print('-'*LINE_LEN)
-        for idx, (cmu, rest_mem) in enumerate(self.cmus):
+        for idx, (cmu, rest_mem) in enumerate(self._cmus):
             print("CMU-{} Rest Memory: {}".format(idx+1, rest_mem))
             # cmu.show_memory()
         print('-'*LINE_LEN)
     
+    def check_parameters(self, required_param_list):
+        """
+        Check if the params are avaliable in this CMU-Group. 
+        """
+        for required_param in required_param_list:
+            ok = False
+            for p in self._std_params:
+                if required_param == p:
+                    ok = True
+            if not ok:
+                return False
+        return True
 
-    def check_compressed_key(self, required_key):
+    def check_compressed_keys(self, required_key_list):
         """
         Check if there are avaliable key resources.
         Empty or Equal key are valid.
         """
-        for ck, _, status in self.compressed_keys:
-            if status == True:
-                return True
-            else:
-                # The key as already be allocated.
-                # Check if it is a valid key?
-                if ck == required_key:
-                    return True
-        return False
+        for required_key in required_key_list:
+            ok = False
+            for ck, _, status in self._compressed_keys:
+                if status == True:
+                    ok = True
+                else:
+                    # The key as already be allocated.
+                    # Check if it is a valid key?
+                    if ck == required_key:
+                        ok = True
+            if not ok:
+                return False
+        return True
 
-    def allocate_compressed_key(self, required_key):
+    def allocate_compressed_keys(self, required_key_list):
         """
         The required_key should be a flow_key object.
         TODO: need to consider bit size of key (for measurement accuracy reason)
         """
-        for idx in range(len(self.compressed_keys)):
-            status = self.compressed_keys[idx][2]
-            if status == True:
-                self.compressed_keys[idx][0].set(required_key)
-                self.compressed_keys[idx][2] = False
-            else:
-                # The key as already be allocated.
-                # Check if it is a valid key?
-                if self.compressed_keys[idx][0] == required_key:
-                    return True
-        return False
+        for required_key in required_key_list:
+            ok = False
+            for idx in range(len(self._compressed_keys)):
+                status = self._compressed_keys[idx][2]
+                if status == True:
+                    self._compressed_keys[idx][0].set(required_key)
+                    self._compressed_keys[idx][2] = False
+                    ok = True
+                else:
+                    # The key as already be allocated.
+                    # Check if it is a valid key?
+                    if self._compressed_keys[idx][0] == required_key:
+                        ok = True
+            if not ok:
+                return False
+        return True
 
-    def allocate_memory(self, task_id, mem_size, mem_num, mode=1):
-        """
-        Try to allocate memory for a specific task.
+    def allocate_memory(self, cmu_id, task_id, mem_size, mode=1):
+        """ Try to allocate memory for a specific task.
+        Args:
+            - cmu_id, need to larger than zero, that is, 1, 2, 3, ...
+
+        Returns : 
+        (memory_type, memory_idx) Or None (no enough memory)
+            - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF)
+            - the mem_idx should be 1 or 2.
+        ------------------------------------------------------
         If the memory list cannot be allocated all, it will return False and nothing will changed.
         mode=1 : accurate.
         mode=2 : efficient.
-        TODO: enable memory list with different size.
         """
-        if mem_size > self.memory_size:
+        if mem_size > self._memory_size:
             print("Invalid memory size : {}".format(mem_size))
             return False
-        if mem_num > self.cmu_num:
-            print("Invalid memory num : {}".format(mem_num))
-            return False
-        memory_type = int(self.memory_size / mem_size) # default is a accurate mode.
+        memory_type = int(math.log2(self._memory_size / mem_size)) + 1
+        if memory_type < 1:
+            print(f"No enough memory, allocated as the max : {self._memory_size}")
+            memory_type = 1
+        if memory_type > MAX_DIV:
+            print(f"Too small memory, allocated as the min : {int(self._memory_size/MAX_DIV)}")
+            memory_type = MAX_DIV
         if mode == 2:
             # TODO: need to implement a simple efficient mode.
             pass
-        count = 0
-        for idx in range(len(self.cmus)):
-            cmu = self.cmus[idx][0]
-            if count < mem_num:
-                re = cmu.alloc_memory(memory_type, task_id)
-                if re is True:
-                    count += 1
-                    self.cmus[idx][1] -= (mem_size/memory_type)
-        if count < mem_num:
-            print("No enough memory {}x{}".format(mem_num, mem_size))
-            for cmu in self.cmus:
-                cmu.release_memory(task_id)
-                self.cmus[idx][1] += (mem_size/memory_type)
-            return False
-        return True
+        id = cmu_id - 1
+        cmu = self._cmus[id][0]
+        memory_idx = cmu.alloc_memory(memory_type, task_id)
+        if memory_idx > 0:
+            self._cmus[id][1] = self._cmus[id][1] - int(self._memory_size/memory_type)
+            return memory_type, memory_idx
+        return None
 
-    def release_memory(self, task_id):
+    def release_memory(self, task_id, memory_type):
         """
         Release memory for task_id.
         """
-        for cmu in self.cmus:
-            cmu.release_memory(task_id)
+        for idx in range(len(self._cmus)):
+            self._cmus[idx][0].release_memory(task_id)
+            self._cmus[idx][1] += int(self._memory_size/memory_type)
         pass

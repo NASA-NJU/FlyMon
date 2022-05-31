@@ -1,6 +1,6 @@
 from enum import Enum
 from termios import PARMRK
-from FlyMon.control_plane.flymonlib.resource import Resource, ResourceType
+from flymonlib.resource import Resource, ResourceType
 from flymonlib.operation import *
 from flymonlib.param import *
 
@@ -70,11 +70,12 @@ class FlowAttribute():
 
     @property
     def resource_list(self):
-        resource_ist = []
+        resource_list = []
         if self._param1.type == ParamType.CompressedKey:
-            resource_ist.append(Resource(ResourceType.CompressedKey, self._param1))
+            resource_list.append(Resource(ResourceType.CompressedKey, self._param1))
         elif self._param1.type != ParamType.Const:
-            resource_ist.append(Resource(ResourceType.StdParam, self._param1))
+            resource_list.append(Resource(ResourceType.StdParam, self._param1))
+        return resource_list
 
     def __str__(self):
         return "Unknown"

@@ -34,4 +34,4 @@ class Resource():
         pass
 
     def __str__(self):
-        return str(self.content)
+        return f"[ResourceType: {self._type.name}, Content: {str(self.content)}]"

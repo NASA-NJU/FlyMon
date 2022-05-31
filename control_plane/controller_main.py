@@ -63,7 +63,7 @@ class FlyMonController(cmd.Cmd):
             self.task_manager = TaskManager(cmug_configs)
             self.resource_manager = ResourceManager(cmug_configs)
             self.data_collector = DataCollector(cmug_configs)
-            self.do_grpc_setup(0, 'flymon')
+            # self.grpc_setup(0, 'flymon')
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when loading configure file.")
@@ -109,7 +109,10 @@ class FlyMonController(cmd.Cmd):
             return
         try:
             task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
-            locations = self.resource_manager.allocate_resources(task_instance.resource_list())
+            for re in task_instance.resource_list():
+                print(str(re))
+            locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
+            print(locations)
             # task_instance.install(locations)
             if True:
                 print(f"[Success]")
@@ -159,7 +162,7 @@ class FlyMonController(cmd.Cmd):
         print(output)
         self.last_output = output
 
-    def do_grpc_setup(self, client_id=0, p4_name=None, notifications=None, 
+    def grpc_setup(self, client_id=0, p4_name=None, notifications=None, 
             perform_bind=True, perform_subscribe=True):
         '''
         @brief Set up  connection to gRPC server and bind
