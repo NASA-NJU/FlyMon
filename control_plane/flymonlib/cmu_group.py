@@ -67,14 +67,20 @@ class CMU:
         return 0
     
     def release_memory(self, task_id):
+        """ Release the memory of a given task_id.
+        Args:
+            task_id: measurement task_id.
+        Returns:
+            True/False: is there a memory for the task_id?
         """
-        Release the memory of a given task_id.
-        """
+        re = False
         root = self.mem_tree.root()
         nodes = self.mem_tree.inorderTraversal(root)
         for node in nodes:
             if node.data[1] == task_id:
                 node.data[1] = 0
+                re = True
+        return re
 
     def show_memory(self):
         """
@@ -257,6 +263,7 @@ class CMU_Group():
         Release memory for task_id.
         """
         for idx in range(len(self._cmus)):
-            self._cmus[idx][0].release_memory(task_id)
-            self._cmus[idx][1] += int(self._memory_size/memory_type)
+            re = self._cmus[idx][0].release_memory(task_id)
+            if re:
+                self._cmus[idx][1] += int(self._memory_size/memory_type)
         pass

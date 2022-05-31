@@ -76,9 +76,9 @@ class ResourceManager():
         for cmug in self.cmu_groups:
             if cmug.check_compressed_keys(required_keys) and cmug.check_parameters(required_params):
                 # TODO: we only support alloclate the same memory for many times.
-                for required_memory in list(required_memorys): # shallow copy
-                    for id in range(cmug.cmu_num): 
-                        cmu_id = id + 1
+                for idx, required_memory in enumerate(list(required_memorys)): # shallow copy
+                        # TODO: Here are some problems.
+                        cmu_id = idx + 1
                         re = cmug.allocate_memory(cmu_id, task_id, required_memory.content, mode=1)
                         if re is not None:
                             memory_type = re[0]
