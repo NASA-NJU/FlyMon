@@ -12,7 +12,8 @@ class Resource():
     """
     Base class for resources.
     """
-    def __init__(self, content):
+    def __init__(self, type, content):
+        self._type = type
         self._content = content
     
     @property
@@ -21,36 +22,16 @@ class Resource():
 
     @property
     def type(self):
-        pass
+        return self._type
     
     @content.setter
     def content(self, content):
         self._content = content
 
+    @type.setter
+    def type(self, type):
+        self._type = type
+        pass
+
     def __str__(self):
         return str(self.content)
-
-class CompressedKeyResource(Resource):
-    def __init__(self, flow_key):
-         super(CompressedKeyResource, self).__init__(flow_key)
-
-    @property
-    def type(self):
-        return ResourceType.CompressedKey
-
-class MemoryResource(Resource):
-    def __init__(self, size):
-         super(MemoryResource, self).__init__(size)
-
-    @property
-    def type(self):
-        return ResourceType.Memory
-
-class ParamResource(Resource):
-    def __init__(self, param_name):
-        super(ParamResource, self).__init__(param_name)
-
-    @property
-    def type(self):
-        return ResourceType.StdParam
-    

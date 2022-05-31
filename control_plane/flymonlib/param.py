@@ -11,7 +11,8 @@ class ParamType(Enum):
     QueueLen = 5
 
 class Param:
-    def __init__(self, content):
+    def __init__(self, type, content=""):
+        self._type = type
         self._content = content
     
     @property
@@ -24,47 +25,11 @@ class Param:
 
     @property
     def type(self):
-        pass
+        return self._type
+
+    @type.setter
+    def type(self, type):
+        self._type = type
 
     def __str__(self):
         return str(self._content)
-
-class ConstParam(Param):
-    def __init__(self, const_val):
-         super(ConstParam, self).__init__(const_val)
-
-    @property
-    def type(self):
-        return ParamType.Const
-
-class CompressedKeyParam:
-    def __init__(self, key_name):
-         super(CompressedKeyParam, self).__init__(key_name)
-
-    @property
-    def type(self):
-        return ParamType.CompressedKey
-
-class TimestampParam:
-    def __init__(self):
-         super(TimestampParam, self).__init__("timestamp")
-
-    @property
-    def type(self):
-        return ParamType.Timestamp
-    
-class PktSizeParam:
-    def __init__(self):
-         super(PktSizeParam, self).__init__("pkt_size")
-
-    @property
-    def type(self):
-        return ParamType.PacketSize
-
-class QueueLenParam:
-    def __init__(self):
-         super(QueueLenParam, self).__init__("queue_size")
-
-    @property
-    def type(self):
-        return ParamType.QueueLen

@@ -28,6 +28,7 @@ class ResourceManager():
     def show_status(self, group_id):
         if group_id > len(self.cmu_groups):
             print("Invalid CMU-Group id: {}".format(group_id))
+            return
         self.cmu_groups[group_id-1].show_status()
     
     def allocate_resources(self, resource_list, mode=1):
@@ -40,12 +41,21 @@ class ResourceManager():
         return:
          - [locations] : a list of (group_type, group_id, cmu_id)
         """
+        locations = []
         if resource_list is None:
-            return None
+            return locations
+        
         for cmug in self.cmu_groups:
+            """
+            Current Strategy: 
+                a) Try to allocate them in a CMU-Group.
+                b) 
+            """
+            # avaliable_keys = cmug.get_compressed_keys()
+            # avaliable_mems = cmug.get
             for resource in resource_list:
                 if resource.type == ResourceType.CompressedKey:
-                    cmug.all
+                    pass
                 elif resource.type == ResourceType.Memory:
                     print("Need a Memory")
                 elif resource.type == ResourceType.StdParam:

@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 from __future__ import print_function 
 import math
+from flymonlib.resource import *
 from flymonlib.utils import PerfectBinaryTree
 from flymonlib.flow_key import FlowKey
 
@@ -95,14 +96,22 @@ class CMU_Group():
         self.cmu_num = cmu_num
         self.memory_size = memory_size
         self.stage_start = stage_start
-        self.std_params = std_params
 
-        # Member Status.
+        ## Param Resources.
+        self.std_params = []
+        for param_name in std_params:
+            # self.std_params.append()
+            pass
+
+        ## Compressed Key Resources.
+        key_template = FlowKey(candidate_key_list)
         if group_type == 1:
-            self.compressed_keys = [(FlowKey(candidate_key_list), 16, True)] * 3   # key, bitw, status.
+            self.compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 16, True)] * 3   # key, bitw, status.
         else:
-            self.compressed_keys = [(FlowKey(candidate_key_list), 32, True), (FlowKey(candidate_key_list), 16, True)] 
-        # Z [(CMU, remaining memory size)]
+            self.compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 32, True), 
+                                    (Resource(ResourceType.CompressedKey, key_template), 16, True)] 
+        
+        ## CMU and Memory Resources.
         self.cmus = self.cmu_num * [(CMU(), self.memory_size)]  # Currently we only support 32 divisions.
         pass
         
@@ -111,31 +120,28 @@ class CMU_Group():
         """
         show current status of CMU-Group.
         """
-        LINE_LEN = 80
+        LINE_LEN = 60
         print('-'*LINE_LEN)
         print("Status of CMU-Group {}".format(self.group_id).center(LINE_LEN))
         print('-'*LINE_LEN)
         for idx, ck in enumerate(self.compressed_keys):
-            print("Compressed Key {} ({}b): {}".format(idx+1, ck[1], ck[0].to_string()))
+            if str(ck[0].content) == "":
+                print("Compressed Key {} ({}b): Empty".format(idx+1, ck[1]))
+            else:
+                print("Compressed Key {} ({}b): {}".format(idx+1, ck[1], str(ck[0].content)))
         print('-'*LINE_LEN)
-        for idx, cmu in enumerate(self.cmus):
-            print("Memory Status of CMU {}".format(idx+1))
-            cmu.show_memory()
+        for idx, (cmu, rest_mem) in enumerate(self.cmus):
+            print("CMU-{} Rest Memory: {}".format(idx+1, rest_mem))
+            # cmu.show_memory()
         print('-'*LINE_LEN)
     
-    def get_compressed_keys(self):
-        """
-        Return a list of compressed keys (flowkey, bits, status).
-        """
-        return self.compressed_keys
-    
-    def get_memorys(self):
-        """
-        Return a list of rest memory size (by CMU).
-        - [ CMU1 Rest Memory, ...]
-        """
-        return [(idx+1, memory) for idx, (_, memory) in enumerate(self.cmus)]
 
+    def get_std_params(self):
+        """
+        Return support params.
+        """
+        
+    
     def allocate_compressed_key(self, key_list):
         """
         The key list should be a list of (key_name, mask_string).

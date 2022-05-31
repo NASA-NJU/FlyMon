@@ -18,14 +18,17 @@ def parse_key(key_str):
     try:
         key_list = key_str.split(',')
         for key in key_list:
-            k,m = key.split('/')
-            if k not in key_template.keys():
-                raise RuntimeError(f"Invalid key format: {key_str}, example: hdr.ipv4.src_addr/<mask:int>, hdr.ports.src_port/<mask:int>")
-            if int(m) < 0 or int(m) > key_template[k]:
-                raise RuntimeError(f"Invalid key mask: {m}, need >=0 and <= {key_template[k]}")
-            re = flow_key.set_mask(k, int(m))
-            if re is False:
-                raise RuntimeError(f"Set mask faild for the key {k}")
+            if '/' in key:
+                k,m = key.split('/')
+                if k not in key_template.keys():
+                    raise RuntimeError(f"Invalid key format: {key_str}, example: hdr.ipv4.src_addr/<mask:int>, hdr.ports.src_port/<mask:int>")
+                if int(m) < 0 or int(m) > key_template[k]:
+                    raise RuntimeError(f"Invalid key mask: {m}, need >=0 and <= {key_template[k]}")
+                re = flow_key.set_mask(k, int(m))
+                if re is False:
+                    raise RuntimeError(f"Set mask faild for the key {k}")
+            else:
+                flow_key.set_mask(key, 32)
     except Exception as e:
         raise e
     return flow_key
@@ -100,47 +103,13 @@ class FlyMonTask:
         return self._attribute.memory_num
     
     def __str__(self) -> str:
-        return f"ID={self._id}, Key={str(self._key)}, Attribute={str(self._attribute)}, Memory={self.mem_num}*{int(self.mem_size/self.mem_num)}"
+        return f"ID = {self._id}\nKey = {str(self._key)}\nAttribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"
         
     def resource_list(self):
         resource_list = []
-        resource_list.append(CompressedKeyResource(self.key))
+        resource_list.append(Resource(ResourceType.CompressedKey, self.key))
         memory_num = self.mem_num
         for _ in range(memory_num):
-            resource_list.append(MemoryResource(self.mem_size/memory_num))
-        resource_list.append(ParamResource(self.attribute.param1))
+            resource_list.append(Resource(ResourceType.Memory, self.mem_size/memory_num))
+        resource_list.append(Resource(ResourceType.StdParam, self.attribute.param1))
         return resource_list
-    
-class TimestampParam:
-    def __init__(self):
-         super(TimestampParam, self).__init__("timestamp")
-
-    @property
-    def param_type(self):
-        return ParamType.Timestamp
-    
-class PktSizeParam:
-    def __init__(self):
-         super(PktSizeParam, self).__init__("pkt_size")
-
-    @property
-    def param_type(self):
-        return ParamType.PacketSize
-
-class QueueLenParam:
-    def __init__(self):
-         super(QueueLenParam, self).__init__("queue_size")
-
-    @property
-    def param_type(self):
-        return ParamType.QueueLen
-
-    def querier(self, key, memories):
-        """
-        Given a list of memory block, return a result according to underlayer algorithms.
-        """
-        # TODO: currently, only print all the data.
-        for buckets in memories:
-            print(buckets)
-        pass
-

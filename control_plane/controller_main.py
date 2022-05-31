@@ -61,6 +61,7 @@ class FlyMonController(cmd.Cmd):
             self.resource_manager = ResourceManager(cmug_configs)
             self.data_collector = DataCollector(cmug_configs)
         except Exception as e:
+            print(traceback.format_exc())
             print(f"{e} when loading configure file.")
             exit(1)
 
@@ -70,6 +71,8 @@ class FlyMonController(cmd.Cmd):
         Show the status of a CMU-Group.
         Args list:
             "-g", "--cmu_group" type=int, required=True, show wich CMU-Group?
+        Exception:
+            No exception here.
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
@@ -87,9 +90,10 @@ class FlyMonController(cmd.Cmd):
             "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24
             "-a", "--attribute" type=[frequency, distinct, max, existence], required=True,
             "-m", "--mem_size" type=int, required=True
-            "-n", "--mem_num" type=int, required=False, default=1
         Return:
             Added task id or -1.
+        Exception:
+            parser error of the key, the attribute, the memory.
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32")
@@ -103,7 +107,12 @@ class FlyMonController(cmd.Cmd):
             task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
             locations = self.resource_manager.allocate_resources(task_instance.resource_list())
             # task_instance.install(locations)
-        except RuntimeError as e:
+            if True:
+                print(f"[Success]")
+                print(f"------------------------")
+                print(f"{str(task_instance)} \n")
+        except Exception as e:
+            print(traceback.format_exc())
             print(e)
             return
 
