@@ -14,15 +14,15 @@ class TaskManager:
         self.TASK_INC = 0
 
     def register_task(self, key, attribute, mem_size):
-        """
-        Input Example:
-         - flow_key: hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32
-         - flow_attr: frequency(1)
-         - memory_size: 65536
-        Return:
-         - A task object with resource lists and data querier.
-        Exception:
-         - may rase some exception.
+        """ Initial an idle FlyMonTask instance.
+        Args:
+            flow_key: hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32
+            flow_attr: frequency(1)
+            memory_size: 65536
+        Returns:
+            A task object with resource lists and data querier.
+        Exceptions:
+            may rase some exception when generate a FlyMonTask object.
         """
         task_id = self.TASK_INC + 1
         self.TASK_INC += 1
@@ -31,8 +31,19 @@ class TaskManager:
         return task_instance
     
     def install_task(self, task_instance):
-        """
-        Setup a task instance.
+        """ Install rules for a task instance and make it active.
+        Args:
+            task_instace: a FlyMonTask object.
+        Returns:
+            install status? memory range?
+        Exceptrions:
+            may rasse some exceptions when install rules.
+        ------------------------------------------------------------------
+        Install Strategy:
+            For each loation:
+                1. install compressed keys if it is currently not enabled.
+                2. install initialization stage rules according to location.hkeys (should in the order of key, param1) and attribute.param2.
+                3. install preprocessing stage rules according to location.
         """
         
 

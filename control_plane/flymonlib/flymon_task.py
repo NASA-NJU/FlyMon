@@ -68,14 +68,6 @@ class FlyMonTask:
     @property
     def id(self):
         return self._id
-
-    @id.setter
-    def id(self, id):
-        try:
-            int_id = int(id)
-            self._id = int_id
-        except Exception as e:
-            raise RuntimeError("Invalid id.")
         
     @property   
     def key(self):
