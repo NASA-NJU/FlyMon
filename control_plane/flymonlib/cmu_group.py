@@ -247,7 +247,7 @@ class CMU_Group():
         """
         if mem_size > self._memory_size:
             print("Invalid memory size : {}".format(mem_size))
-            return False
+            return None
         memory_type = int(math.log2(self._memory_size / mem_size)) + 1
         if memory_type < 1:
             print(f"No enough memory, allocated as the max : {self._memory_size}")
