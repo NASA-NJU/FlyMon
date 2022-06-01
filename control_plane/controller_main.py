@@ -112,7 +112,9 @@ class FlyMonController(cmd.Cmd):
             for re in task_instance.resource_list():
                 print(str(re))
             locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
-            print(locations)
+            if locations is not None:
+                print(locations)
+                pass
             # task_instance.install(locations)
             if True:
                 print(f"[Success]")

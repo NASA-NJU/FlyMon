@@ -37,16 +37,17 @@ class ResourceManager():
          - A list of resource object.
          - task_id : used for mark the memory.
         Returns:
-         - [locations] : a list of (group_id, group_type, cmu_id, memory_type, memory_idx)
+         - [locations] : a list of (group_id, group_type, (hkey1, ...), cmu_id, memory_type, memory_idx)
          - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF)
          - the mem_idx should be 1 or 2.
+         - (hkey1, ...) denotes the hash_ids that will be used by key and param1, respectively. 
         --------------------------------------------------------------------------------
         Current Strategy: 
             a) Try to allocate them in a CMU-Group.
             b) Iterate all CMU-Group one by one.
                 b1) Check Key Resources
                 b2) Check Param Resources.
-                c) If b1 && b2 are satisfied, inerate alls CMU in this group one by one:
+                c) If b1 && b2 are satisfied, iterate alls CMU in this group one by one:
                     c1) Read a memory resource, if the CMU has enough memory, append 
                         (group_id, group_type, cmu_id, memory_type, memory_idx) to locations.
                         then remove the memory resource.
@@ -76,29 +77,39 @@ class ResourceManager():
         for cmug in self.cmu_groups:
             if cmug.check_compressed_keys(required_keys) and cmug.check_parameters(required_params):
                 # TODO: we only support alloclate the same memory for many times.
-                for idx, required_memory in enumerate(list(required_memorys)): # shallow copy
-                        # TODO: Here are some problems.
-                        cmu_id = idx + 1
-                        re = cmug.allocate_memory(cmu_id, task_id, required_memory.content, mode=1)
-                        if re is not None:
-                            memory_type = re[0]
-                            memory_idx = re[1]
-                            locations.append((cmug.group_id, cmug.group_type, cmu_id, memory_type, memory_idx))
-                            required_memorys.remove(required_memory)
+                used_cmu = []
+                for required_memory in list(required_memorys): # shallow copy
+                    if len(used_cmu) == cmug.cmu_num : 
+                        break
+                    for id in range(cmug.cmu_num):
+                        cmu_id = id + 1
+                        if cmu_id not in used_cmu:
+                            # Each task cannot use the same CMU twice.
+                            re = cmug.allocate_memory(cmu_id, task_id, required_memory.content, mode=1)
+                            if re is not None:
+                                memory_type = re[0]
+                                memory_idx = re[1]
+                                locations.append([cmug.group_id, cmug.group_type, None, cmu_id, memory_type, memory_idx])
+                                required_memorys.remove(required_memory)
+                                used_cmu.append(cmu_id)
+                                break # To allocate the next required_memory
                 if len(required_memorys) == 0:
-                    return locations
+                    break
         if len(required_memorys) != 0:
             # Allocation Failed. Need to recycle the memory.
             for location in locations:
                 group_id = location[0]
-                memory_type = location[3]
+                memory_type = location[4]
                 self.cmu_groups[group_id-1].release_memory(task_id, memory_type)
             return None
         else:
             # Finally, allocate the keys.
             for location in locations:
                 group_id = location[0]
-                self.cmu_groups[group_id-1].allocate_compressed_keys(required_keys)
+                # All memory location should allocate the compressed keys.
+                # Reusable compressed keys (with cross bits) are supported in Egress Pipeline's CMU-Group.
+                # Indirect compressed keys (by XOR from existings) are supported in Ingress Pipeline's CMU-Group.
+                location[2] = self.cmu_groups[group_id-1].allocate_compressed_keys(required_keys)
             return locations
 
     def release_task(self, task):

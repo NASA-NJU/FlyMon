@@ -33,5 +33,9 @@ class Resource():
         self._type = type
         pass
 
+    
+    def __eq__(self, another):
+        return self._type == another._type and self._content == another._content
+        
     def __str__(self):
         return f"[ResourceType: {self._type.name}, Content: {str(self.content)}]"

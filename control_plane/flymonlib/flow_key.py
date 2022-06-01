@@ -33,8 +33,8 @@ class FlowKey:
         """
         Deep copy.
         """
-        for key in another.keys():
-            bits, prefix = another[key]
+        for key in another.key_list.keys():
+            bits, prefix = another.key_list[key]
             self.key_list[key] = (bits, prefix)
         
     def reset(self):
