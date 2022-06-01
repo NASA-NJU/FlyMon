@@ -1,5 +1,6 @@
 # -*- coding:UTF-8 -*-
 
+from typing import List
 from flymonlib.flow_key import FlowKey
 from flymonlib.flow_attribute import *
 from flymonlib.resource import *
@@ -110,7 +111,7 @@ class FlyMonTask:
             self._locations.append(Location(l))
             
     @property
-    def locations(self):
+    def locations(self) -> List[Location]:
         return self._locations
     
     @locations.setter

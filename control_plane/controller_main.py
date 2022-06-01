@@ -14,6 +14,7 @@ import bfrt_grpc.client as gc
 from task_manager import TaskManager
 from resource_manager import ResourceManager
 from data_collector import DataCollector
+from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 
 logger = logging.getLogger('FlyMon')
 if not len(logger.handlers):
@@ -63,7 +64,8 @@ class FlyMonController(cmd.Cmd):
             self.task_manager = TaskManager(cmug_configs)
             self.resource_manager = ResourceManager(cmug_configs)
             self.data_collector = DataCollector(cmug_configs)
-            # self.grpc_setup(0, 'flymon')
+            self.runtime = None
+            self.grpc_setup(0, 'flymon')
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when loading configure file.")
@@ -115,6 +117,7 @@ class FlyMonController(cmd.Cmd):
             if locations is not None:
                 print(locations)
                 task_instance.locations = locations
+                runtime.install(task_instance)
             # ZTODO: the set of locations can be merged in task.install()
             # task_instance.install(locations)
             if True:
@@ -126,9 +129,30 @@ class FlyMonController(cmd.Cmd):
             print(e)
             return
 
-    def do_read_data(self):
-        # read data
-        pass
+    def do_read_data(self, arg):
+        """
+        Read the data of a task.
+        Args list:
+            "-t" "--task_id" the ID of a task, e.g., 1
+        Return:
+            The data of the input task
+        Exception:
+            Parse error?
+        """
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
+        args = parser.parse_args(arg.split())
+        if parser.error_message or args is None:
+            print(parser.error_message)
+            return
+        try:
+            task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
+            for re in task_instance.resource_list():
+                print(str(re))
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
 
     def do_del_task(self, arg):
         """
@@ -207,6 +231,10 @@ class FlyMonController(cmd.Cmd):
         # only one client to be in-charge of one p4.
         if perform_bind:
             self.interface.bind_pipeline_config(p4_name)
+        
+        target = gc.Target(device_id=0, pipe_id=0xffff)
+        bfrt_info = self.interface.bfrt_info_get()
+        self.runtime = FlyMonRuntime_BfRt(target, bfrt_info)
 
 if __name__ == "__main__":
     FlyMonController().cmdloop()

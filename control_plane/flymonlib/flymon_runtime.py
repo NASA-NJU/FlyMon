@@ -3,6 +3,7 @@
 from numpy import mat
 from flow_key import FlowKey
 import bfrt_grpc.client as client
+from work_space.FlyMon.control_plane.flymonlib.flymon_task import FlyMonTask
 
 class FlyMonRuntime_Base:
     """
@@ -34,15 +35,24 @@ class FlyMonRuntime_Base:
     def operation_stage_del(self, group_id, cmu_id, task_id):
         pass
     
-def FlyMonRuntime_BfRt(CMU_Runtime_Base):
+class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
     """
     A reference implementation of CMU Runtime based on Barefoot Runtime and Tofino.
     """
     def __init__(self, conn, context):
-        CMU_Runtime_Base.__init__(self)
+        super.__init__(self)
         self.conn = conn
         self.context = context
         pass
+    
+    def install(self, task_instance : FlyMonTask):
+        """
+        Install a task into the data plane
+        """
+        # 1. allocate the memory space
+        for l in task_instance.locations:
+            # ZTODO 
+            self.preprocessing_stage_add(l.group_id, l.group_type, l.cmu_id, task_instance.id, [], [])
 
     def compression_stage_config(self, group_id, group_type, dhash_id, flow_key):
         """
@@ -89,7 +99,7 @@ def FlyMonRuntime_BfRt(CMU_Runtime_Base):
         Reutrn:
          - Return match key list as rule handler (usded for deleting)
 
-        NOTE： Currently, I don't implement correctness checks of params. May be it can be implemented in the flymon manager.
+        NOTE: Currently, I don't implement correctness checks of params. May be it can be implemented in the flymon manager.
         """
         prefix = ""
         if group_type == 1:
@@ -145,9 +155,9 @@ def FlyMonRuntime_BfRt(CMU_Runtime_Base):
         entry_dict = {}
         for key_tuple in key_mappings.keys():
             for param_tuple in param_mappings.keys():
-                match = perprocessing_table.make_key([client.KeyTuplle(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
-                                                      client.KeyTuplle(f'meta.cmu_group{group_id}.cmu{cmu_id}.key', key_tuple[0], key_tuple[1]),
-                                                      client.KeyTuplle(f'meta.cmu_group{group_id}.cmu{cmu_id}.param1', param_tuple[0], param_tuple[1])])
+                match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
+                                                      client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.key', key_tuple[0], key_tuple[1]),
+                                                      client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param1', param_tuple[0], param_tuple[1])])
                 action = perprocessing_table.make_data([ client.DataTuple('offset', key_tuple[2]),
                                                          client.DataTuple('code', param_tuple[2]),], 
                                                         prefix + f".process_cmu{cmu_id}_key_param")
