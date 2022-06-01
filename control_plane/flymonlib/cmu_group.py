@@ -34,7 +34,7 @@ class CMU:
                 #  - type is 1,2,3,...,MIX_DIV
                 #  - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF), the mem_idx should be 1 or 2.
                 #  - task_id, who uses this memory block?
-                self.mem_tree.append([i+1, j+1, 0]) 
+                self.mem_tree.append([i+1, j, 0]) 
                
     
     def alloc_memory(self, type, task_id):
@@ -129,13 +129,13 @@ class CMU_Group():
         ## Compressed Key Resources.
         key_template = FlowKey(candidate_key_list)
         if group_type == 1:
-            self._compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 16, True)] * 3   # key, bitw, status.
+            self._compressed_keys = [[Resource(ResourceType.CompressedKey, key_template), 16, True] for _ in range(3)]  # key, bitw, status.
         else:
-            self._compressed_keys = [(Resource(ResourceType.CompressedKey, key_template), 32, True), 
-                                    (Resource(ResourceType.CompressedKey, key_template), 16, True)] 
+            self._compressed_keys = [ [Resource(ResourceType.CompressedKey, key_template), 32, True], 
+                                      [Resource(ResourceType.CompressedKey, key_template), 16, True] ] 
         
         ## CMU and Memory Resources.
-        self._cmus = self._cmu_num * [[CMU(), self._memory_size]]  # Currently we only support 32 divisions.
+        self._cmus = [[CMU(), self._memory_size] for i in range(self._cmu_num)]  # Currently we only support 32 divisions.
         pass
         
     @property
@@ -206,22 +206,30 @@ class CMU_Group():
         The required_key should be a flow_key object.
         TODO: need to consider bit size of key (for measurement accuracy reason)
         """
+        hkey_list = []
         for required_key in required_key_list:
             ok = False
             for idx in range(len(self._compressed_keys)):
                 status = self._compressed_keys[idx][2]
                 if status == True:
-                    self._compressed_keys[idx][0].set(required_key)
-                    self._compressed_keys[idx][2] = False
+                    hkey_list.append(idx+1)
                     ok = True
+                    break
                 else:
                     # The key as already be allocated.
-                    # Check if it is a valid key?
-                    if self._compressed_keys[idx][0] == required_key:
+                    if self.group_type == 2 and self._compressed_keys[idx][0] == required_key:
+                        # If the CMU-Group is located in Egress Pipeline
+                        # Then the hash bits should be reused.
                         ok = True
+                        break
+                    # TODO: support XOR in Ingress Pipeline.
             if not ok:
-                return False
-        return True
+                return None
+        for hkey_id in hkey_list:
+            idx = hkey_id - 1
+            self._compressed_keys[idx][0].content.set(required_key.content)
+            self._compressed_keys[idx][2] = False
+        return hkey_list
 
     def allocate_memory(self, cmu_id, task_id, mem_size, mode=1):
         """ Try to allocate memory for a specific task.
@@ -253,7 +261,7 @@ class CMU_Group():
         id = cmu_id - 1
         cmu = self._cmus[id][0]
         memory_idx = cmu.alloc_memory(memory_type, task_id)
-        if memory_idx > 0:
+        if memory_idx >= 0:
             self._cmus[id][1] = self._cmus[id][1] - int(self._memory_size/memory_type)
             return memory_type, memory_idx
         return None
