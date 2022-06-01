@@ -153,6 +153,9 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
             prefix = f"FlyMonEgress.cmu_group{group_id}"
         perprocessing_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_preprocessing")
         entry_dict = {}
+        # batch entries to make operations faster
+        batch_match = []
+        batch_action = []
         for key_tuple in key_mappings.keys():
             for param_tuple in param_mappings.keys():
                 match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
@@ -161,8 +164,11 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
                 action = perprocessing_table.make_data([ client.DataTuple('offset', key_tuple[2]),
                                                          client.DataTuple('code', param_tuple[2]),], 
                                                         prefix + f".process_cmu{cmu_id}_key_param")
+                # Z what's it
                 entry_dict[match] = action
-                perprocessing_table.entry_add(self.conn, [match], [action])
+                batch_match.append(match)
+                batch_action.append(action)
+        perprocessing_table.entry_add(self.conn, batch_match, batch_action)
         return entry_dict.keys() # a key list. 
 
     def preprocessing_stage_del(self, group_id, group_type, cmu_id, key_list):
@@ -214,16 +220,24 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
         else:
             prefix = f"FlyMonEgress.cmu_group{group_id}"
         register_table = self.context.table_get(prefix + f".cmu{cmu_id}_buckets")
-        buf = [0] * (end-begin)
+        # buf = [0] * (end-begin)
+        buf = []
+        # batch entries to read faster
+        batch_key = []
         for register_idx in range(begin, end):
-            resp = register_table.entry_get(
-                    self.target,
-                    [register_table.make_key([client.KeyTuple('$REGISTER_INDEX', register_idx)])],
-                    {"from_hw": True})
-            data, _ = next(resp)
+            batch_key.append(register_table.make_key([client.KeyTuple('$REGISTER_INDEX', register_idx)]))
+            
+        resp = register_table.entry_get(
+                self.target,
+                batch_key,
+                {"from_hw": True})
+        
+        
+        for data, _ in resp:
+        # data, _ = next(resp)
             data_dict = data.to_dict()
             ## first is lo, second is hi.
             # print(data_dict)
             value_lo = data_dict[prefix + f".cmu{cmu_id}_buckets.f1"][0]
-            buf[register_idx] = value_lo
+            buf.append(value_lo)
         return buf
