@@ -51,7 +51,7 @@ class FlyMonTask:
     """ 
     Task instance in FlyMon 
     """
-    def __init__(self, task_id, flow_key, flow_attr, mem_size):
+    def __init__(self, task_id, filter, flow_key, flow_attr, mem_size):
         """
         Input examples:
         flow_key: hdr.ipv4.src_addr/<mask:int>, hdr.ipv4.dst_addr/<mask:int>
@@ -59,6 +59,7 @@ class FlyMonTask:
         memory_size: 65536
         """
         self._id = task_id
+        self._filter = filter
         self._key = parse_key(flow_key)
         self.attribute = parse_attribute(flow_attr)
         self.mem_size = mem_size
@@ -68,6 +69,10 @@ class FlyMonTask:
     @property
     def id(self):
         return self._id
+
+    @property
+    def filter(self):
+        return self._filter
         
     @property   
     def key(self):

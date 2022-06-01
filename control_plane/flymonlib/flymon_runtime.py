@@ -1,9 +1,7 @@
 # -*- coding:UTF-8 -*-
 
 from numpy import mat
-from flow_key import FlowKey
-import bfrt_grpc.client as client
-from work_space.FlyMon.control_plane.flymonlib.flymon_task import FlyMonTask
+from flymonlib.flow_key import FlowKey
 
 class FlyMonRuntime_Base:
     """
@@ -44,15 +42,6 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
         self.conn = conn
         self.context = context
         pass
-    
-    def install(self, task_instance : FlyMonTask):
-        """
-        Install a task into the data plane
-        """
-        # 1. allocate the memory space
-        for l in task_instance.locations:
-            # ZTODO 
-            self.preprocessing_stage_add(l.group_id, l.group_type, l.cmu_id, task_instance.id, [], [])
 
     def compression_stage_config(self, group_id, group_type, dhash_id, flow_key):
         """

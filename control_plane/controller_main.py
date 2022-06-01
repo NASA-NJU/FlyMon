@@ -61,7 +61,7 @@ class FlyMonController(cmd.Cmd):
         try:
             cmug_configs = json.load(open(config_file, 'r'))
             self.runtime = None
-            self.grpc_setup(0, 'flymon')
+            # self.grpc_setup(0, 'flymon')
             # Z seem no need to pass it to TaskManager
             self.task_manager = TaskManager(self.runtime, cmug_configs)
             self.resource_manager = ResourceManager(self.runtime, cmug_configs)
@@ -90,18 +90,19 @@ class FlyMonController(cmd.Cmd):
         self.resource_manager.show_status(args.group_id)
 
     def do_add_task(self, arg):
-        """
-        Add a task to CMU-Group.
-        Args list:
-            "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24
+        """ Add a task to CMU-Group.
+        Args:
+            "-f", "--filter" required=True, e.g., SrcIP=10.0.0.*,DstIP=*.*.*.*
+            "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24,hdr.ipv4.dst_addr
             "-a", "--attribute" type=[frequency, distinct, max, existence], required=True,
             "-m", "--mem_size" type=int, required=True
-        Return:
+        Returns:
             Added task id or -1.
-        Exception:
+        Exceptions:
             parser error of the key, the attribute, the memory.
         """
         parser = FlyMonArgumentParser()
+        parser.add_argument("-f", "--filter", dest="filter", type=str, required=False, help="e.g., SrcIP=10.0.0.*,DstIP=*.*.*.*")
         parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32")
         parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
         parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="e.g., 32768")
@@ -117,13 +118,13 @@ class FlyMonController(cmd.Cmd):
             if locations is not None:
                 print(f"Allocated locations: {locations}")
                 task_instance.locations = locations
-                
-            # ZTODO: the set of locations can be merged in task.install()
-            # task_instance.install(locations)
-            if True:
-                print(f"[Success]")
-                print(f"------------------------")
-                print(f"{str(task_instance)} \n")
+                re = self.task_manager.install_task(task_instance)
+                if re is True:
+                    print(f"[Success]")
+                    print(f"------------------------")
+                    print(f"{str(task_instance)} \n")
+            else:
+                print(f"Failed")
         except Exception as e:
             print(traceback.format_exc())
             print(e)

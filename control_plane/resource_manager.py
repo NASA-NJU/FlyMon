@@ -75,7 +75,6 @@ class ResourceManager():
                 required_keys.append(resource)
             elif resource.type == ResourceType.StdParam:
                 required_params.append(resource)
-
         for cmug in self.cmu_groups:
             if cmug.check_compressed_keys(required_keys) and cmug.check_parameters(required_params):
                 # TODO: we only support alloclate the same memory for many times.
