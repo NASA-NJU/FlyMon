@@ -4,6 +4,7 @@ from flymonlib.flow_key import FlowKey
 from flymonlib.flow_attribute import *
 from flymonlib.resource import *
 from flymonlib.utils import match_format_string
+from flymonlib.location import Location
 
 
 def parse_key(key_str):
@@ -60,6 +61,7 @@ class FlyMonTask:
         self._key = parse_key(flow_key)
         self.attribute = parse_attribute(flow_attr)
         self.mem_size = mem_size
+        self._locations = []
         pass
     
     @property
@@ -101,6 +103,19 @@ class FlyMonTask:
     @property
     def mem_num(self):
         return self._attribute.memory_num
+    
+    def set_locations(self, locations):
+        self._locations = []
+        for l in locations:
+            self._locations.append(Location(l))
+            
+    @property
+    def locations(self):
+        return self._locations
+    
+    @locations.setter
+    def locations(self, locations):
+        self.set_locations(locations)
     
     def __str__(self) -> str:
         return f"ID = {self._id}\nKey = {str(self._key)}\nAttribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"

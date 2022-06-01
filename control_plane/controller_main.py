@@ -113,6 +113,8 @@ class FlyMonController(cmd.Cmd):
                 print(str(re))
             locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
             print(locations)
+            # ZTODO: the set of locations can be merged in task.install()
+            task_instance.locations = locations
             # task_instance.install(locations)
             if True:
                 print(f"[Success]")
@@ -165,7 +167,7 @@ class FlyMonController(cmd.Cmd):
     def grpc_setup(self, client_id=0, p4_name=None, notifications=None, 
             perform_bind=True, perform_subscribe=True):
         '''
-        @brief Set up  connection to gRPC server and bind
+        @brief Set up connection to gRPC server and bind
         @param client_id Client ID
         @param p4_name Name of P4 program. If none is given,
         then the test performs a bfrt_info_get() and binds to the first
