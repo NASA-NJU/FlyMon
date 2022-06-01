@@ -60,12 +60,12 @@ class FlyMonController(cmd.Cmd):
         cmd.Cmd.__init__(self)
         try:
             cmug_configs = json.load(open(config_file, 'r'))
-            # Z seem no need to pass it to TaskManager
-            self.task_manager = TaskManager(cmug_configs)
-            self.resource_manager = ResourceManager(cmug_configs)
-            self.data_collector = DataCollector(cmug_configs)
             self.runtime = None
             self.grpc_setup(0, 'flymon')
+            # Z seem no need to pass it to TaskManager
+            self.task_manager = TaskManager(self.runtime, cmug_configs)
+            self.resource_manager = ResourceManager(self.runtime, cmug_configs)
+            self.data_collector = DataCollector(self.runtime, cmug_configs)
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when loading configure file.")
@@ -115,9 +115,9 @@ class FlyMonController(cmd.Cmd):
                 print(str(re))
             locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
             if locations is not None:
-                print(locations)
+                print(f"Allocated locations: {locations}")
                 task_instance.locations = locations
-                runtime.install(task_instance)
+                
             # ZTODO: the set of locations can be merged in task.install()
             # task_instance.install(locations)
             if True:

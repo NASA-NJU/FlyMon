@@ -1,3 +1,4 @@
+from cProfile import run
 from flymonlib.resource import ResourceType
 from flymonlib.cmu_group import CMU_Group
 
@@ -5,7 +6,8 @@ class ResourceManager():
     """
     ResourceManager manage all hardware resources.
     """
-    def __init__(self, cmug_configs):
+    def __init__(self, runtime, cmug_configs):
+        self.runtime = runtime
         self.cmu_groups = []
         for cmug in cmug_configs:
             cmu_num = cmug["cmu_num"]

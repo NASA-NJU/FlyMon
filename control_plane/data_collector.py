@@ -1,5 +1,6 @@
 
 class DataCollector:
 
-    def __init__(self, cmug_configs):
+    def __init__(self, runtime, cmug_configs):
+        self.runtime = runtime
         pass
