@@ -15,3 +15,4 @@ The above implementation  only include one CMU-Group.
 * Please checkout to the `stackable_cmug` branch to see the cross-stacking version of FlyMon, which includes 9 CMU-Groups. 
 * Please checkout to the `strawman_solution` branch to see the strawman solution.
 
+NOTE That all IDs are start of 1, except for memory idx.

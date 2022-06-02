@@ -37,7 +37,7 @@ INGRESS_CMU_GROUP_NUM   = int(TOTAL_CMU_GROUP_NUM/2)
 EGRESS_CMU_GROUP_NUM    = TOTAL_CMU_GROUP_NUM - INGRESS_CMU_GROUP_NUM
 
 CMU_PER_GROUP   = 3
-MEMORY_PER_CMU  = MEM_CONFIGS["memory_level_6"]["size"]
+MEMORY_PER_CMU  = MEM_CONFIGS["memory_level_mini"]
 
 CANDIDATE_KEY_LIST = {
     "hdr.ipv4.src_addr" : 32,
@@ -65,7 +65,8 @@ CMUG_GROUP_CONFIGS += ([
         "type" : 1,
         "mau_start" : id,
         "cmu_num" : CMU_PER_GROUP,
-        "cmu_size" : MEMORY_PER_CMU,
+        "cmu_size" : MEMORY_PER_CMU["size"],
+        "key_bitw" : MEMORY_PER_CMU["bit_width"],
         "candidate_key_list" : CANDIDATE_KEY_LIST
     }
     for id in range(INGRESS_CMU_GROUP_NUM) 
@@ -76,7 +77,8 @@ CMUG_GROUP_CONFIGS += ([
         "type" : 2,
         "mau_start" : id + INGRESS_CMU_GROUP_NUM,
         "cmu_num" : CMU_PER_GROUP,
-        "cmu_size" : MEMORY_PER_CMU,
+        "cmu_size" : MEMORY_PER_CMU["size"],
+        "key_bitw" : MEMORY_PER_CMU["bit_width"],
         "candidate_key_list" : CANDIDATE_KEY_LIST
     }
     for id in range(EGRESS_CMU_GROUP_NUM) 

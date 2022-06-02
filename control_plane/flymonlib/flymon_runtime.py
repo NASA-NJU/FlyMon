@@ -1,40 +1,11 @@
 # -*- coding:UTF-8 -*-
 
 from numpy import mat
+from flymonlib.param import ParamType
 from flymonlib.flow_key import FlowKey
 import bfrt_grpc.client as client
 
-class FlyMonRuntime_Base:
-    """
-    A base class for configuring CMU-Group tables.
-    NOTE: This is a abstract class, used as a template for different runtime environments.
-    In particular, Barefoot Runtime is an implementation of this base class. 
-    """
-    def __init__(self):
-        pass
-
-    def compression_stage_config(self, group_id, dhash_id, hash_mask):
-        pass
-
-    def initialization_stage_add(self, group_id, cmu_id, filter, task_id, key, param1, param2):
-        pass
-
-    def initialization_stage_del(self, group_id, cmu_id, filter):
-        pass
-
-    def preprocessing_stage_add(self, group_id, cmu_id, task_id, key_match, param_match, new_key, new_param):
-        pass
-
-    def preprocessing_stage_del(self, group_id, cmu_id, task_id):
-        pass
-
-    def operation_stage_add(self, group_id, cmu_id, task_id, operation_type):
-        pass
-
-    def operation_stage_del(self, group_id, cmu_id, task_id):
-        pass
-    
-class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
+class FlyMonRuntime_BfRt():
     """
     A reference implementation of CMU Runtime based on Barefoot Runtime and Tofino.
     """
@@ -71,7 +42,7 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
             target_config_list.append(client.DataTuple(key, container_arr_val = inner_tuple))
         data = hash_configure_table.make_data(target_config_list)
         hash_configure_table.default_entry_set(self.conn, data)
-        pass
+        return True
 
     def initialization_stage_add(self, group_id, group_type, cmu_id, filter, task_id, key, param1, param2):
         """
@@ -80,7 +51,7 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
         Action fields:
             task id: used as the match fields in other fields.
             key : one of [1, 2] for group type 1. [1, 2, 12, 3] for group type 2.
-            param1 : a Param object.
+            param1 : a Param object and a potential hash unit ID (on valid for ParamType.CompressedKey)
                    for ParamType.Const
                    for ParamType.CompressedKey
                    for ParamType.Timestamp/PacketSize/QueueLen
@@ -88,7 +59,7 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
                    for std, value should in ['timestamp'], ['queue_length', 'queue_size', 'pktsize'] for group type2.
             param2 : a const value
         Reutrns:
-            Return match key list as rule handler (usded for deleting)
+            Return match key list as rule handler (usded for deleting) / None for failed.
         """
         prefix = ""
         if group_type == 1:
@@ -96,25 +67,37 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
         else:
             prefix = f"FlyMonEgress.cmu_group{group_id}"
         initialization_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_initialization")
-
-        match = initialization_table.make_key([client.KeyTuple(f'hdr.ipv4.src_addr', filter[0][0], filter[0][1]),
-                                               client.KeyTuple(f'hdr.ipv4.dst_addr', filter[1][0], filter[1][1])])
+        initialization_table.info.key_field_annotation_add("hdr.ipv4.src_addr", "ipv4") 
+        initialization_table.info.key_field_annotation_add("hdr.ipv4.dst_addr", "ipv4")
+        match = initialization_table.make_key([client.KeyTuple(f'hdr.ipv4.src_addr', "0.0.0.0", "0.0.0.0"),
+                                               client.KeyTuple(f'hdr.ipv4.dst_addr', "0.0.0.0", "0.0.0.0")])
         action = None
-        if param1[0] == 'cparam':
+        if param1[0].type == ParamType.CompressedKey:
             action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
-                                                      self.context.conn.DataTuple('param1', param1[1]),
-                                                      self.context.conn.DataTuple('param2', param2),], 
-                                                    prefix + f".set_cmu{cmu_id}_{key}_cparam")
-        elif param1[0] == 'hparam':
-            action = initialization_table.make_data([ self.context.conn.DataTuple('task_id', task_id),
-                                                      client.DataTuple('param2', param2),], 
-                                                    prefix + f".set_cmu{cmu_id}_{key}_hparam{param1[1]}")
-        else: ## std param
+                                                      client.DataTuple('param1', param1[1]),
+                                                      client.DataTuple('param2', param2.content),], 
+                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_hparam{param1[1]}")
+        elif param1[0].type == ParamType.Const:
             action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
-                                                      client.DataTuple('param2', param2),], 
-                                                    prefix + f".set_cmu{cmu_id}_{key}_{param1[1]}")
+                                                      client.DataTuple('param1', param1[0].content),
+                                                      client.DataTuple('param2', param2.content),], 
+                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_cparam")
+        elif param1[0].type == ParamType.PacketSize:
+            action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
+                                                      client.DataTuple('param2', param2.content)], 
+                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_pktsize")
+        elif param1[0].type == ParamType.Timestamp:
+            action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
+                                                      client.DataTuple('param2', param2.content)], 
+                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_timestamp")
+        elif param1[0].type == ParamType.QueueLen:
+            action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
+                                                      client.DataTuple('param2', param2.content)], 
+                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_queue_length")
+        else:
+            raise RuntimeError(f"Unkonwn ParamType of param 1.")
         initialization_table.entry_add(self.conn, [match], [action])
-        return [match] # a key list. 
+        return [match]
 
     def initialization_stage_del(self, group_id, group_type, cmu_id, key_list):
         """

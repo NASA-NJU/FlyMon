@@ -103,8 +103,12 @@ class Frequency(FlowAttribute):
         return 3
 
     @property
+    def param_mapping(self):
+        return []
+
+    @property
     def operation(self):
-        return Operation.CondADD
+        return OperationType.CondADD
 
     def __str__(self):
         return f"frequency({self.param1})"
