@@ -107,4 +107,4 @@ class TaskManager:
         return 
 
     def get_instance(self, task_id):
-        return self.tasks[task_id]
+        return self.tasks[task_id][1]
