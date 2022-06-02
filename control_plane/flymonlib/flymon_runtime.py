@@ -2,6 +2,7 @@
 
 from numpy import mat
 from flymonlib.flow_key import FlowKey
+import bfrt_grpc.client as client
 
 class FlyMonRuntime_Base:
     """
@@ -38,7 +39,7 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
     A reference implementation of CMU Runtime based on Barefoot Runtime and Tofino.
     """
     def __init__(self, conn, context):
-        super.__init__(self)
+        super(FlyMonRuntime_BfRt,self).__init__()
         self.conn = conn
         self.context = context
         pass
@@ -46,9 +47,9 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
     def compression_stage_config(self, group_id, group_type, dhash_id, flow_key):
         """
         Set hash unit mask portion of the fields.
-         - group_id: CMU-Group ID.
-         - dhash_id: hash unit ID.
-         - flow_key: FlowKey object in utils/flow_key.py
+            group_id: CMU-Group ID.
+            dhash_id: hash unit ID.
+            flow_key: FlowKey object in utils/flow_key.py
         """
         hash_configure_table = ""
         if group_type == 1:
@@ -59,8 +60,7 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
         target_config_list = []
         for key in key_configs.keys():
             inner_tuple = [] # inner tupples for a specific key container.
-            # TODO: we can shuffle keys here to generate different hash values.
-            for idx, (start_bit, bit_len) in key_configs[key]:
+            for idx, (start_bit, bit_len) in enumerate(key_configs[key]):
                 inner_tuple.append(
                     { 
                       "order": client.DataTuple("order", idx),
@@ -76,19 +76,19 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
     def initialization_stage_add(self, group_id, group_type, cmu_id, filter, task_id, key, param1, param2):
         """
         Match fields:
-         - filter: [(ipsrc, mask1), (ipdst, mask2)]
+            filter: [(ipsrc, mask1), (ipdst, mask2)]
         Action fields:
-         - task id: used as the match fields in other fields.
-         - key : one of ['hkey1', 'hkey2'] for group type 1. ['hkey1', 'hkey2', 'hkey12', 'hkey3'] for group type 2.
-         - param1 : (type, value), types are in ['cparam', 'hparam', 'std']
-                - for cparam, value should be a constant value.
-                - for hparam, value should in [1, 2] in group type1, [1, 2, 3] in group type2.
-                - for std, value should in ['timestamp'], ['queue_length', 'queue_size', 'pktsize'] for group type2.
-         - param2 : a const value
-        Reutrn:
-         - Return match key list as rule handler (usded for deleting)
-
-        NOTE: Currently, I don't implement correctness checks of params. May be it can be implemented in the flymon manager.
+            task id: used as the match fields in other fields.
+            key : one of [1, 2] for group type 1. [1, 2, 12, 3] for group type 2.
+            param1 : a Param object.
+                   for ParamType.Const
+                   for ParamType.CompressedKey
+                   for ParamType.Timestamp/PacketSize/QueueLen
+                   for hparam, value should in [1, 2] in group type1, [1, 2, 3] in group type2.
+                   for std, value should in ['timestamp'], ['queue_length', 'queue_size', 'pktsize'] for group type2.
+            param2 : a const value
+        Reutrns:
+            Return match key list as rule handler (usded for deleting)
         """
         prefix = ""
         if group_type == 1:
@@ -102,11 +102,11 @@ class FlyMonRuntime_BfRt(FlyMonRuntime_Base):
         action = None
         if param1[0] == 'cparam':
             action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
-                                                      client.conn.DataTuple('param1', param1[1]),
-                                                      client.conn.DataTuple('param2', param2),], 
+                                                      self.context.conn.DataTuple('param1', param1[1]),
+                                                      self.context.conn.DataTuple('param2', param2),], 
                                                     prefix + f".set_cmu{cmu_id}_{key}_cparam")
         elif param1[0] == 'hparam':
-            action = initialization_table.make_data([ client.conn.DataTuple('task_id', task_id),
+            action = initialization_table.make_data([ self.context.conn.DataTuple('task_id', task_id),
                                                       client.DataTuple('param2', param2),], 
                                                     prefix + f".set_cmu{cmu_id}_{key}_hparam{param1[1]}")
         else: ## std param

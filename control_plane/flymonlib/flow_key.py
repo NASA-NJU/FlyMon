@@ -72,35 +72,7 @@ class FlowKey:
         """
         config_dict = {}
         for key in self.key_list.keys():
-            size, mask = self.key_list[key]
-            mask_bitstr = mask.bin
+            _, prefix = self.key_list[key]
             config_dict[key] = [] # each key may contains multiple inner-tupples.
-            ptr = 0
-            status = 0 # finding(0), calculating(1), storing(2)
-            start_bit = 0
-            length = 0
-            while ptr != size:
-                bit = mask_bitstr[ptr]
-                if status == 0: # finding status.
-                    if bit == '0':
-                        pass
-                    else:
-                        status = 1
-                        start_bit = ptr
-                        length += 1
-                    ptr += 1
-                if status == 1: # getting a 1
-                    if bit == '0':
-                        status = 2 
-                    else:
-                        length += 1
-                        ptr += 1
-                if status == 2:
-                    config_dict[key].append((start_bit, length))
-                    length = 0
-                    status = 0
-                    ptr += 1
-            if status == 1:
-                config_dict[key].append((start_bit, length))
-        print("DEBUG hash dict: {}".format(str(config_dict)))
+            config_dict[key].append((0, prefix))
         return config_dict
