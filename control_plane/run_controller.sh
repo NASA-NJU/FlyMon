@@ -1,1 +1,9 @@
-PYTHONPATH=$HOME/bf-sde-9.7.0/install/lib/python3.8/site-packages/bf-ptf:$HOME/bf-sde-9.7.0/install/lib/python3.8/site-packages/hzhengtestutils:$HOME/bf-sde-9.7.0/install/lib/python3.8/site-packages/tofinopd:$HOME/bf-sde-9.7.0/install/lib/python3.8/site-packages/tofino:$HOME/bf-sde-9.7.0/install/lib/python3.8/site-packages:$HOME/bf-sde-9.7.0/install/lib/python3.8/site-packages/tofino/bfrt_grpc: python controller_main.py
+PYEXE=`which python`
+PYPYTH=$SDE/install/lib/python3.8/site-packages/bf-ptf
+PYPYTH=${PYPYTH}:$SDE/install/lib/python3.8/site-packages/${USER}testutils
+PYPYTH=${PYPYTH}:$SDE/install/lib/python3.8/site-packages/tofinopd
+PYPYTH=${PYPYTH}:$SDE/install/lib/python3.8/site-packages/tofino
+PYPYTH=${PYPYTH}:$SDE/install/lib/python3.8/site-packages
+PYPYTH=${PYPYTH}:$SDE/install/lib/python3.8/site-packages/tofino/bfrt_grpc
+
+sudo PYTHONPATH=${PYPYTH} $PYEXE controller_main.py

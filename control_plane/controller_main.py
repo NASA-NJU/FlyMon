@@ -61,7 +61,7 @@ class FlyMonController(cmd.Cmd):
         try:
             cmug_configs = json.load(open(config_file, 'r'))
             self.runtime = None
-            # self.grpc_setup(0, 'flymon')
+            self.grpc_setup(0, 'flymon')
             # Z seem no need to pass it to TaskManager
             self.task_manager = TaskManager(self.runtime, cmug_configs)
             self.resource_manager = ResourceManager(self.runtime, cmug_configs)
@@ -218,7 +218,7 @@ class FlyMonController(cmd.Cmd):
 
         self.interface = gc.ClientInterface(grpc_addr, client_id=client_id,
                 device_id=0, notifications=notifications,
-        perform_subscribe=perform_subscribe)
+                perform_subscribe=perform_subscribe)
 
         # If p4_name wasn't specified, then perform a bfrt_info_get and set p4_name
         # to it

@@ -27,7 +27,7 @@ class TaskManager:
         task_id = self.TASK_INC + 1
         self.TASK_INC += 1
         task_instance = FlyMonTask(task_id, None, key, attribute, mem_size)
-        self.tasks[task_id] = (False, task_instance)
+        self.tasks[task_id] = [False, task_instance]
         return task_instance
     
     def install_task(self, task_instance : FlyMonTask):
@@ -55,26 +55,26 @@ class TaskManager:
             if task_instance.attribute.param1.type == ParamType.CompressedKey:
                 self.runtime.compression_stage_config(location.group_id, location.group_type,
                                                   location.hkeys[1], task_instance.attribute.param1)
-                self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                        task_instance.filter, # Filter
-                                                        task_instance.id,
-                                                        location.hkeys[0],
-                                                        location.hkeys[1],
-                                                        task_instance.attribute.param2)
-            else:
-                self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                        task_instance.filter, # Filter
-                                                        task_instance.id,
-                                                        location.hkeys[0],
-                                                        task_instance.attribute.param1,
-                                                        task_instance.attribute.param2)
-            # Install the pre-processing stage.
-            self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                 task_instance.id, None, None) # Here I need two mappings.
-            # Install the operation stage.
-            self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                             task_instance.id, task_instance.attribute.operation)
-            pass
+            #     self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
+            #                                             task_instance.filter, # Filter
+            #                                             task_instance.id,
+            #                                             location.hkeys[0],
+            #                                             location.hkeys[1],
+            #                                             task_instance.attribute.param2)
+            # else:
+            #     self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
+            #                                             task_instance.filter, # Filter
+            #                                             task_instance.id,
+            #                                             location.hkeys[0],
+            #                                             task_instance.attribute.param1,
+            #                                             task_instance.attribute.param2)
+            # # Install the pre-processing stage.
+            # self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
+            #                                      task_instance.id, None, None) # Here I need two mappings.
+            # # Install the operation stage.
+            # self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
+            #                                  task_instance.id, task_instance.attribute.operation)
+            # pass
 
         self.tasks[task_instance.id][0] = True
     
