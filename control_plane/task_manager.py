@@ -107,3 +107,6 @@ class TaskManager:
 
     def temp_data(self):
         return 
+
+    def get_instance(self, task_id):
+        return self.tasks[task_id][1]

@@ -1,5 +1,5 @@
 # -*- coding:UTF-8 -*-
-
+import time
 from numpy import mat
 from flymonlib.param import ParamType
 from flymonlib.flow_key import FlowKey
@@ -198,11 +198,13 @@ class FlyMonRuntime_BfRt():
         batch_key = []
         for register_idx in range(begin, end):
             batch_key.append(register_table.make_key([client.KeyTuple('$REGISTER_INDEX', register_idx)]))
-            
+        
+        before_timestamp = time.time()
         resp = register_table.entry_get(
-                self.target,
+                self.conn,
                 batch_key,
                 {"from_hw": True})
+        print(f"read lantency: {time.time() - before_timestamp}")
         
         
         for data, _ in resp:
