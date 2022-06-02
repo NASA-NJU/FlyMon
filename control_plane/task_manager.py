@@ -1,4 +1,4 @@
-from FlyMon.control_plane.flymonlib.param import ParamType
+from flymonlib.param import ParamType
 from flymonlib.resource import *
 from flymonlib.flymon_task import FlyMonTask
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
@@ -105,3 +105,6 @@ class TaskManager:
 
     def temp_data(self):
         return 
+
+    def get_instance(self, task_id):
+        return self.tasks[task_id]

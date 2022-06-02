@@ -147,9 +147,8 @@ class FlyMonController(cmd.Cmd):
             print(parser.error_message)
             return
         try:
-            task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
-            for re in task_instance.resource_list():
-                print(str(re))
+            data = self.data_collector.read(self.task_manager.get_instance(args.task_id))
+            print(data)
         except Exception as e:
             print(traceback.format_exc())
             print(e)
