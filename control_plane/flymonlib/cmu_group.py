@@ -150,6 +150,8 @@ class CMU_Group():
     def group_type(self):
         return self._group_type
 
+
+
     def show_status(self):
         """
         show current status of CMU-Group.
@@ -222,6 +224,9 @@ class CMU_Group():
                         # Then the hash bits should be reused.
                         ok = True
                         break
+                    elif self.group_type == 1 and self._compressed_keys[idx][0] == required_key:
+                        ok = True
+                        break
                     # TODO: support XOR in Ingress Pipeline.
             if not ok:
                 return None
@@ -275,3 +280,11 @@ class CMU_Group():
             if re:
                 self._cmus[idx][1] += int(self._memory_size/memory_type)
         pass
+
+    def release_compressed_keys(self, hkeys):
+        """
+        Release compressed keys.
+        """
+        if hkeys is not None:
+            for hkey in hkeys:
+                self._compressed_keys[hkey - 1][2] = False

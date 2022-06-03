@@ -1,4 +1,6 @@
 from cProfile import run
+from flymonlib.location import Location
+from flymonlib.flymon_task import FlyMonTask
 from flymonlib.resource import ResourceType
 from flymonlib.cmu_group import CMU_Group
 
@@ -39,7 +41,7 @@ class ResourceManager():
          - A list of resource object.
          - task_id : used for mark the memory.
         Returns:
-         - [locations] : a list of (group_id, group_type, (hkey1, ...), cmu_id, memory_type, memory_idx)
+         - [locations] : a list of Location(group_id, group_type, (hkey1, ...), cmu_id, memory_type, memory_idx)
          - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF)
          - the mem_idx should be 1 or 2.
          - (hkey1, ...) denotes the hash_ids that will be used by key and param1, respectively. 
@@ -90,7 +92,7 @@ class ResourceManager():
                             if re is not None:
                                 memory_type = re[0]
                                 memory_idx = re[1]
-                                locations.append([cmug.group_id, cmug.group_type, None, cmu_id, memory_type, memory_idx])
+                                locations.append(Location([cmug.group_id, cmug.group_type, None, cmu_id, memory_type, memory_idx]))
                                 required_memorys.remove(required_memory)
                                 used_cmu.append(cmu_id)
                                 break # To allocate the next required_memory
@@ -99,23 +101,28 @@ class ResourceManager():
         if len(required_memorys) != 0:
             # Allocation Failed. Need to recycle the memory.
             for location in locations:
-                group_id = location[0]
-                memory_type = location[4]
+                group_id = location.group_id
+                memory_type = location.memory_type
                 self.cmu_groups[group_id-1].release_memory(task_id, memory_type)
             return None
         else:
             # Finally, allocate the keys.
             for location in locations:
-                group_id = location[0]
+                group_id = location.group_id
                 # All memory location should allocate the compressed keys.
                 # Reusable compressed keys (with cross bits) are supported in Egress Pipeline's CMU-Group.
                 # Indirect compressed keys (by XOR from existings) are supported in Ingress Pipeline's CMU-Group.
-                location[2] = self.cmu_groups[group_id-1].allocate_compressed_keys(required_keys)
+                location.hkeys = self.cmu_groups[group_id-1].allocate_compressed_keys(required_keys)
+                print(location.hkeys)
             return locations
 
-    def release_task(self, task):
+    def release_task(self, task_instance: FlyMonTask):
         """
-        Dynamic release memorys for a task.
-        TODO: Implement 
+        Dynamic release memorys and compressed keys for a task.
         """
+        for location in task_instance.locations:
+            group_id = location.group_id
+            memory_type = location.memory_type
+            self.cmu_groups[group_id-1].release_memory(task_instance.id, memory_type)
+            self.cmu_groups[group_id-1].release_compressed_keys(location.hkeys)
         pass

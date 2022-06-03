@@ -103,9 +103,7 @@ class FlyMonTask:
         return self._attribute.memory_num
     
     def set_locations(self, locations):
-        self._locations = []
-        for l in locations:
-            self._locations.append(Location(l))
+        self._locations = locations
             
     @property
     def locations(self) -> List[Location]:
@@ -116,8 +114,12 @@ class FlyMonTask:
         self.set_locations(locations)
     
     def __str__(self) -> str:
-        return f"ID = {self._id}\nKey = {str(self._key)}\nAttribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"
-        
+        info = f"ID = {self._id}\nKey = {str(self._key)} Attribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"
+        info += "\nLocations:\n"
+        for idx, loc in enumerate(self._locations):
+            info += f" - loc{idx} = " + str(loc) + "\n"
+        return info
+
     def resource_list(self):
         resource_list = []
         # Add key resource.

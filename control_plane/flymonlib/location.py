@@ -23,6 +23,10 @@ class Location:
     def hkeys(self):
         return self._hkeys
     
+    @hkeys.setter
+    def hkeys(self, hkeys):
+        self._hkeys = hkeys
+    
     @property
     def cmu_id(self):
         return self._cmu_id
@@ -34,6 +38,7 @@ class Location:
     @property
     def memory_idx(self):
         return self._memory_idx
-
-    # def __str__(self):
-    #     return str(self._content)
+    
+    def __str__(self) -> str:
+        info = f"group_id={self._group_id}, group_type={self._group_type}, hkeys={self._hkeys}, cmu_id={self._cmu_id}, memory=({self._memory_type, self._memory_idx})"
+        return info

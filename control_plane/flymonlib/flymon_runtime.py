@@ -164,13 +164,12 @@ class FlyMonRuntime_BfRt():
         else:
             prefix = f"FlyMonEgress.cmu_group{group_id}"
         perprocessing_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_preprocessing")
-        perprocessing_table.entry_del(self.conn, key_list)
+        perprocessing_table.entry_del(self.conn, list(key_list))
         pass
 
     def operation_stage_add(self, group_id, group_type, cmu_id, task_id, operation_type):
         """
          task_id: which task to match.
-         operation_type: in ['cond_add', 'max', 'and_or']
         """
         prefix = ""
         if group_type == 1:
@@ -204,7 +203,6 @@ class FlyMonRuntime_BfRt():
         """
         read memories in [begin, end)
         """
-        memory_size = end-begin
         prefix = ""
         if group_type == 1:
             prefix = f"FlyMonIngress.cmu_group{group_id}"
@@ -224,7 +222,6 @@ class FlyMonRuntime_BfRt():
                 batch_key,
                 {"from_hw": True})
         print(f"read lantency: {time.time() - before_timestamp}")
-        
         
         for data, _ in resp:
         # data, _ = next(resp)

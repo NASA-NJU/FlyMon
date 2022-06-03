@@ -116,15 +116,16 @@ class FlyMonController(cmd.Cmd):
                 print(str(re))
             locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
             if locations is not None:
-                print(f"Allocated locations: {locations}")
                 task_instance.locations = locations
-                re = self.task_manager.install_task(task_instance)
+                re = self.task_manager.install_task(task_instance.id)
                 if re is True:
-                    print(f"[Success]")
-                    print(f"------------------------")
                     print(f"{str(task_instance)} \n")
+                    print(f"[Success] Allocate TaskID: {task_instance.id}")
+                else:
+                    print(f"[Failed] when install rules for task {task_instance.id}\n")
+                    self.resource_manager.release_task(task_instance)
             else:
-                print(f"Failed")
+                print(f"[Failed] when allocating resources for task {task_instance.id}\n")
         except Exception as e:
             print(traceback.format_exc())
             print(e)
@@ -147,8 +148,15 @@ class FlyMonController(cmd.Cmd):
             print(parser.error_message)
             return
         try:
-            data = self.data_collector.read(self.task_manager.get_instance(args.task_id))
-            print(data)
+            task_instance = self.task_manager.get_instance(args.task_id)
+            if task_instance is None:
+                print(f"Invalid task id {args.task_id}")
+                return
+            data = self.data_collector.read(task_instance)
+            print(f"Read all data for task: {task_instance.id}")
+            for row in data:
+                print(row)
+            print("----------------------------------------------------")
         except Exception as e:
             print(traceback.format_exc())
             print(e)
@@ -162,7 +170,23 @@ class FlyMonController(cmd.Cmd):
         Return:
             Deleted task id or -1.
         """
-        pass
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
+        args = parser.parse_args(arg.split())
+        if parser.error_message or args is None:
+            print(parser.error_message)
+            return
+        try:
+            task_instance = self.task_manager.get_instance(args.task_id)
+            if task_instance is None:
+                print(f"Invalid task id {args.task_id}")
+                return
+            self.resource_manager.release_task(task_instance)
+            self.task_manager.uninstall_task(task_instance.id)
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
 
     def do_add_port(self):
         pass
