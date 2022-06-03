@@ -72,7 +72,7 @@ control CMU_Group1 ( in header_t hdr,
 
     action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
-            meta.cmu_group1.cmu1.key[4:0] = meta.cmu_group1.compressed_key1[4:0] ^ meta.cmu_group1.compressed_key2[4:0];
+            meta.cmu_group1.cmu1.key[4:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[4:0];
             meta.cmu_group1.cmu1.param1 =  param1;
             meta.cmu_group1.cmu1.param2 =  param2;
     }
@@ -264,7 +264,7 @@ control CMU_Group1 ( in header_t hdr,
 
     action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
-            meta.cmu_group1.cmu2.key[4:0] = meta.cmu_group1.compressed_key1[4:0] ^ meta.cmu_group1.compressed_key2[4:0];
+            meta.cmu_group1.cmu2.key[4:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[4:0];
             meta.cmu_group1.cmu2.param1 =  param1;
             meta.cmu_group1.cmu2.param2 =  param2;
     }
@@ -456,7 +456,7 @@ control CMU_Group1 ( in header_t hdr,
 
     action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
-            meta.cmu_group1.cmu3.key[4:0] = meta.cmu_group1.compressed_key1[4:0] ^ meta.cmu_group1.compressed_key2[4:0];
+            meta.cmu_group1.cmu3.key[4:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[4:0];
             meta.cmu_group1.cmu3.param1 =  param1;
             meta.cmu_group1.cmu3.param2 =  param2;
     }

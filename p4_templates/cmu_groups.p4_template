@@ -101,7 +101,7 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     {%if CMUG.type == 1 %}
     action set_cmu{{id+1}}_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{CMUG.key_bitw-1}}:0] ^ meta.cmu_group{{CMUG.id}}.compressed_key2[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = (meta.cmu_group{{CMUG.id}}.compressed_key1 ^ meta.cmu_group{{CMUG.id}}.compressed_key2)[{{CMUG.key_bitw-1}}:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  param1;
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }

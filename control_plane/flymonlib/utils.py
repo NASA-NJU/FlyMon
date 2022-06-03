@@ -1,5 +1,6 @@
 # -*- coding:UTF-8 -*-
 import re
+import math
 
 class Node(object):
     def __init__(self, data):
@@ -151,23 +152,31 @@ def match_format_string(format_str, s):
     # Return a dict with all of our keywords and their values
     return {x: matches.group(x) for x in keywords}
 
-def calc_keymapping(mem_size, mem_type, mem_idx):
+def calc_keymapping(total_bitw, key_bitw, mem_type, mem_idx):
     """Calculate all key mapping according to location
     Args:
-        mem_size: the size of register
-        mem_type: int, 1 for whold, 2 for half, 3 for quartar...
+        total_bitw: total biw width of a cmu memory.
+        key_bitw: int, 1 for whold, 2 for half, 3 for quartar...
         mem_idx: memory_idx on this type.
     Returns:
         a dict of mappings.
         key : (key, mask)
         val : offset (need to consider add overflow)
+    NOTE:
+        We implement SUB by ADD with ADD Overflow.
+        Thus, all offsets will be a positive value and can cause overflow.
+        Overflow is just we want to mimic the Sub translation.
     """
     key_mapping = {}
-    mem_range = mem_size/mem_type
-    for idx in range(2**mem_type):
+    mask_value = int('1'*(mem_type-1), base=2) << int(key_bitw - (mem_type-1))
+    mem_range = int(2**total_bitw/2**(mem_type-1))
+    for idx in range(2**(mem_type-1)):
         offset = (mem_idx - idx) * mem_range
         if offset != 0:
-            
+            match_value = idx << int(key_bitw - (mem_type-1))
+            key_mapping[(match_value, mask_value)] = offset
+    return key_mapping
+
 
         
 
