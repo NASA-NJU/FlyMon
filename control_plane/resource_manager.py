@@ -96,6 +96,8 @@ class ResourceManager():
                                 required_memorys.remove(required_memory)
                                 used_cmu.append(cmu_id)
                                 break # To allocate the next required_memory
+                            else:
+                                print("No enough memory")
                 if len(required_memorys) == 0:
                     break
         if len(required_memorys) != 0:
@@ -112,8 +114,7 @@ class ResourceManager():
                 # All memory location should allocate the compressed keys.
                 # Reusable compressed keys (with cross bits) are supported in Egress Pipeline's CMU-Group.
                 # Indirect compressed keys (by XOR from existings) are supported in Ingress Pipeline's CMU-Group.
-                location.hkeys = self.cmu_groups[group_id-1].allocate_compressed_keys(required_keys)
-                print(location.hkeys)
+                location.hkeys = self.cmu_groups[group_id-1].allocate_compressed_keys(task_id, required_keys)
             return locations
 
     def release_task(self, task_instance: FlyMonTask):
@@ -124,5 +125,5 @@ class ResourceManager():
             group_id = location.group_id
             memory_type = location.memory_type
             self.cmu_groups[group_id-1].release_memory(task_instance.id, memory_type)
-            self.cmu_groups[group_id-1].release_compressed_keys(location.hkeys)
+            self.cmu_groups[group_id-1].release_compressed_keys(task_instance.id, location.hkeys)
         pass

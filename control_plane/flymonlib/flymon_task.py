@@ -8,6 +8,41 @@ from flymonlib.utils import match_format_string
 from flymonlib.location import Location
 
 
+def parse_filter(filter_str):
+    """
+    Args:
+        filter_std: e.g., a.b.c.d/x.y.z.e,a.b.c.d/x.y.z.e
+    Returns:
+        [(a.b.c.d, 255.255.0.0), (0.0.0.0, 0.0.0.0)]
+    """
+    filters = ["src_filter",  "dst_filter"]
+    results = []
+    try:
+        re_step1 = match_format_string("{src_filter},{dst_filter}", filter_str)
+        for filter in filters:
+            if re_step1[filter] == "*":
+                results.append(("0.0.0.0", "0.0.0.0"))
+            else:
+                re_step2 = match_format_string("{ip}/{prefix}", re_step1[filter])
+                ip = re_step2['ip']
+                prefix = int(re_step2['prefix'])
+                if prefix > 32 or prefix < 0 or len(ip)<7 or len(ip)>15:
+                    raise RuntimeError()
+                mask = '1' * prefix + '0' * (32-prefix)
+                splt_mask = []
+                temp = ''
+                for idx, bit in enumerate(mask):
+                    if idx != 0 and idx % 8 == 0:
+                        splt_mask.append(temp)
+                        temp = ''
+                    else:
+                        temp += bit
+                splt_mask.append(temp)
+                results.append((ip, f"{int(splt_mask[0], base=2)}.{int(splt_mask[1], base=2)}.{int(splt_mask[2], base=2)}.{int(splt_mask[3], base=2)}"))
+    except Exception as e:
+        raise RuntimeError("Invalid filter format, example: 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,*")
+    return results
+
 def parse_key(key_str):
     key_template = {
         "hdr.ipv4.src_addr" : 32,
@@ -54,12 +89,13 @@ class FlyMonTask:
     def __init__(self, task_id, filter, flow_key, flow_attr, mem_size):
         """
         Input examples:
+        task filter: 10.0.0.1/255.0.0.0,0.0.0.0/0.0.0.0
         flow_key: hdr.ipv4.src_addr/<mask:int>, hdr.ipv4.dst_addr/<mask:int>
         flow_attr: frequency(1)
         memory_size: 65536
         """
         self._id = task_id
-        self._filter = filter
+        self._filter = parse_filter(filter) # [(src_ip, src_mask), (dst_ip, dst_mask)] 
         self._key = parse_key(flow_key)
         self.attribute = parse_attribute(flow_attr)
         self.mem_size = mem_size

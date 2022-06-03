@@ -70,8 +70,8 @@ class FlyMonRuntime_BfRt():
         initialization_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_initialization")
         initialization_table.info.key_field_annotation_add("hdr.ipv4.src_addr", "ipv4") 
         initialization_table.info.key_field_annotation_add("hdr.ipv4.dst_addr", "ipv4")
-        match = initialization_table.make_key([client.KeyTuple(f'hdr.ipv4.src_addr', "0.0.0.0", "0.0.0.0"),
-                                               client.KeyTuple(f'hdr.ipv4.dst_addr', "0.0.0.0", "0.0.0.0")])
+        match = initialization_table.make_key([client.KeyTuple(f'hdr.ipv4.src_addr', filter[0][0], filter[0][1]),
+                                               client.KeyTuple(f'hdr.ipv4.dst_addr', filter[1][0], filter[1][1])])
         action = None
         if param1[0].type == ParamType.CompressedKey:
             action = initialization_table.make_data([ client.DataTuple('task_id', task_id),

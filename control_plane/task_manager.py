@@ -23,7 +23,7 @@ class TaskManager:
         }
         self.TASK_INC = 0
 
-    def register_task(self, key, attribute, mem_size):
+    def register_task(self, filter, key, attribute, mem_size):
         """ Initial an idle FlyMonTask instance.
         Args:
             flow_key: hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32
@@ -36,7 +36,7 @@ class TaskManager:
         """
         task_id = self.TASK_INC + 1
         self.TASK_INC += 1
-        task_instance = FlyMonTask(task_id, None, key, attribute, mem_size)
+        task_instance = FlyMonTask(task_id, filter, key, attribute, mem_size)
         self.tasks[task_id] = [False, task_instance, [], [], []] # rules
         return task_instance
     

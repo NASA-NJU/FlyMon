@@ -96,13 +96,17 @@ class FlyMonController(cmd.Cmd):
             "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24,hdr.ipv4.dst_addr
             "-a", "--attribute" type=[frequency, distinct, max, existence], required=True,
             "-m", "--mem_size" type=int, required=True
+            **A Complete Example** : 
+                add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+                        This will allocate the task, which monitors on packet with SrcIP=10.0.0.*, 
+                        and count for key=SrcIP/24, attribute=PacketCount, memory with 48 counters (3x16 count-min sketch)
         Returns:
             Added task id or -1.
         Exceptions:
             parser error of the key, the attribute, the memory.
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-f", "--filter", dest="filter", type=str, required=False, help="e.g., SrcIP=10.0.0.*,DstIP=*.*.*.*")
+        parser.add_argument("-f", "--filter", dest="filter", type=str, required=True, default="*,*", help="e.g., 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,*  Default: *,*")
         parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32")
         parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
         parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="e.g., 32768")
@@ -111,7 +115,8 @@ class FlyMonController(cmd.Cmd):
             print(parser.error_message)
             return
         try:
-            task_instance = self.task_manager.register_task(args.key, args.attribute, args.mem_size)
+            task_instance = self.task_manager.register_task(args.filter, args.key, args.attribute, args.mem_size)
+            print("Required resources:")
             for re in task_instance.resource_list():
                 print(str(re))
             locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())

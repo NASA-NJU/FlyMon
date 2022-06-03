@@ -129,10 +129,10 @@ class CMU_Group():
         ## Compressed Key Resources.
         key_template = FlowKey(candidate_key_list)
         if group_type == 1:
-            self._compressed_keys = [[Resource(ResourceType.CompressedKey, key_template), 16, True] for _ in range(3)]  # key, bitw, status.
+            self._compressed_keys = [[Resource(ResourceType.CompressedKey, key_template), 16,  []] for _ in range(3)]  # key, bitw, tasks.
         else:
-            self._compressed_keys = [ [Resource(ResourceType.CompressedKey, key_template), 32, True], 
-                                      [Resource(ResourceType.CompressedKey, key_template), 16, True] ] 
+            self._compressed_keys = [ [Resource(ResourceType.CompressedKey, key_template), 32, []], 
+                                      [Resource(ResourceType.CompressedKey, key_template), 16, []] ] 
         
         ## CMU and Memory Resources.
         self._cmus = [[CMU(), self._memory_size] for i in range(self._cmu_num)]  # Currently we only support 32 divisions.
@@ -191,8 +191,8 @@ class CMU_Group():
         """
         for required_key in required_key_list:
             ok = False
-            for ck, _, status in self._compressed_keys:
-                if status == True:
+            for ck, _, tasks in self._compressed_keys:
+                if len(tasks) == 0:
                     ok = True
                 else:
                     # The key as already be allocated.
@@ -203,7 +203,7 @@ class CMU_Group():
                 return False
         return True
 
-    def allocate_compressed_keys(self, required_key_list):
+    def allocate_compressed_keys(self, task_id, required_key_list):
         """
         The required_key should be a flow_key object.
         TODO: need to consider bit size of key (for measurement accuracy reason)
@@ -212,8 +212,8 @@ class CMU_Group():
         for required_key in required_key_list:
             ok = False
             for idx in range(len(self._compressed_keys)):
-                status = self._compressed_keys[idx][2]
-                if status == True:
+                task_list = self._compressed_keys[idx][2]
+                if len(task_list) == 0:
                     hkey_list.append(idx+1)
                     ok = True
                     break
@@ -222,10 +222,12 @@ class CMU_Group():
                     if self.group_type == 2 and self._compressed_keys[idx][0] == required_key:
                         # If the CMU-Group is located in Egress Pipeline
                         # Then the hash bits should be reused.
+                        hkey_list.append(idx+1)
                         ok = True
                         break
-                    elif self.group_type == 1 and self._compressed_keys[idx][0] == required_key:
+                    elif self.group_type == 1 and self._compressed_keys[idx][0] == required_key and task_id not in task_list:
                         ok = True
+                        hkey_list.append(idx+1)
                         break
                     # TODO: support XOR in Ingress Pipeline.
             if not ok:
@@ -233,7 +235,7 @@ class CMU_Group():
         for hkey_id in hkey_list:
             idx = hkey_id - 1
             self._compressed_keys[idx][0].content.set(required_key.content)
-            self._compressed_keys[idx][2] = False
+            self._compressed_keys[idx][2].append(task_id)
         return hkey_list
 
     def allocate_memory(self, cmu_id, task_id, mem_size, mode=1):
@@ -250,7 +252,7 @@ class CMU_Group():
         mode=1 : accurate.
         mode=2 : efficient.
         """
-        if mem_size > self._memory_size:
+        if mem_size > self._memory_size: 
             print("Invalid memory size : {}".format(mem_size))
             return None
         memory_type = int(math.log2(self._memory_size / mem_size)) + 1
@@ -265,6 +267,8 @@ class CMU_Group():
             pass
         id = cmu_id - 1
         cmu = self._cmus[id][0]
+        if self._cmus[id][1] < mem_size:
+            return None
         memory_idx = cmu.alloc_memory(memory_type, task_id)
         if memory_idx >= 0:
             self._cmus[id][1] = self._cmus[id][1] - int(self._memory_size/memory_type)
@@ -281,10 +285,14 @@ class CMU_Group():
                 self._cmus[idx][1] += int(self._memory_size/memory_type)
         pass
 
-    def release_compressed_keys(self, hkeys):
+    def release_compressed_keys(self, task_id, hkeys):
         """
         Release compressed keys.
         """
-        if hkeys is not None:
-            for hkey in hkeys:
-                self._compressed_keys[hkey - 1][2] = False
+        if hkeys is None:
+            return 
+        for hkey in hkeys:
+            idx = hkey - 1
+            if task_id not in self._compressed_keys[idx][2]:
+                continue
+            self._compressed_keys[idx][2].remove(task_id)
