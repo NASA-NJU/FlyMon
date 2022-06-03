@@ -37,7 +37,7 @@ class TaskManager:
         task_id = self.TASK_INC + 1
         self.TASK_INC += 1
         task_instance = FlyMonTask(task_id, filter, key, attribute, mem_size)
-        self.tasks[task_id] = [False, task_instance, [], [], []] # rules
+        self.tasks[task_id] = [False, task_instance] 
         return task_instance
     
     def install_task(self, task_id):
@@ -67,29 +67,29 @@ class TaskManager:
                 if task_instance.attribute.param1.type == ParamType.CompressedKey:
                     self.runtime.compression_stage_config(location.group_id, location.group_type,
                                                     location.hkeys[1], task_instance.attribute.param1)
-                    self.tasks[task_instance.id][2] = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
+                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
                                                             task_instance.filter, # Filter
                                                             task_instance.id,
                                                             location.hkeys[0],
                                                             (task_instance.attribute.param1, location.hkeys[1]),
                                                             task_instance.attribute.param2)
                 else:
-                    self.tasks[task_instance.id][2] = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
+                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
                                                             task_instance.filter, # Filter
                                                             task_instance.id,
                                                             location.hkeys[0],
                                                             (task_instance.attribute.param1, None),
                                                             task_instance.attribute.param2)
                 # # Install the pre-processing stage.
-                self.tasks[task_instance.id][3] = self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
+                location.prep_rules = self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
                                                     task_instance.id, 
                                                     calc_keymapping(self.cmug_bitw[location.group_id], 
                                                                     location.memory_type, 
                                                                     location.memory_idx),  # Key mappings.
                                                     task_instance.attribute.param_mapping) # Param1 mappings.
                 # # Install the operation stage.
-                self.tasks[task_instance.id][4] = self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                  task_instance.id, task_instance.attribute.operation)
+                location.oper_rules = self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
+                                                       task_instance.id, task_instance.attribute.operation)
                 # pass
             self.tasks[task_instance.id][0] = True
         except Exception as e:
@@ -103,16 +103,13 @@ class TaskManager:
     def uninstall_task(self, task_id):
         task_instance = self.tasks[task_id][1]
         for loc in task_instance.locations:
-            if self.tasks[task_instance.id][2] is not None:
-                self.runtime.initialization_stage_del(loc.group_id, loc.group_type, loc.cmu_id, self.tasks[task_instance.id][2])
-                self.tasks[task_instance.id][2] = None
-            if self.tasks[task_instance.id][3] is not None:
-                self.runtime.preprocessing_stage_del(loc.group_id, loc.group_type, loc.cmu_id, self.tasks[task_instance.id][3])
-                self.tasks[task_instance.id][3] = None
-            if self.tasks[task_instance.id][4] is not None:
-                self.runtime.operation_stage_del(loc.group_id, loc.group_type, loc.cmu_id, self.tasks[task_instance.id][4])
-                self.tasks[task_instance.id][4] = None
-            self.tasks[task_instance.id][0] = False
+            self.runtime.initialization_stage_del(loc.group_id, loc.group_type, loc.cmu_id, loc.init_rules)
+            loc.init_rules = []
+            self.runtime.preprocessing_stage_del(loc.group_id, loc.group_type, loc.cmu_id, loc.prep_rules)
+            loc.prep_rules = []
+            self.runtime.operation_stage_del(loc.group_id, loc.group_type, loc.cmu_id, loc.oper_rules)
+            loc.oper_rules = []
+        self.tasks[task_instance.id][0] = False
     
     def show_tasks(self):
         """

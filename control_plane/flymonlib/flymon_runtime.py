@@ -60,7 +60,7 @@ class FlyMonRuntime_BfRt():
                    for std, value should in ['timestamp'], ['queue_length', 'queue_size', 'pktsize'] for group type2.
             param2 : a const value
         Reutrns:
-            Return match key list as rule handler (usded for deleting) / None for failed.
+            Return match key list as rule handler (usded for deleting) / [] for failed.
         """
         prefix = ""
         if group_type == 1:
@@ -104,6 +104,8 @@ class FlyMonRuntime_BfRt():
         """
         key_list: match key list return from initialization_stage_add. It should be maintained by task manager.
         """
+        if len(key_list) == 0:
+            return
         prefix = ""
         if group_type == 1:
             prefix = f"FlyMonIngress.cmu_group{group_id}"
@@ -152,19 +154,21 @@ class FlyMonRuntime_BfRt():
                 batch_match.append(match)
                 batch_action.append(action)
         perprocessing_table.entry_add(self.conn, batch_match, batch_action)
-        return entry_dict.keys() # a key list. 
+        return batch_match
 
     def preprocessing_stage_del(self, group_id, group_type, cmu_id, key_list):
         """
         key_list: match key list return from initialization_stage_add. It should be maintained by task manager.
         """
+        if len(key_list) == 0:
+            return
         prefix = ""
         if group_type == 1:
             prefix = f"FlyMonIngress.cmu_group{group_id}"
         else:
             prefix = f"FlyMonEgress.cmu_group{group_id}"
         perprocessing_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_preprocessing")
-        perprocessing_table.entry_del(self.conn, list(key_list))
+        perprocessing_table.entry_del(self.conn, key_list)
         pass
 
     def operation_stage_add(self, group_id, group_type, cmu_id, task_id, operation_type):
@@ -186,11 +190,13 @@ class FlyMonRuntime_BfRt():
             action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_max")
         else:
             print("Invalid operation type when install runtime rules.")
-            return None
+            return []
         operation_table.entry_add(self.conn, [match], [action])
         return [match] # a key list. 
 
     def operation_stage_del(self, group_id, group_type, cmu_id, key_list):
+        if len(key_list) == 0:
+            return
         prefix = ""
         if group_type == 1:
             prefix = f"FlyMonIngress.cmu_group{group_id}"

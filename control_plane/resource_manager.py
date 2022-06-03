@@ -97,7 +97,8 @@ class ResourceManager():
                                 used_cmu.append(cmu_id)
                                 break # To allocate the next required_memory
                             else:
-                                print("No enough memory")
+                                # print("No enough memory")
+                                pass
                 if len(required_memorys) == 0:
                     break
         if len(required_memorys) != 0:
