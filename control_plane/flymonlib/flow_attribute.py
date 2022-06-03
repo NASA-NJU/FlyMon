@@ -104,7 +104,10 @@ class Frequency(FlowAttribute):
 
     @property
     def param_mapping(self):
-        return []
+        return { 
+            # key : param
+            # val : code
+        }
 
     @property
     def operation(self):

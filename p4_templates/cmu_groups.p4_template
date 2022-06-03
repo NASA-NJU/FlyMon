@@ -84,16 +84,16 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     action set_cmu{{id+1}}_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
             {%if CMUG.type == 1 %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[15:0];
             {% else %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+CMUG.key_bitw-1}}:{{id*8}}];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+15}}:{{id*8}}];
             {% endif %}
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  param1;
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
     action set_cmu{{id+1}}_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  param1;
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
@@ -101,13 +101,13 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     {%if CMUG.type == 1 %}
     action set_cmu{{id+1}}_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = (meta.cmu_group{{CMUG.id}}.compressed_key1 ^ meta.cmu_group{{CMUG.id}}.compressed_key2)[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = (meta.cmu_group{{CMUG.id}}.compressed_key1 ^ meta.cmu_group{{CMUG.id}}.compressed_key2)[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  param1;
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
     action set_cmu{{id+1}}_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key3[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key3[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  param1;
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
@@ -116,9 +116,9 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     action set_cmu{{id+1}}_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
             {%if CMUG.type == 1 %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[15:0];
             {% else %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+CMUG.key_bitw-1}}:{{id*8}}];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+15}}:{{id*8}}];
             {% endif %}
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  meta.cmu_group{{CMUG.id}}.compressed_key1[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
@@ -126,9 +126,9 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     action set_cmu{{id+1}}_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
             {%if CMUG.type == 1 %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[15:0];
             {% else %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+CMUG.key_bitw-1}}:{{id*8}}];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+15}}:{{id*8}}];
             {% endif %}
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  meta.cmu_group{{CMUG.id}}.compressed_key2[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
@@ -136,7 +136,7 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     {%if CMUG.type == 1 %}
     action set_cmu{{id+1}}_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  meta.cmu_group{{CMUG.id}}.compressed_key3[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
@@ -144,20 +144,20 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
 
     action set_cmu{{id+1}}_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  meta.cmu_group{{CMUG.id}}.compressed_key1[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
     action set_cmu{{id+1}}_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  meta.cmu_group{{CMUG.id}}.compressed_key2[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
     {%if CMUG.type == 1 %}
     action set_cmu{{id+1}}_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key2[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  meta.cmu_group{{CMUG.id}}.compressed_key3[15:0];
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
     }
@@ -169,9 +169,9 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     action set_cmu{{id+1}}_hkey1_{{pram_name}}(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.task_id = task_id;
             {%if CMUG.type == 1 %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{CMUG.key_bitw-1}}:0];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[15:0];
             {% else %}
-            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+CMUG.key_bitw-1}}:{{id*8}}];
+            meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{CMUG.id}}.compressed_key1[{{id*8+15}}:{{id*8}}];
             {% endif %}
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 =  {{param_val}};
             meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 =  param2;
@@ -217,8 +217,11 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
 
     // Pre-processing stage of CMU{{id}}.
     action process_cmu{{id+1}}_key_param(bit<16> offset, bit<16> code){
-    meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key = meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key + offset; // Implementing '-' by '+' overflow.
-    meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 = code;
+        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key = meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key + offset; // Implementing '-' by '+' overflow.
+        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param1 = code;
+    }
+    action process_cmu{{id+1}}_key(bit<16> offset){
+        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key = meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key + offset; // Implementing '-' by '+' overflow.
     }
     {%if CMUG.mau_start >= 0%}
     @pragma stage {{CMUG.mau_start+2}}
@@ -231,6 +234,7 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
         }
         actions = {
             no_action;
+            process_cmu{{id+1}}_key;
             process_cmu{{id+1}}_key_param;
         }
         const default_action = no_action();
@@ -278,17 +282,17 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     //};
 
     action op_cmu{{id+1}}_cond_add(){
-        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_cond_add.execute(meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key);
+        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_cond_add.execute((bit<16>)meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     }
     action op_cmu{{id+1}}_and_or(){
-        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_max.execute(meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key);
+        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_max.execute((bit<16>)meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     }
     action op_cmu{{id+1}}_max(){
-        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_and_or.execute(meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key);
+        meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_and_or.execute((bit<16>)meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     }
 
     //action op_cmu{{id+1}}_reserved(){
-    //    meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_reserved.execute(meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key);
+    //    meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.param2 = cmu{{id+1}}_op_reserved.execute((bit<16>)meta.cmu_group{{CMUG.id}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     //}
 
     {%if CMUG.mau_start >= 0%}
