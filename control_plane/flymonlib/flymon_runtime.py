@@ -178,13 +178,13 @@ class FlyMonRuntime_BfRt():
         else:
             prefix = f"FlyMonEgress.cmu_group{group_id}"
         operation_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_operation")
-        match = operation_table.make_key([client.KeyTuplle(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id)])
+        match = operation_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id)])
         if operation_type == OperationType.AndOr:
-            action = operation_table.make_data([], prefix + f"op_cmu{cmu_id}_and_or")
+            action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_and_or")
         elif operation_type == OperationType.CondADD:
-            action = operation_table.make_data([], prefix + f"op_cmu{cmu_id}_cond_add")
+            action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_cond_add")
         elif operation_table == OperationType.Max:
-            action = operation_table.make_data([], prefix + f"op_cmu{cmu_id}_max")
+            action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_max")
         else:
             print("Invalid operation type when install runtime rules.")
             return None

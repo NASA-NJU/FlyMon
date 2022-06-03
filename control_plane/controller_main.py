@@ -148,7 +148,7 @@ class FlyMonController(cmd.Cmd):
             return
         try:
             data = self.data_collector.read(self.task_manager.get_instance(args.task_id))
-            # print(data)
+            print(data)
         except Exception as e:
             print(traceback.format_exc())
             print(e)
