@@ -152,11 +152,11 @@ def match_format_string(format_str, s):
     # Return a dict with all of our keywords and their values
     return {x: matches.group(x) for x in keywords}
 
-def calc_keymapping(total_bitw, key_bitw, mem_type, mem_idx):
+def calc_keymapping(total_bitw, mem_type, mem_idx):
     """Calculate all key mapping according to location
     Args:
-        total_bitw: total biw width of a cmu memory.
-        key_bitw: int, 1 for whold, 2 for half, 3 for quartar...
+        total_bitw: total biw width of a cmu memory. (address bit width)
+        mem_type: int, 1 for whold, 2 for half, 3 for quartar...
         mem_idx: memory_idx on this type.
     Returns:
         a dict of mappings.
@@ -168,17 +168,11 @@ def calc_keymapping(total_bitw, key_bitw, mem_type, mem_idx):
         Overflow is just we want to mimic the Sub translation.
     """
     key_mapping = {}
-    mask_value = int('1'*(mem_type-1), base=2) << int(key_bitw - (mem_type-1))
+    mask_value = int('1'*(mem_type-1), base=2) << int(total_bitw - (mem_type-1))
     mem_range = int(2**total_bitw/2**(mem_type-1))
     for idx in range(2**(mem_type-1)):
         offset = (mem_idx - idx) * mem_range
         if offset != 0:
-            match_value = idx << int(key_bitw - (mem_type-1))
-            key_mapping[(match_value, mask_value)] = offset
+            match_value = idx << int(total_bitw - (mem_type-1))
+            key_mapping[(match_value, mask_value)] = (offset+2**total_bitw)%(2**total_bitw)
     return key_mapping
-
-
-        
-
-
-
