@@ -237,3 +237,26 @@ class FlyMonRuntime_BfRt():
             value_lo = data_dict[prefix + f".cmu{cmu_id}_buckets.f1"][0]
             buf.append(value_lo)
         return buf
+    
+    def clear_all(self, group_id, group_type, cmu_num):
+        """
+        Clear all table rules.
+        """
+        if group_type == 1:
+            prefix = f"FlyMonIngress.cmu_group{group_id}"
+        else:
+            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        for idx in range(cmu_num):
+            cmu_id = idx + 1
+            ## Clear all tasks.
+            initialization_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_initialization")
+            perprocessing_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_preprocessing")
+            operation_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_operation")
+            initialization_table.entry_del(self.conn)
+            perprocessing_table.entry_del(self.conn)
+            operation_table.entry_del(self.conn)
+
+            ## Clear all datas.
+            register_table = self.context.table_get(prefix + f".cmu{cmu_id}_buckets")
+            register_table.entry_del(self.conn)

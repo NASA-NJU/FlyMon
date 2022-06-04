@@ -1,4 +1,4 @@
-from cProfile import run
+from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 from flymonlib.location import Location
 from flymonlib.flymon_task import FlyMonTask
 from flymonlib.resource import ResourceType
@@ -8,7 +8,7 @@ class ResourceManager():
     """
     ResourceManager manage all hardware resources.
     """
-    def __init__(self, runtime, cmug_configs):
+    def __init__(self, runtime : FlyMonRuntime_BfRt, cmug_configs):
         self.runtime = runtime
         self.cmu_groups = []
         for cmug in cmug_configs:
@@ -26,6 +26,7 @@ class ResourceManager():
                                              stage_start=mau_start, 
                                              candidate_key_list=candidate_key_list, 
                                              std_params=std_params))
+            self.runtime.clear_all(id, type, cmu_num)
         pass
 
     def show_status(self, group_id):

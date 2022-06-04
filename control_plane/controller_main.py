@@ -52,7 +52,9 @@ class FlyMonController(cmd.Cmd):
 /_/      /_/   \__, /  /_/  /_/   \____/  /_/ /_/ 
               /____/                                 
 ----------------------------------------------------
-    An on-the-fly network measurement system.               
+    An on-the-fly network measurement system.       
+    **NOTE**: FlyMon's controller will clear all previous data plane 
+              tasks/datas when setup.
     """
     prompt = 'flymon> '
 
@@ -62,7 +64,6 @@ class FlyMonController(cmd.Cmd):
             cmug_configs = json.load(open(config_file, 'r'))
             self.runtime = None
             self.grpc_setup(0, 'flymon')
-            # Z seem no need to pass it to TaskManager
             self.task_manager = TaskManager(self.runtime, cmug_configs)
             self.resource_manager = ResourceManager(self.runtime, cmug_configs)
             self.data_collector = DataCollector(self.runtime, cmug_configs)
@@ -99,7 +100,7 @@ class FlyMonController(cmd.Cmd):
             No exception here.
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-t", "--task_id", dest="task_id", type=int, default=-1, required=True, help="e.g., 1")
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, default=-1, help="e.g., 1")
         args = parser.parse_args(arg.split())
         if parser.error_message or args is None:
             print(parser.error_message)
@@ -145,7 +146,7 @@ class FlyMonController(cmd.Cmd):
                 task_instance.locations = locations
                 re = self.task_manager.install_task(task_instance.id)
                 if re is True:
-                    print(f"{str(task_instance)}")
+                    self.task_manager.show_task(task_instance.id)
                     print(f"[Success] Allocate TaskID: {task_instance.id} \n")
                 else:
                     print(f"[Failed] when install rules for task {task_instance.id}\n")
@@ -188,11 +189,6 @@ class FlyMonController(cmd.Cmd):
             print(e)
             return
 
-    def do_clear_all(self):
-        """
-        Clear all entries in the data plane.
-        """
-        pass
 
     def do_del_task(self, arg):
         """
