@@ -127,12 +127,11 @@ class CMU_Group():
             self._std_params.append(Resource(ResourceType.StdParam, param_name))
 
         ## Compressed Key Resources.
-        key_template = FlowKey(candidate_key_list)
         if group_type == 1:
-            self._compressed_keys = [[Resource(ResourceType.CompressedKey, key_template), 16,  []] for _ in range(3)]  # key, bitw, tasks.
+            self._compressed_keys = [[Resource(ResourceType.CompressedKey, FlowKey(candidate_key_list)), 16,  []] for _ in range(3)]  # key, bitw, tasks.
         else:
-            self._compressed_keys = [ [Resource(ResourceType.CompressedKey, key_template), 32, []], 
-                                      [Resource(ResourceType.CompressedKey, key_template), 16, []] ] 
+            self._compressed_keys = [ [Resource(ResourceType.CompressedKey, FlowKey(candidate_key_list)), 32, []], 
+                                      [Resource(ResourceType.CompressedKey, FlowKey(candidate_key_list)), 16, []] ] 
         
         ## CMU and Memory Resources.
         self._cmus = [[CMU(), self._memory_size] for i in range(self._cmu_num)]  # Currently we only support 32 divisions.
@@ -184,58 +183,43 @@ class CMU_Group():
                 return False
         return True
 
-    def check_compressed_keys(self, required_key_list):
-        """
-        Check if there are avaliable key resources.
-        Empty or Equal key are valid.
-        """
-        for required_key in required_key_list:
-            ok = False
-            for ck, _, tasks in self._compressed_keys:
-                if len(tasks) == 0:
-                    ok = True
-                else:
-                    # The key as already be allocated.
-                    # Check if it is a valid key?
-                    if ck == required_key:
-                        ok = True
-            if not ok:
-                return False
-        return True
-
     def allocate_compressed_keys(self, task_id, required_key_list):
         """
         The required_key should be a flow_key object.
         TODO: need to consider bit size of key (for measurement accuracy reason)
+        TODO: support XOR in Ingress Pipeline.
         """
         hkey_list = []
         for required_key in required_key_list:
             ok = False
             for idx in range(len(self._compressed_keys)):
                 task_list = self._compressed_keys[idx][2]
-                if len(task_list) == 0:
-                    hkey_list.append(idx+1)
-                    ok = True
-                    break
-                else:
+                if len(task_list) != 0:
+                    # Priority is given to those already in use
                     # The key as already be allocated.
-                    if self.group_type == 2 and self._compressed_keys[idx][0] == required_key:
+                    if self._compressed_keys[idx][1] == 32 and self._compressed_keys[idx][0] == required_key:
                         # If the CMU-Group is located in Egress Pipeline
                         # Then the hash bits should be reused.
+                        if task_id not in self._compressed_keys[idx][2]:
+                            self._compressed_keys[idx][2].append(task_id)
                         hkey_list.append(idx+1)
                         ok = True
                         break
-                    elif self.group_type == 1 and self._compressed_keys[idx][0] == required_key and task_id not in task_list:
+                    elif self._compressed_keys[idx][1] == 16 and self._compressed_keys[idx][0] == required_key and task_id not in task_list:
                         ok = True
+                        self._compressed_keys[idx][2].append(task_id)
                         hkey_list.append(idx+1)
                         break
-                    # TODO: support XOR in Ingress Pipeline.
+                else:
+                    self._compressed_keys[idx][2].append(task_id)
+                    hkey_list.append(idx+1)
+                    self._compressed_keys[idx][0].content.set(required_key.content)
+                    ok = True
+                    break
             if not ok:
+                # return back
+                self.release_compressed_keys(task_id, hkey_list)
                 return None
-        for hkey_id in hkey_list:
-            idx = hkey_id - 1
-            self._compressed_keys[idx][0].content.set(required_key.content)
-            self._compressed_keys[idx][2].append(task_id)
         return hkey_list
 
     def allocate_memory(self, cmu_id, task_id, mem_size, mode=1):
@@ -296,3 +280,5 @@ class CMU_Group():
             if task_id not in self._compressed_keys[idx][2]:
                 continue
             self._compressed_keys[idx][2].remove(task_id)
+            if len(self._compressed_keys[idx][2]) == 0:
+                self._compressed_keys[idx][0].content.reset()
