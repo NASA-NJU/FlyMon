@@ -238,6 +238,9 @@ class FlyMonController(cmd.Cmd):
         if args.speed in ["100G", "40G"] and args.port % 4 != 0:
             print("100G and 40G port should be only added on lane0")
             return
+        # if the port rate is 100G, the FEC should be RS
+        if args.speed == "100G":
+            args.fec = "BF_FEC_TYP_RS"
         try:
             self.port_table = self.bfrt_info.table_get("$PORT")
             self.port_table.entry_add(
@@ -247,6 +250,34 @@ class FlyMonController(cmd.Cmd):
                                             gc.DataTuple('$FEC', str_val=args.fec),
                                             # gc.DataTuple('$N_LANES', args.port%4+1),
                                             gc.DataTuple('$PORT_ENABLE', bool_val=True)])])
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
+
+    def do_add_forward(self, arg):
+        '''
+        Add a forward rule in simple_fwd
+        Args list:
+            "-s", "--source" type=int, required=True
+            "-d", "--destination" type=int, required=True
+        Return:
+            Added rule or -1.
+        '''
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-s", "--source", dest="source", type=int, required=True, help="Source port of the forwarding, int from 0 to 259")
+        parser.add_argument("-d", "--destination", dest="dest", type=int, required=True, help="Destination port of the forwarding, int from 0 to 259")
+        args = parser.parse_args(arg.split())
+        if parser.error_message or args is None:
+            print(parser.error_message)
+            return
+        try:
+            self.forward_table = self.bfrt_info.table_get("FlyMonIngress.simple_fwd")
+            self.forward_table.entry_add(
+                self.target,
+                [self.forward_table.make_key([gc.KeyTuple('ig_intr_md.ingress_port', args.source)])],
+                [self.forward_table.make_data([gc.DataTuple('port', args.dest)],
+                                            "FlyMonIngress.hit")])
         except Exception as e:
             print(traceback.format_exc())
             print(e)
