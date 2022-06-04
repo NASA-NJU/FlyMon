@@ -30,16 +30,19 @@ class FlyMonRuntime_BfRt():
             hash_configure_table = self.context.table_get(f"FlyMonEgress.cmu_group{group_id}.hash_unit{dhash_id}.configure")
         key_configs = flow_key.to_config_dict()
         target_config_list = []
-        for key in key_configs.keys():
+        order = 1
+        for key in key_configs.keys(): 
             inner_tuple = [] # inner tupples for a specific key container.
-            for idx, (start_bit, bit_len) in enumerate(key_configs[key]):
+            for start_bit, bit_len in key_configs[key]:
+                print(key, order, (start_bit, bit_len))
                 inner_tuple.append(
                     { 
-                      "order": client.DataTuple("order", idx),
+                      "order": client.DataTuple("order", order),
                       "start_bit": client.DataTuple("start_bit", start_bit),
                       "length": client.DataTuple("length", bit_len)
                     }
                 )
+                order += 1
             target_config_list.append(client.DataTuple(key, container_arr_val = inner_tuple))
         data = hash_configure_table.make_data(target_config_list)
         hash_configure_table.default_entry_set(self.conn, data)
