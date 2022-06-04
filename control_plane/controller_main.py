@@ -71,8 +71,8 @@ class FlyMonController(cmd.Cmd):
             print(f"{e} when loading configure file.")
             exit(1)
 
-    # cmd 1: add port.
-    def do_show_status(self, arg):
+
+    def do_show_cmug(self, arg):
         """
         Show the status of a CMU-Group.
         Args list:
@@ -88,6 +88,26 @@ class FlyMonController(cmd.Cmd):
             return
         # Normal Logic
         self.resource_manager.show_status(args.group_id)
+        print("\n")
+    
+    def do_show_task(self, arg):
+        """
+        Show the status of a CMU-Group.
+        Args list:
+            "-t" "--task_id" the ID of a task, e.g., 1
+        Exception:
+            No exception here.
+        """
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, default=-1, required=True, help="e.g., 1")
+        args = parser.parse_args(arg.split())
+        if parser.error_message or args is None:
+            print(parser.error_message)
+            return
+        if args.task_id == -1:
+            self.task_manager.show_tasks()
+        else:
+            self.task_manager.show_task(args.task_id)
         print("\n")
 
     def do_add_task(self, arg):

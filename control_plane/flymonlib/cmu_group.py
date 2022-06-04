@@ -187,7 +187,6 @@ class CMU_Group():
         """
         The required_key should be a flow_key object.
         TODO: need to consider bit size of key (for measurement accuracy reason)
-        TODO: support XOR in Ingress Pipeline.
         """
         hkey_list = []
         for required_key in required_key_list:
@@ -217,6 +216,8 @@ class CMU_Group():
                     ok = True
                     break
             if not ok:
+                # TODO: support XOR in Ingress Pipeline Here
+                
                 # return back
                 self.release_compressed_keys(task_id, hkey_list)
                 return None
