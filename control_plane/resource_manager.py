@@ -78,7 +78,9 @@ class ResourceManager():
             elif resource.type == ResourceType.StdParam:
                 required_params.append(resource)
         for cmug in self.cmu_groups:
-            if cmug.check_compressed_keys(required_keys) and cmug.check_parameters(required_params):
+            hkeys = cmug.allocate_compressed_keys(task_id, required_keys) 
+            has_param = cmug.check_parameters(required_params)
+            if hkeys is not None and has_param:
                 # TODO: we only support alloclate the same memory for many times.
                 used_cmu = []
                 for required_memory in list(required_memorys): # shallow copy
@@ -92,13 +94,15 @@ class ResourceManager():
                             if re is not None:
                                 memory_type = re[0]
                                 memory_idx = re[1]
-                                locations.append(Location([cmug.group_id, cmug.group_type, None, cmu_id, memory_type, memory_idx]))
+                                locations.append(Location([cmug.group_id, cmug.group_type, hkeys, cmu_id, memory_type, memory_idx]))
                                 required_memorys.remove(required_memory)
                                 used_cmu.append(cmu_id)
                                 break # To allocate the next required_memory
                             else:
                                 # print("No enough memory")
                                 pass
+                if len(used_cmu) == 0:
+                    cmug.release_compressed_keys(task_id, hkeys)
                 if len(required_memorys) == 0:
                     break
         if len(required_memorys) != 0:
@@ -107,16 +111,9 @@ class ResourceManager():
                 group_id = location.group_id
                 memory_type = location.memory_type
                 self.cmu_groups[group_id-1].release_memory(task_id, memory_type)
+                self.cmu_groups[group_id-1].release_compressed_keys(task_id, location.hkeys)
             return None
-        else:
-            # Finally, allocate the keys.
-            for location in locations:
-                group_id = location.group_id
-                # All memory location should allocate the compressed keys.
-                # Reusable compressed keys (with cross bits) are supported in Egress Pipeline's CMU-Group.
-                # Indirect compressed keys (by XOR from existings) are supported in Ingress Pipeline's CMU-Group.
-                location.hkeys = self.cmu_groups[group_id-1].allocate_compressed_keys(task_id, required_keys)
-            return locations
+        return locations
 
     def release_task(self, task_instance: FlyMonTask):
         """

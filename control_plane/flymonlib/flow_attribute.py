@@ -115,3 +115,38 @@ class Frequency(FlowAttribute):
 
     def __str__(self):
         return f"frequency({self.param1})"
+
+class Distinct(FlowAttribute):
+    def __init__(self, param_str):
+        """
+        Exception:
+         - No exception.
+        """
+        super(Frequency, self).__init__(param_str)
+        self._param2 = Param(ParamType.Const, 65535)
+
+    @property
+    def type(self):
+        return AttributeType.Frequency
+
+    @property
+    def param2(self):
+        return self._param2
+
+    @property
+    def memory_num(self):
+        return 3
+
+    @property
+    def param_mapping(self):
+        return { 
+            # key : param
+            # val : code
+        }
+
+    @property
+    def operation(self):
+        return OperationType.CondADD
+
+    def __str__(self):
+        return f"frequency({self.param1})"

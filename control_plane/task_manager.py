@@ -94,7 +94,7 @@ class TaskManager:
             self.tasks[task_instance.id][0] = True
         except Exception as e:
             print(f"Failed! {e} when install rules for task {task_instance.id}")
-            print(traceback.format_exc())
+            # print(traceback.format_exc())
             # withdraw installed rules.
             self.uninstall_task(task_id)
             return False
