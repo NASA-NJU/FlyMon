@@ -201,14 +201,43 @@ class FlyMonController(cmd.Cmd):
             return
 
     def do_add_port(self, arg):
-        """
-        Enable a port.
-        """
-        pass
+        '''
+        Enable a port on tofino
+        Args list:
+            "-p", "--port" type=int, required=True
+            "-s", "--speed" type=str, required=True
+            "-f", "--fec" type=str, required=False
+        Return:
+            Enabled port id or -1.
+        '''
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-p", "--port", dest="port", type=int, required=True, help="D_P port of the port, int from 0 to 259")
+        parser.add_argument("-s", "--speed", dest="speed", type=str, required=True, help="The speed of the port, should be a string in [\"10G\", \"25G\", \"40G\", \"100G\"]")
+        parser.add_argument("-f", "--fec", dest="fec", type=str, required=False, default="BF_FEC_TYP_NONE", help="\"BF_FEC_TYP_NONE\" as default")
+        args = parser.parse_args(arg.split())
+        if parser.error_message or args is None:
+            print(parser.error_message)
+            return
+        # 100G and 40G port should be only added on lane0
+        if args.speed in ["100G", "40G"] and args.port % 4 != 0:
+            print("100G and 40G port should be only added on lane0")
+            return
+        try:
+            self.port_table = self.bfrt_info.table_get("$PORT")
+            self.port_table.entry_add(
+                self.target,
+                [self.port_table.make_key([gc.KeyTuple('$DEV_PORT', args.port)])],
+                [self.port_table.make_data([gc.DataTuple('$SPEED', str_val="BF_SPEED_"+args.speed),
+                                            gc.DataTuple('$FEC', str_val=args.fec),
+                                            # gc.DataTuple('$N_LANES', args.port%4+1),
+                                            gc.DataTuple('$PORT_ENABLE', bool_val=True)])])
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
 
     def do_query_task(self):
         pass
-
 
     def emptyline(self):
         pass
@@ -224,52 +253,25 @@ class FlyMonController(cmd.Cmd):
         print(output)
         self.last_output = output
 
-    def grpc_setup(self, client_id=0, p4_name=None, notifications=None, 
-            perform_bind=True, perform_subscribe=True):
+    def grpc_setup(self, client_id=0, p4_name=None):
         '''
-        @brief Set up connection to gRPC server and bind
-        @param client_id Client ID
-        @param p4_name Name of P4 program. If none is given,
-        then the test performs a bfrt_info_get() and binds to the first
-        P4 that comes as part of the bfrt_info_get()
-        @param notifications A Notifications object.
-        If you need to disable any notifications, then do the below as example,
-        gc.Notifications(enable_learn=False)
-        else default value is sent as below
-            enable_learn = True
-            enable_idletimeout = True
-            enable_port_status_change = True
-        @param perform_bind Set this to false if binding is not required
-        @param perform_subscribe Set this to false if client does not need to 
-        subscribe for any notifications
+        Set up connection to gRPC server and bind
+        Args: 
+         - client_id Client ID
+         - p4_name Name of P4 program, 'flymon' in this controller.
         '''
         self.bfrt_info = None
 
-        grpc_addr = 'localhost'        
-        if grpc_addr is None or grpc_addr == 'localhost':
-            grpc_addr = 'localhost:50052'
-        else:
-            grpc_addr = grpc_addr + ":50052"
+        grpc_addr = 'localhost:50052'        
 
         self.interface = gc.ClientInterface(grpc_addr, client_id=client_id,
-                device_id=0, notifications=notifications,
-                perform_subscribe=perform_subscribe)
+                device_id=0, notifications=None, perform_subscribe=True)
+        self.interface.bind_pipeline_config(p4_name)
+        self.bfrt_info = self.interface.bfrt_info_get()
 
-        # If p4_name wasn't specified, then perform a bfrt_info_get and set p4_name
-        # to it
-        if not p4_name:
-            self.bfrt_info = self.interface.bfrt_info_get()
-            p4_name = self.bfrt_info.p4_name_get()
+        self.target = gc.Target(device_id=0, pipe_id=0xffff)
 
-        # Set forwarding pipeline config (For the time being we are just
-        # associating a client with a p4). Currently the grpc server supports
-        # only one client to be in-charge of one p4.
-        if perform_bind:
-            self.interface.bind_pipeline_config(p4_name)
-        
-        target = gc.Target(device_id=0, pipe_id=0xffff)
-        bfrt_info = self.interface.bfrt_info_get()
-        self.runtime = FlyMonRuntime_BfRt(target, bfrt_info)
+        self.runtime = FlyMonRuntime_BfRt(self.target, self.bfrt_info)
 
 if __name__ == "__main__":
     FlyMonController().cmdloop()
