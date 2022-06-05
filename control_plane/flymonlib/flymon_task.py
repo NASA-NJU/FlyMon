@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 
-from typing import List
+import socket
+import struct
 from flymonlib.flow_key import FlowKey
 from flymonlib.flow_attribute import *
 from flymonlib.resource import *
@@ -11,7 +12,7 @@ from flymonlib.location import Location
 def parse_filter(filter_str):
     """
     Args:
-        filter_std: e.g., a.b.c.d/x.y.z.e,a.b.c.d/x.y.z.e
+        filter_std: e.g., a.b.c.d/32,a.b.c.d/24
     Returns:
         [(a.b.c.d, 255.255.0.0), (0.0.0.0, 0.0.0.0)]
     """
@@ -23,22 +24,25 @@ def parse_filter(filter_str):
             if re_step1[filter] == "*":
                 results.append(("0.0.0.0", "0.0.0.0"))
             else:
-                re_step2 = match_format_string("{ip}/{prefix}", re_step1[filter])
-                ip = re_step2['ip']
-                prefix = int(re_step2['prefix'])
-                if prefix > 32 or prefix < 0 or len(ip)<7 or len(ip)>15:
-                    raise RuntimeError()
-                mask = '1' * prefix + '0' * (32-prefix)
-                splt_mask = []
-                temp = ''
-                for idx, bit in enumerate(mask):
-                    if idx != 0 and idx % 8 == 0:
-                        splt_mask.append(temp)
-                        temp = ''
-                    else:
-                        temp += bit
-                splt_mask.append(temp)
-                results.append((ip, f"{int(splt_mask[0], base=2)}.{int(splt_mask[1], base=2)}.{int(splt_mask[2], base=2)}.{int(splt_mask[3], base=2)}"))
+                if '/' in re_step1[filter]:
+                    re_step2 = match_format_string("{ip}/{prefix}", re_step1[filter])
+                    ip = re_step2['ip']
+                    prefix = int(re_step2['prefix'])
+                    if prefix > 32 or prefix < 0 or len(ip)<7 or len(ip)>15:
+                        raise RuntimeError()
+                    mask = '1' * prefix + '0' * (32-prefix)
+                    splt_mask = []
+                    temp = ''
+                    for idx, bit in enumerate(mask):
+                        if idx != 0 and idx % 8 == 0:
+                            splt_mask.append(temp)
+                            temp = ''
+                        else:
+                            temp += bit
+                    splt_mask.append(temp)
+                    results.append((ip, f"{int(splt_mask[0], base=2)}.{int(splt_mask[1], base=2)}.{int(splt_mask[2], base=2)}.{int(splt_mask[3], base=2)}"))
+                else:
+                    results.append((re_step1[filter], "255.255.255.255"))
     except Exception as e:
         raise RuntimeError("Invalid filter format, example: 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,*")
     return results
@@ -142,12 +146,13 @@ class FlyMonTask:
         self._locations = locations
             
     @property
-    def locations(self) -> List[Location]:
+    def locations(self):
         return self._locations
     
     @locations.setter
     def locations(self, locations):
         self.set_locations(locations)
+    
     
     def __str__(self) -> str:
         info = f"ID = {self._id}\nKey = {str(self._key)} Attribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"
@@ -157,6 +162,12 @@ class FlyMonTask:
         return info
 
     def resource_list(self):
+        """
+        The returned resources should be ordered:
+            1. key resources from flow key.
+            2. memory resources from cmu.
+            3. other resources from attribute.
+        """
         resource_list = []
         # Add key resource.
         for _ in range(self.mem_num):
@@ -168,3 +179,50 @@ class FlyMonTask:
         # Add attribute resource (param)
         resource_list.extend(self._attribute.resource_list)
         return resource_list
+
+
+    def generate_key_bytes(self, key_str, candidate_key_set = ["src_addr", "dst_addr", "src_port", "dst_port", "protocol"]):
+        """Parse key string to a flowKey object.
+        Args:
+            key_st : 10.0.0.0/24,*,*,*,*,
+        Returns:
+            bytes of the flow key
+        """
+        buf = b''
+        full_name_dict = {
+            "src_addr" : "hdr.ipv4.src_addr",
+            "dst_addr" : "hdr.ipv4.dst_addr",
+            "src_port" : "hdr.ports.src_port",
+            "dst_port" : "hdr.ports.dst_port",
+            "protocol" : "hdr.ipv4.protocol"
+        }
+        try:
+            template = "{" + "},{".join(candidate_key_set) + "}"
+            re_step1 = match_format_string(template, key_str)
+            for key_name in candidate_key_set:
+                if re_step1[key_name] == "*":
+                    bytes_len = self.key.get_bytes_len(full_name_dict[key_name])
+                    # buf += bytes([0 for _ in range(bytes_len)]) 
+                    # No need to append zero bytes.
+                else:
+                    if "/" in re_step1[key_name]:
+                        raise("Currently, the query key masks are not supported.")
+                        # re_step2 = match_format_string("{key}/{prefix}", re_step1[key_name])
+                        # key = re_step2['key']
+                        # prefix = int(re_step2['prefix'])
+                        # if "ipv4" in key_name:
+                        #     buf += socket.inet_aton(re_step1[key_name])
+                        # elif "port" in key_name:
+                        #     buf += struct.pack('!H', int(re_step1[key_name]))
+                        # else:
+                        #     buf += struct.pack('!B', int(re_step1[key_name]))             
+                    else:
+                        if "addr" in key_name:
+                            buf += socket.inet_aton(re_step1[key_name])
+                        elif "port" in key_name:
+                            buf += struct.pack('!H', int(re_step1[key_name]))
+                        else:
+                            buf += struct.pack('!B', int(re_step1[key_name]))
+        except Exception as e:
+            raise RuntimeError("Invalid query key format, example: 10.0.0.0/24,*,*,*,*,")
+        return buf

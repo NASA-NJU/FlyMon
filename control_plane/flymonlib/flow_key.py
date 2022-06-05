@@ -1,4 +1,4 @@
-from bitstring import BitArray, BitStream
+import socket
 
 class FlowKey:
     """Flow key definition"""
@@ -6,8 +6,6 @@ class FlowKey:
         """
         Initially are key are not enabled (the mask is all-0).
         """
-        # Z it is already a dict ?
-        # Z turn entry {key, bits} to {key, (bits, mask)}
         self.key_list = dict(candidate_key_list)
         for key in self.key_list.keys():
             bits = self.key_list[key]
@@ -28,6 +26,39 @@ class FlowKey:
         self.key_list[key_name] = (origin_bits, key_mask)
         return True
 
+    def get_bytes_len(self, key_name):
+        """
+        Get bytes of the key.
+        """
+        if key_name not in self.key_list:
+            raise RuntimeError(f"Invalid Key Name: {key_name}")
+        return self.key_list[key_name][0]
+
+    def generate_bytes(self, key_str):
+        """Generate bytes according to the key template.
+        Args:
+            key_str : '10.0.0.0,20.0.0.1,...'
+        Returns:
+            bytes
+        """
+        try:
+            keys = key_str.split(',')
+            for key in keys:
+                name, value = key.split('=')
+                bits, prefix = self.key_list[key_name]
+                if prefix == 0:
+                    continue
+                query_key = keys.pop(0)
+                if prefix == bits:
+                    query_key = query_key.split('/')[0]
+                else:
+                    query_key, query_prefix = query_key.split('/')
+                
+            socket.inet_aton('164.107.113.18')
+
+        except Exception as e:
+            print(f"Error when parse the query ket string {key_str}")
+            return None
 
     def set(self, another):
         """
@@ -63,7 +94,6 @@ class FlowKey:
         except Exception as e:
             print(f"Invalid key: {str(__o)}， caused {str(e)}, when allocate compressed key.")
             return False
-
 
     def to_config_dict(self):
         """

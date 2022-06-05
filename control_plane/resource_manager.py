@@ -1,3 +1,4 @@
+from flymonlib.hash import HASHES
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 from flymonlib.location import Location
 from flymonlib.flymon_task import FlyMonTask
@@ -6,11 +7,15 @@ from flymonlib.cmu_group import CMU_Group
 
 class ResourceManager():
     """
-    ResourceManager manage all hardware resources.
+    ResourceManager manages all hardware resources.
     """
     def __init__(self, runtime : FlyMonRuntime_BfRt, cmug_configs):
         self.runtime = runtime
         self.cmu_groups = []
+        self.dhashes = {
+            # key : (group_id, dhash_id)
+            # val : hasher object
+        }
         for cmug in cmug_configs:
             cmu_num = cmug["cmu_num"]
             cmu_size = cmug["cmu_size"]
@@ -27,7 +32,16 @@ class ResourceManager():
                                              candidate_key_list=candidate_key_list, 
                                              std_params=std_params))
             self.runtime.clear_all(id, type, cmu_num)
-        pass
+            # Setup Dashes.
+            dhash_num = 0
+            if type == 1:
+                dhash_num = 3
+            else:
+                dhash_num = 2
+            for idx in range(dhash_num):
+                dhash_id = idx + 1
+                self.runtime.setup_dhash(id, type, dhash_id, HASHES[id*3+dhash_id])
+                self.dhashes[(id, dhash_id)] = HASHES[id*3+dhash_id]
 
     def show_status(self, group_id):
         if group_id > len(self.cmu_groups):
@@ -79,10 +93,10 @@ class ResourceManager():
             elif resource.type == ResourceType.StdParam:
                 required_params.append(resource)
         for cmug in self.cmu_groups:
+            # TODO: each cmug need not to have all required_keys, just at least one flowkey.
             hkeys = cmug.allocate_compressed_keys(task_id, required_keys) 
             has_param = cmug.check_parameters(required_params)
             if hkeys is not None and has_param:
-                # TODO: we only support alloclate the same memory for many times.
                 used_cmu = []
                 for required_memory in list(required_memorys): # shallow copy
                     if len(used_cmu) == cmug.cmu_num : 
@@ -95,15 +109,22 @@ class ResourceManager():
                             if re is not None:
                                 memory_type = re[0]
                                 memory_idx = re[1]
-                                locations.append(Location([cmug.group_id, cmug.group_type, hkeys, cmu_id, memory_type, memory_idx]))
+                                hkeys_for_this_location = [hkeys[0]] + hkeys[len(required_memorys):]
+                                flow_key = hkeys.pop(0) # use this hkey as flow key
+                                locations.append(Location(                                
+                                                           [cmug.group_id, cmug.group_type, hkeys_for_this_location, cmu_id, memory_type, memory_idx], 
+                                                           hasher=self.dhashes[(cmug.group_id, flow_key)] 
+                                                         )
+                                                )
                                 required_memorys.remove(required_memory)
+                                required_keys.pop(0) # Dangers, remove a required flow/compressed key.
                                 used_cmu.append(cmu_id)
                                 break # To allocate the next required_memory
                             else:
                                 # print("No enough memory")
                                 pass
-                if len(used_cmu) == 0:
-                    cmug.release_compressed_keys(task_id, hkeys)
+                if len(hkeys) != 0:
+                    cmug.release_compressed_keys(task_id, hkeys) # release unused hkeys.
                 if len(required_memorys) == 0:
                     break
         if len(required_memorys) != 0:

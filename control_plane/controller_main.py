@@ -6,11 +6,8 @@ import traceback
 import json
 import cmd
 import argparse
-import sys
 
 import bfrt_grpc.client as gc
-
-# import bfrt_grpc.client as client
 from task_manager import TaskManager
 from resource_manager import ResourceManager
 from data_collector import DataCollector
@@ -19,7 +16,6 @@ from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 logger = logging.getLogger('FlyMon')
 if not len(logger.handlers):
     logger.addHandler(logging.StreamHandler())
-
 
 class FlyMonArgumentParser(argparse.ArgumentParser):
     """
@@ -132,11 +128,11 @@ class FlyMonController(cmd.Cmd):
         parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32")
         parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
         parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="e.g., 32768")
-        args = parser.parse_args(arg.split())
-        if parser.error_message or args is None:
-            print(parser.error_message)
-            return
         try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
             task_instance = self.task_manager.register_task(args.filter, args.key, args.attribute, args.mem_size)
             print("Required resources:")
             for re in task_instance.resource_list():
@@ -170,11 +166,11 @@ class FlyMonController(cmd.Cmd):
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
-        args = parser.parse_args(arg.split())
-        if parser.error_message or args is None:
-            print(parser.error_message)
-            return
         try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
             task_instance = self.task_manager.get_instance(args.task_id)
             if task_instance is None:
                 print(f"Invalid task id {args.task_id}")
@@ -200,11 +196,11 @@ class FlyMonController(cmd.Cmd):
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
-        args = parser.parse_args(arg.split())
-        if parser.error_message or args is None:
-            print(parser.error_message)
-            return
         try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
             task_instance = self.task_manager.get_instance(args.task_id)
             if task_instance is None:
                 print(f"Invalid task id {args.task_id}")
@@ -230,18 +226,18 @@ class FlyMonController(cmd.Cmd):
         parser.add_argument("-p", "--port", dest="port", type=int, required=True, help="D_P port of the port, int from 0 to 259")
         parser.add_argument("-s", "--speed", dest="speed", type=str, required=True, help="The speed of the port, should be a string in [\"10G\", \"25G\", \"40G\", \"100G\"]")
         parser.add_argument("-f", "--fec", dest="fec", type=str, required=False, default="BF_FEC_TYP_NONE", help="\"BF_FEC_TYP_NONE\" as default")
-        args = parser.parse_args(arg.split())
-        if parser.error_message or args is None:
-            print(parser.error_message)
-            return
-        # 100G and 40G port should be only added on lane0
-        if args.speed in ["100G", "40G"] and args.port % 4 != 0:
-            print("100G and 40G port should be only added on lane0")
-            return
-        # if the port rate is 100G, the FEC should be RS
-        if args.speed == "100G":
-            args.fec = "BF_FEC_TYP_RS"
         try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
+            # 100G and 40G port should be only added on lane0
+            if args.speed in ["100G", "40G"] and args.port % 4 != 0:
+                print("100G and 40G port should be only added on lane0")
+                return
+            # if the port rate is 100G, the FEC should be RS
+            if args.speed == "100G":
+                args.fec = "BF_FEC_TYP_RS"
             self.port_table = self.bfrt_info.table_get("$PORT")
             self.port_table.entry_add(
                 self.target,
@@ -267,11 +263,11 @@ class FlyMonController(cmd.Cmd):
         parser = FlyMonArgumentParser()
         parser.add_argument("-s", "--source", dest="source", type=int, required=True, help="Source port of the forwarding, int from 0 to 259")
         parser.add_argument("-d", "--destination", dest="dest", type=int, required=True, help="Destination port of the forwarding, int from 0 to 259")
-        args = parser.parse_args(arg.split())
-        if parser.error_message or args is None:
-            print(parser.error_message)
-            return
         try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
             self.forward_table = self.bfrt_info.table_get("FlyMonIngress.simple_fwd")
             self.forward_table.entry_add(
                 self.target,
@@ -283,8 +279,45 @@ class FlyMonController(cmd.Cmd):
             print(e)
             return
 
-    def do_query_task(self):
-        pass
+    def do_default_setup(self, arg):
+        """Default configs in our testbd.
+            self.do_add_port("-p 16 -s 40G")
+            self.do_add_port("-p 24 -s 40G")
+            self.do_add_forward("-s 16 -d 24")
+            self.do_add_forward("-s 24 -d 16")
+        """
+        self.do_add_port("-p 16 -s 40G")
+        self.do_add_port("-p 24 -s 40G")
+        self.do_add_forward("-s 16 -d 24")
+        self.do_add_forward("-s 24 -d 16")
+
+    def do_query_task(self, arg):
+        """Query a task for a given flowkey.
+        Args:
+            -t : integer, task_id.
+            -k : keys (no space), src_ip/prefix1,dst_ip/prefix2,src_port/prefix3,dst_port/prefix4,protocol/prefix5
+                 e.g., 10.0.0.0/24,*,*,*,*
+        """
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-k", "--key", dest="key", type=str, required=False, default= None,
+                                     help="e.g., 10.0.0.0/24,*,*,*,*, \
+                                           need to follow the seq of : src_ip/prefix1,src_ip/prefix1,src_ip/prefix1,src_ip/prefix1,src_ip/prefix1")
+        try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
+            task_instance = self.task_manager.get_instance(args.task_id)
+            if task_instance is None:
+                print(f"Invalid task id {args.task_id}")
+                return
+            flow_key = task_instance.generate_key_bytes(args.key)
+            self.data_collector.query(task_instance, flow_key)
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
 
     def emptyline(self):
         pass

@@ -149,7 +149,9 @@ class CMU_Group():
     def group_type(self):
         return self._group_type
 
-
+    @property
+    def memory_size(self):
+        return self._memory_size
 
     def show_status(self):
         """

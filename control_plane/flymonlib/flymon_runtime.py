@@ -14,7 +14,31 @@ class FlyMonRuntime_BfRt():
         super(FlyMonRuntime_BfRt,self).__init__()
         self.conn = conn
         self.context = context
+        self.hash_status = {
+            # Donot update the hash unit if the new configs are the same as before.
+            # key : (group_id, dhash_id)
+            # val : flow_key
+        }
         pass
+
+    def setup_dhash(self, group_id, group_type, dhash_id, hasher):
+        hash_algorithm_table = ""
+        if group_type == 1:
+            hash_algorithm_table = self.context.table_get(f"FlyMonIngress.cmu_group{group_id}.hash_unit{dhash_id}.algorithm")
+        else:
+            hash_algorithm_table = self.context.table_get(f"FlyMonEgress.cmu_group{group_id}.hash_unit{dhash_id}.algorithm")
+        if (group_id, dhash_id) not in self.hash_status.keys():
+            data_algo = hash_algorithm_table.make_data([
+                                                client.DataTuple('msb', bool_val=False),
+                                                client.DataTuple('extend', bool_val=False),
+                                                client.DataTuple('polynomial', hasher.polynomial),
+                                                client.DataTuple('reverse', bool_val=hasher.is_reverse),
+                                                client.DataTuple('init', hasher.init_crc),
+                                                client.DataTuple('final_xor', hasher.final_xor),
+                                                client.DataTuple('hash_bit_width', hasher.bit_width)],
+                                            "user_defined")
+            hash_algorithm_table.default_entry_set(self.conn, data_algo)
+            print(f"[{group_id}, {dhash_id}] : " + str(hasher))
 
     def compression_stage_config(self, group_id, group_type, dhash_id, flow_key):
         """
@@ -28,24 +52,27 @@ class FlyMonRuntime_BfRt():
             hash_configure_table = self.context.table_get(f"FlyMonIngress.cmu_group{group_id}.hash_unit{dhash_id}.configure")
         else:
             hash_configure_table = self.context.table_get(f"FlyMonEgress.cmu_group{group_id}.hash_unit{dhash_id}.configure")
-        key_configs = flow_key.to_config_dict()
-        target_config_list = []
-        order = 1
-        for key in key_configs.keys(): 
-            inner_tuple = [] # inner tupples for a specific key container.
-            for start_bit, bit_len in key_configs[key]:
-                print(key, order, (start_bit, bit_len))
-                inner_tuple.append(
-                    { 
-                      "order": client.DataTuple("order", order),
-                      "start_bit": client.DataTuple("start_bit", start_bit),
-                      "length": client.DataTuple("length", bit_len)
-                    }
-                )
-                order += 1
-            target_config_list.append(client.DataTuple(key, container_arr_val = inner_tuple))
-        data = hash_configure_table.make_data(target_config_list)
-        hash_configure_table.default_entry_set(self.conn, data)
+        
+        if (group_id, dhash_id) not in self.hash_status or self.hash_status[(group_id, dhash_id)] != flow_key:
+            key_configs = flow_key.to_config_dict()
+            target_config_list = []
+            order = 1
+            for key in key_configs.keys(): 
+                inner_tuple = [] # inner tupples for a specific key container.
+                for start_bit, bit_len in key_configs[key]:
+                    # print(key, order, (start_bit, bit_len))
+                    inner_tuple.append(
+                        { 
+                        "order": client.DataTuple("order", order),
+                        "start_bit": client.DataTuple("start_bit", start_bit),
+                        "length": client.DataTuple("length", bit_len)
+                        }
+                    )
+                    order += 1
+                target_config_list.append(client.DataTuple(key, container_arr_val = inner_tuple))
+            data = hash_configure_table.make_data(target_config_list)
+            hash_configure_table.default_entry_set(self.conn, data)
+        self.hash_status[(group_id, dhash_id)] = flow_key
         return True
 
     def initialization_stage_add(self, group_id, group_type, cmu_id, filter, task_id, key, param1, param2):

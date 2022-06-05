@@ -1,8 +1,10 @@
 from enum import Enum
 from termios import PARMRK
+from flymonlib.location import Location
 from flymonlib.resource import Resource, ResourceType
 from flymonlib.operation import *
 from flymonlib.param import *
+from flymonlib.flow_key import FlowKey
 
 class AttributeType(Enum):
     """
@@ -51,6 +53,11 @@ class FlowAttribute():
          - No exception.
         """
         self._param1 = parse_param(param_str)
+
+    def analyze(self, datas):
+        """ Parse attribute data.
+        """
+        return 0 # To be implemented by concreate attribute class.
     
     @property
     def type(self):
@@ -84,11 +91,18 @@ class FlowAttribute():
 class Frequency(FlowAttribute):
     def __init__(self, param_str):
         """
+        Implement the built-in algorithm: Count-Min Sketch.
         Exception:
          - No exception.
         """
         super(Frequency, self).__init__(param_str)
         self._param2 = Param(ParamType.Const, 65535)
+
+    def analyze(self, datas):
+        """ Parse attribute data.
+            datas: is an list of data list.
+        """
+        return min(datas)
 
     @property
     def type(self):
@@ -116,18 +130,19 @@ class Frequency(FlowAttribute):
     def __str__(self):
         return f"frequency({self.param1})"
 
-class Distinct(FlowAttribute):
+class SleKeyDistinct(FlowAttribute):
     def __init__(self, param_str):
         """
+        Implement the built-in algorithm: HyperLogLog
         Exception:
          - No exception.
         """
         super(Frequency, self).__init__(param_str)
-        self._param2 = Param(ParamType.Const, 65535)
+        self._param2 = Param(ParamType.Const, 0) # No need
 
     @property
     def type(self):
-        return AttributeType.Frequency
+        return AttributeType.SingleKeyDistinct
 
     @property
     def param2(self):
@@ -135,7 +150,7 @@ class Distinct(FlowAttribute):
 
     @property
     def memory_num(self):
-        return 3
+        return 1
 
     @property
     def param_mapping(self):
@@ -146,7 +161,117 @@ class Distinct(FlowAttribute):
 
     @property
     def operation(self):
-        return OperationType.CondADD
+        return OperationType.Max
 
     def __str__(self):
-        return f"frequency({self.param1})"
+        return f"sk_distinct({self.param1})"
+
+class MulKeyDistinct(FlowAttribute):
+    def __init__(self, param_str):
+        """
+        Implement the built-in algorithm: BeauCoup.
+        Exception:
+         - No exception.
+        """
+        super(Frequency, self).__init__(param_str)
+        self._param2 = Param(ParamType.Const, 0)
+
+    @property
+    def type(self):
+        return AttributeType.MultiKeyDistinct
+
+    @property
+    def param2(self):
+        return self._param2
+
+    @property
+    def memory_num(self):
+        return 1
+
+    @property
+    def param_mapping(self):
+        return { 
+            # key : param
+            # val : code
+        }
+
+    @property
+    def operation(self):
+        return OperationType.Max
+
+    def __str__(self):
+        return f"sk_distinct({self.param1})"
+
+
+class Existence(FlowAttribute):
+    def __init__(self, param_str):
+        """
+        Implement the built-in algorithm: BloomFilter.
+        Exception:
+         - No exception.
+        """
+        super(Frequency, self).__init__(param_str)
+        self._param2 = Param(ParamType.Const, 0)
+
+    @property
+    def type(self):
+        return AttributeType.MultiKeyDistinct
+
+    @property
+    def param2(self):
+        return self._param2
+
+    @property
+    def memory_num(self):
+        return 1
+
+    @property
+    def param_mapping(self):
+        return { 
+            # key : param
+            # val : code
+        }
+
+    @property
+    def operation(self):
+        return OperationType.Max
+
+    def __str__(self):
+        return f"sk_distinct({self.param1})"
+
+
+class Max(FlowAttribute):
+    def __init__(self, param_str):
+        """
+        Implement the built-in algorithm: SuMax.
+        Exception:
+         - No exception.
+        """
+        super(Frequency, self).__init__(param_str)
+        self._param2 = Param(ParamType.Const, 0)
+
+    @property
+    def type(self):
+        return AttributeType.MultiKeyDistinct
+
+    @property
+    def param2(self):
+        return self._param2
+
+    @property
+    def memory_num(self):
+        return 1
+
+    @property
+    def param_mapping(self):
+        return { 
+            # key : param
+            # val : code
+        }
+
+    @property
+    def operation(self):
+        return OperationType.Max
+
+    def __str__(self):
+        return f"sk_distinct({self.param1})"
