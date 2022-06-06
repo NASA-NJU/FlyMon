@@ -129,9 +129,9 @@ class TaskManager:
         status = self.tasks[task_id][0]
         instance = self.tasks[task_id][1]
         if status is True:
-            status = "Active"
+            status = "Active Task"
         else:
-            status = "Idle"
+            status = "Idle Task"
         print(f"[{status}] \n{str(instance)}")
 
     def query_task(self, task_id, query_key):

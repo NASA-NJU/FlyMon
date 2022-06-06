@@ -38,7 +38,7 @@ class FlyMonRuntime_BfRt():
                                                 client.DataTuple('hash_bit_width', hasher.bit_width)],
                                             "user_defined")
             hash_algorithm_table.default_entry_set(self.conn, data_algo)
-            print(f"[{group_id}, {dhash_id}] : " + str(hasher))
+            print(f"    [DHASH-{dhash_id}] : " + str(hasher))
 
     def compression_stage_config(self, group_id, group_type, dhash_id, flow_key):
         """

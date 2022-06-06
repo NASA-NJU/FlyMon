@@ -155,7 +155,7 @@ class FlyMonTask:
     
     
     def __str__(self) -> str:
-        info = f"ID = {self._id}\nKey = {str(self._key)} Attribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"
+        info = f"Filter= {self.filter}\nID = {self._id}\nKey = {str(self._key)}\nAttribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"
         info += "\nLocations:\n"
         for idx, loc in enumerate(self._locations):
             info += f" - loc{idx} = " + str(loc) + "\n"

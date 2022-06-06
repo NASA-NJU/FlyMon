@@ -11,12 +11,43 @@ class DataCollector:
             # key : cmu_group id
             # val : cmu_bitw (total_bits)
         }
+        self.cmug_mem = {
+            # key: cmu_group id
+            # val : type, cmu_num, memory_size
+        }
         for cmug in cmug_configs:
             id = cmug["id"]
             cmu_bitw = cmug["key_bitw"]
+            cmu_num = cmug["cmu_num"]
+            cmu_size = cmug["cmu_size"]
+            group_type = cmug["type"]
             self.cmug_bitw[id] = cmu_bitw
+            self.cmug_mem[id] = (group_type, cmu_num, cmu_size)
 
-    def read(self, task_instance:FlyMonTask):
+
+    def read_group(self, group_id):
+        """Read all memory of a cmu group.
+        Args:
+            group_id
+        Returns:
+            a list of data array        
+        """
+        if group_id not in self.cmug_mem.keys():
+            print(f"Invalid CMU-Group ID.")
+            return None
+        data = []
+        group_type = self.cmug_mem[group_id][0]
+        cmu_num = self.cmug_mem[group_id][1]
+        cmu_size = self.cmug_mem[group_id][2]
+        for idx in range(cmu_num):
+            cmu_id = idx + 1
+            low = 0
+            high = cmu_size
+            # actually read the data 
+            data.append(self.runtime.read(group_id, group_type, cmu_id, low, high))
+        return data
+
+    def read_task(self, task_instance:FlyMonTask):
         data = []
         for loc in task_instance.locations:
             # first calc the memory range
@@ -29,7 +60,7 @@ class DataCollector:
             data.append(self.runtime.read(loc.group_id, loc.group_type, loc.cmu_id, low, high))
         return data
 
-    def query(self, task_instance:FlyMonTask, flow_key_bytes = None):
+    def query_task(self, task_instance:FlyMonTask, flow_key_bytes = None):
         data = []
         if flow_key_bytes is not None:
             """

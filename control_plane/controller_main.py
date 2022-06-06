@@ -154,7 +154,7 @@ class FlyMonController(cmd.Cmd):
             print(e)
             return
 
-    def do_read_data(self, arg):
+    def do_read_task(self, arg):
         """
         Read the data of a task.
         Args list:
@@ -170,12 +170,12 @@ class FlyMonController(cmd.Cmd):
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
                 print(parser.error_message)
-                return
+                return          
             task_instance = self.task_manager.get_instance(args.task_id)
             if task_instance is None:
                 print(f"Invalid task id {args.task_id}")
                 return
-            data = self.data_collector.read(task_instance)
+            data = self.data_collector.read_task(task_instance)
             print(f"Read all data for task: {task_instance.id}")
             for row in data:
                 print(row)
@@ -185,6 +185,33 @@ class FlyMonController(cmd.Cmd):
             print(e)
             return
 
+
+    def do_read_cmug(self, arg):
+        """
+        Read the data of a task.
+        Args list:
+            "-g" "--group_ip" the ID of a CMU group, e.g., 1
+        Return:
+            The memory status of a cmu-group.
+        Exception:
+            Parse error?
+        """
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-g", "--group_id", dest="group_id", type=int, required=True, help="e.g., 1")
+        try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
+            data = self.data_collector.read_group(args.group_id)
+            print(f"Read all data for task: {args.group_id}")
+            for row in data:
+                print(row)
+            print("----------------------------------------------------")
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
 
     def do_del_task(self, arg):
         """

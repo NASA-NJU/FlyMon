@@ -22,25 +22,46 @@
 * A reference control plane framework realizing task reconfiguration, resource management, data collection.
 * A simulation framework to fast explore algorithms' accuracy.
 
+> :question: **NOTE 1** : We are improving the richness and reliability of this repository. Please submit an issue if you find any bugs/problems.
+
+> :exclamation: **NOTE 2** : This repository currently serves as an early exploration for academics purpose. We do not provide production-level quality assurance.
 
 ## How To Use
 
-### Environment
+### Environment and Dependencies
 
-We implement FlyMon based on P4-16, with the SDE Version 9.7.0. Other versions of SDE (e.g., 9.1.1) can also pass the compilation, but we are unsure if the control plane functions correctly in these older versions.
+We implement FlyMon based on P4-16, with the SDE Version 9.7.0. Please use at least a version of SDE higher than this one.
+
+Hardware Requirements：
+* Tofino-based Hardware Switch (e.g., Wdege-100BF-XX)
+* At least one Server with QSFP28 connectors and wires.
+
+Software Requirements:
+* Switch OS: 4.14.151-OpenNetworkLinux
+* Python 3.8.10 
+* SDE Version 9.7.0+ (the same is best)
 
 There are some dependencies for control plane functions. To install them.
 ```bash
+git clone "https://github.com/NASA-NJU/FlyMon.git"
+cd FlyMon
 pip install -r ./requirements.txt
 ```
+
+> 'python' and 'pip' refer to the python version of 3.8.10 in this document.
+
+### Overview
+
+<div align="center">
+<img src="docs/controlplane.svg" width=90% />
+</div>
+
+
 
 ### Get Started
 Below are running steps of the codes.
 
 
-<div align="center">
-<img src="docs/roadmap.svg" width=90% />
-</div>
 
 
 **Step #1**. Generate a customized FlyMon dataplane and build them.
