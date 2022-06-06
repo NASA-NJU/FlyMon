@@ -176,10 +176,11 @@ We demonstrate the dynamic features of FlyMon through three typical use cases.
 
 <details><summary><b>Frequency Estimation</b></summary>
 
-Suppose we deploy a new measurement task. We define key as SrcIP/24 and attribute as frequency(1). We are interested in the traffic with SrcIP in 10.0.0.0/8. We can deploy this measurement task with the `add_task` command.
+Suppose we want to measure the frequency (i.e., number of packets) of each SrcIP for the traffic with SrcIP/24 in 10.0.0.0/8.
+We can define the key as SrcIP/24 and attribute as frequency(1). We can deploy this measurement task with the `add_task` command.
 
 ```
-flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
 ```
 
 The above command will deploy a Count-Min Sketch (d=3, w=16) in the data plane for this task.
@@ -187,11 +188,10 @@ The above command will deploy a Count-Min Sketch (d=3, w=16) in the data plane f
 If there are enough resources in the data plane to deploy this measurement task, you will get the following output.
 
 ```
-flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
 Required resources:
-[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/24]
-[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/24]
-[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/24]
+[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
+[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
+[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
 [ResourceType: Memory, Content: 16]
 [ResourceType: Memory, Content: 16]
 [ResourceType: Memory, Content: 16]
@@ -199,16 +199,78 @@ Required resources:
 [Active Task] 
 Filter= [('10.0.0.0', '255.0.0.0'), ('0.0.0.0', '0.0.0.0')]
 ID = 1
-Key = hdr.ipv4.src_addr/24
+Key = hdr.ipv4.src_addr/32
 Attribute = frequency(1)
 Memory = 48(3*16)
 Locations:
- - loc0 = group_id=1, group_type=1, hkeys=[1], cmu_id=1, memory=((2, 0))
- - loc1 = group_id=1, group_type=1, hkeys=[2], cmu_id=2, memory=((2, 0))
- - loc2 = group_id=1, group_type=1, hkeys=[3], cmu_id=3, memory=((2, 0))
+ - loc0 = group_id=5, group_type=2, hkeys=[1], cmu_id=1, memory_type:HALF offset:0)
+ - loc1 = group_id=5, group_type=2, hkeys=[1], cmu_id=2, memory_type:HALF offset:0)
+ - loc2 = group_id=5, group_type=2, hkeys=[1], cmu_id=3, memory_type:HALF offset:0)
 
 [Success] Allocate TaskID: 1 
 ```
+The above output tells us that the task is successfully deployed to CMU-Group 5 and the task identifier in FlyMon is 1. The controller deploys the task with a 3 rows CM-Sketch and deivdes the 48 counters evenly over the 3 rows. Since we set the memory of each CMU to 32 (i.e., `memory_level_mini`), the memory type of each row is HALF.
+We can check the status of CMU-Group and information about the task by `show_cmug` command and `show_task` command, respectively.
+```
+flymon> show_task -t 1
+----------------------------------------------------
+[Active Task] 
+Filter= [('10.0.0.0', '255.0.0.0'), ('0.0.0.0', '0.0.0.0')]
+ID = 1
+Key = hdr.ipv4.src_addr/32
+Attribute = frequency(1)
+Memory = 48(3*16)
+Locations:
+ - loc0 = group_id=5, group_type=2, hkeys=[1], cmu_id=1, memory_type:HALF offset:0)
+ - loc1 = group_id=5, group_type=2, hkeys=[1], cmu_id=2, memory_type:HALF offset:0)
+ - loc2 = group_id=5, group_type=2, hkeys=[1], cmu_id=3, memory_type:HALF offset:0)
+
+
+flymon> show_cmug -g 5
+------------------------------------------------------------
+                   Status of CMU-Group 5                    
+------------------------------------------------------------
+Compressed Key 1 (32b): hdr.ipv4.src_addr/24
+Compressed Key 2 (16b): Empty
+------------------------------------------------------------
+CMU-1 Rest Memory: 16
+CMU-2 Rest Memory: 16
+CMU-3 Rest Memory: 16
+------------------------------------------------------------
+```
+
+We can read the full memory of the task with the `read_task` command.
+
+```
+flymon> read_task -t 1
+Read all data for task: 1
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+Now, we inject some traffic into the switch by generating some packets on the server that is directly connected to the switch.
+
+> 🔔 You need to connect the network cable correctly and configure the port as well as the forwarding table. See `add_port` and `add_forward` for details.
+
+After generating the traffic, we can check the memory of the task again.
+
+```
+flymon> read_task -t 1
+Read all data for task: 1
+[10, 4, 4, 11, 3, 10, 10, 4, 2, 9, 9, 2, 9, 2, 2, 9]
+[6, 5, 9, 5, 5, 8, 7, 9, 7, 6, 5, 5, 7, 5, 5, 6]
+[4, 7, 9, 5, 5, 7, 6, 6, 5, 7, 8, 8, 3, 8, 7, 5]
+```
+
+To query a specific Key (e.g., SrcIP=10.1.1.1), we can use the `query_task` command.
+
+```
+flymon> query_task -t 1 -k 10.1.1.1,*,*,*,*
+5
+```
+
+
 </details>
 
 

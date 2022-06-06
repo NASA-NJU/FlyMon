@@ -224,5 +224,5 @@ class FlyMonTask:
                         else:
                             buf += struct.pack('!B', int(re_step1[key_name]))
         except Exception as e:
-            raise RuntimeError("Invalid query key format, example: 10.0.0.0/24,*,*,*,*,")
+            raise RuntimeError("Invalid query key format, example: 10.0.0.0/24,*,*,*,*")
         return buf

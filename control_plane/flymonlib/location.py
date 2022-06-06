@@ -1,5 +1,6 @@
+from flymonlib.cmu_group import MemoryType
 from flymonlib.flow_key import FlowKey
-from flymonlib.utils import calc_keymapping
+
 
 
 class Location:
@@ -19,6 +20,7 @@ class Location:
         self._init_rules = []
         self._prep_rules = []
         self._oper_rules = []
+    
 
         # Maintain hash handle
         self._hash = hasher
@@ -98,6 +100,7 @@ class Location:
     def hash(self, hash_obj):
         self._hash = hash_obj
 
-    def __str__(self) -> str:
-        info = f"group_id={self._group_id}, group_type={self._group_type}, hkeys={self._hkeys}, cmu_id={self._cmu_id}, memory=({self._memory_type, self._memory_idx})"
+    def __str__(self) -> str: 
+        memory_type = MemoryType(self.memory_type)
+        info = f"group_id={self._group_id}, group_type={self._group_type}, hkeys={self._hkeys}, cmu_id={self._cmu_id}, memory_type:{memory_type.name} offset:{self._memory_idx})"
         return info

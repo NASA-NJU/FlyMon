@@ -1,4 +1,4 @@
-from flymonlib.hash import HASHES
+from flymonlib.hash import HASHES_16, HASHES_32
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 from flymonlib.location import Location
 from flymonlib.flymon_task import FlyMonTask
@@ -16,6 +16,9 @@ class ResourceManager():
             # key : (group_id, dhash_id)
             # val : hasher object
         }
+        ## TEMP hasher allocation id
+        hash_16_id = 0
+        hash_32_id = 0
         for cmug in cmug_configs:
             cmu_num = cmug["cmu_num"]
             cmu_size = cmug["cmu_size"]
@@ -41,8 +44,14 @@ class ResourceManager():
             print(f"Setup Hash Units for CMU-Group {id}")
             for idx in range(dhash_num):
                 dhash_id = idx + 1
-                self.runtime.setup_dhash(id, type, dhash_id, HASHES[id*3+dhash_id])
-                self.dhashes[(id, dhash_id)] = HASHES[id*3+dhash_id]
+                if type == 2 and dhash_id == 1:
+                    self.runtime.setup_dhash(id, type, dhash_id, HASHES_32[hash_32_id])
+                    self.dhashes[(id, dhash_id)] = HASHES_32[hash_32_id]
+                    hash_32_id += 1
+                else:
+                    self.runtime.setup_dhash(id, type, dhash_id, HASHES_16[hash_16_id])
+                    self.dhashes[(id, dhash_id)] = HASHES_16[hash_16_id]       
+                    hash_16_id += 1        
 
     def show_status(self, group_id):
         if group_id > len(self.cmu_groups):
@@ -93,7 +102,12 @@ class ResourceManager():
                 required_keys.append(resource)
             elif resource.type == ResourceType.StdParam:
                 required_params.append(resource)
-        for cmug in self.cmu_groups:
+        
+        priority_cmug_list = self.cmu_groups
+        if len(required_memorys) > 1:
+            # We favor group_type 2 for multi-row algorithms.
+            priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type)
+        for cmug in priority_cmug_list:
             # TODO: each cmug need not to have all required_keys, just at least one flowkey.
             hkeys = cmug.allocate_compressed_keys(task_id, required_keys) 
             has_param = cmug.check_parameters(required_params)

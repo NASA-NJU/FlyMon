@@ -340,7 +340,7 @@ class FlyMonController(cmd.Cmd):
                 print(f"Invalid task id {args.task_id}")
                 return
             flow_key = task_instance.generate_key_bytes(args.key)
-            self.data_collector.query(task_instance, flow_key)
+            self.data_collector.query_task(task_instance, flow_key)
         except Exception as e:
             print(traceback.format_exc())
             print(e)

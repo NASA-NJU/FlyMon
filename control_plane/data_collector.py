@@ -67,7 +67,6 @@ class DataCollector:
             For multi-key tasks.
             """
             for loc in task_instance.locations:
-                print(self.cmug_bitw[loc.group_id])
                 idx = loc.address_translate(self.cmug_bitw[loc.group_id], flow_key_bytes)
                 data.append(self.runtime.read(loc.group_id, loc.group_type, loc.cmu_id, idx, idx + 1)[0])
         else:
@@ -76,5 +75,5 @@ class DataCollector:
             """
             pass
         # print(data)
-        task_instance.attribute.analyze(data)
+        print(task_instance.attribute.analyze(data))
         
