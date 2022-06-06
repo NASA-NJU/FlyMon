@@ -4,31 +4,40 @@
   <br>
 </h1>
 
-<h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
+<h4 align="center">A reference hardware implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#hardware">Hardware Implementation</a> •
-  <a href="#simulation">Simulation Framework</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#hardware-implementation">Hardware Implementation</a> •
+  <a href="#simulation-framework">Simulation Framework</a> •
   <a href="#license">License</a>
 </p>
 
-## Key Features
+## 🎯 Key Features
 
 * P4-16 based hardware implementation.
 * Jinja2 templates used to generate P4 codes according to variable configurations (e.g., CMU-Groups, Memory Size, Candidate Key Set).
 * Several built-in algorithms used to measure various flow attributes.
-* A reference control plane framework realizing task reconfiguration, resource management, data collection.
-* A simulation framework to fast explore algorithms' accuracy.
+* A reference control plane framework realizing task reconfiguration, resource management, data collection, and task query.
+* A simulation framework to fast explore built-in algorithms' accuracy.
 
-> 🔔 We are improving the richness and reliability of this repository. Please submit an issue if you find any bugs/problems.
+> 🔔 We are improving the richness and reliability of this repository. Please submit an issue (or a pull request) if you find (or solve) any bugs/problems.
 
-> ⚠️ This repository currently serves as an early exploration for academics purpose. We do not provide production-level quality assurance.
+> ⚠️ This repository serves as an early exploration for academics purpose. We do not provide production-level quality assurance.
 
-## How To Use
+## 🚀 Getting Started
 
-### Dependencies
+### 🕶️ Implementation Overview
+
+As shown in the figure below, 
+
+<div align="center">
+<img src="docs/controlplane.svg" width=90% />
+</div>
+
+
+### ⚙️ Requirements
 
 This repository has strict hardware and software requirements.
 
@@ -42,6 +51,9 @@ This repository has strict hardware and software requirements.
 * Switch OS: 4.14.151-OpenNetworkLinux
 * Python 3.8.10 
 * SDE Version 9.7.0+ (the same is best)
+* Cmake Version 3.6+
+
+> 🔔 In this document, all 'python' and 'pip' refer to the python version of 3.8.10.
 
 There are some dependencies for control plane functions. To install them.
 ```bash
@@ -50,16 +62,8 @@ cd FlyMon
 pip install -r ./requirements.txt
 ```
 
-> 🔔 'python' and 'pip' refer to the python version of 3.8.10 in this document.
+### 🔨 Build Data Plane
 
-### Get Started
-
-
-As shown in the figure below, using this repository is roughly divided into three steps.
-
-<div align="center">
-<img src="docs/controlplane.svg" width=90% />
-</div>
 
 
 <details><summary><b>Build a Customized FlyMon Dataplane</b></summary>
