@@ -73,10 +73,10 @@ pip install -r ./requirements.txt
 In order to generate your custom data plane code, use the Jinja2 code generator we provide.
 
 ```bash
-python flymon_compiler.py -n 9 -m memory_level_min
+python flymon_compiler.py -n 2 -m memory_level_min
 ```
 
-The above command means that 9 CMU-Groups are generated in the data plane, and each CMU has a static (maximum) memory type of 'memory_level_mini'.  
+The above command will generate 2 CMU-Groups in the data plane, and each CMU has a static (maximum) memory type of 'memory_level_mini' (32 counters in each register).  
 
 > 🔔 For easy viewing of memory status, we generate mini-level CMUs (i.e., only 32 16-bit counters in each CMU) here. You can choose a larger level of memory (e.g., memory_level_8) for more practical purposes. The available memory levels are list in `flymon_compiler.py`.
 
@@ -94,7 +94,7 @@ export FLYMON_DIR=/path/to/your/flymon
 
 ### 🚀 Running FlyMon
 
-Starting FlyMon requires starting the data plane and the control plane separately.
+Lauching FlyMon requires starting the data plane and the control plane separately.
 
 Firstly, load the program for the data plane.
 
@@ -125,14 +125,56 @@ If all goes well, you will be taken to the command line interface of FlyMon.
     
 flymon> 
 ```
+<details><summary><b>You can use `tab`, 'help', and '-h' to get the relevant commands and their prompts.</b></summary>
 
+
+```
+flymon> <tab><tab>
+EOF            default_setup  read_cmug      show_task
+add_forward    del_task       read_task      
+add_port       help           shell          
+add_task       query_task     show_cmug   
+
+
+flymon> add_task -h
+usage: controller_main.py [-h] -f FILTER -k KEY -a ATTRIBUTE -m MEM_SIZE
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILTER, --filter FILTER
+                        e.g., 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,* Default: *,*
+  -k KEY, --key KEY     e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32
+  -a ATTRIBUTE, --attribute ATTRIBUTE
+                        e.g., frequency(1)
+  -m MEM_SIZE, --mem_size MEM_SIZE
+                        e.g., 32768
+
+
+flymon> help add_task
+ Add a task to CMU-Group.
+        Args:
+            "-f", "--filter" required=True, e.g., SrcIP=10.0.0.*,DstIP=*.*.*.*
+            "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24,hdr.ipv4.dst_addr
+            "-a", "--attribute" type=[frequency, distinct, max, existence], required=True,
+            "-m", "--mem_size" type=int, required=True
+            **A Complete Example** : 
+                add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+                        This will allocate the task, which monitors on packet with SrcIP=10.0.0.*, 
+                        and count for key=SrcIP/24, attribute=PacketCount, memory with 48 counters (3x16 count-min sketch)
+        Returns:
+            Added task id or -1.
+        Exceptions:
+            parser error of the key, the attribute, the memory. 
+```
+</details>
+
+Currently, we implement the functions of task deployment, deletion, status show, data reading, etc. We also implement other features, such as simple configuration of ports and install forwarding rules. But these functions can also be completed from the original SDE interfaces.
 
 ### 📝 Use Cases
 
 We demonstrate the dynamic features of FlyMon through three typical use cases.
 
-
-<details><summary><b>Dynamic Deployment of Measurement Tasks</b></summary>
+<details><summary><b>Frequency Estimation</b></summary>
 
 Suppose we deploy a new measurement task. We define key as SrcIP/24 and attribute as frequency(1). We are interested in the traffic with SrcIP in 10.0.0.0/8. We can deploy this measurement task with the `add_task` command.
 
@@ -167,10 +209,8 @@ Locations:
 
 [Success] Allocate TaskID: 1 
 ```
-
-
-
 </details>
+
 
 
 <details><summary><b>Dynamic Memory Allocation</b></summary>
@@ -178,10 +218,26 @@ Locations:
 
 </details>
 
-<details><summary><b>Data collection and Task Queries</b></summary>
+
+<details><summary><b>Single-key Distinct Counting (Flow Cardinality)</b></summary>
 
 
 </details>
+
+
+<details><summary><b>Multi-key Distinct Counting</b></summary>
+
+
+</details>
+
+
+<details><summary><b>Capture Maximum Packet Size</b></summary>
+
+
+</details>
+
+
+The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key, flow attribute, and memory size for the above tasks. The tasks that FlyMon can perform are not limited to the above use cases. We will add more use cases in the future.
 
 
 ## 📏 Simulation Framework
