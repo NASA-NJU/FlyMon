@@ -22,21 +22,23 @@
 * A reference control plane framework realizing task reconfiguration, resource management, data collection.
 * A simulation framework to fast explore algorithms' accuracy.
 
-> :question: **NOTE** :question: We are improving the richness and reliability of this repository. Please submit an issue if you find any bugs/problems.
+> 🔔 We are improving the richness and reliability of this repository. Please submit an issue if you find any bugs/problems.
 
-> :exclamation: **NOTE 2** :exclamation: This repository currently serves as an early exploration for academics purpose. We do not provide production-level quality assurance.
+> ⚠️ This repository currently serves as an early exploration for academics purpose. We do not provide production-level quality assurance.
 
 ## How To Use
 
-### Environment and Dependencies
+### Dependencies
 
-We implement FlyMon based on P4-16, with the SDE Version 9.7.0. Please use at least a version of SDE higher than this one.
+This repository has strict hardware and software requirements.
 
-Hardware Requirements：
+** Hardware Requirements **
+
 * Tofino-based Hardware Switch (e.g., Wdege-100BF-XX)
 * At least one Server with QSFP28 connectors and wires.
 
-Software Requirements:
+** Software Requirements **
+
 * Switch OS: 4.14.151-OpenNetworkLinux
 * Python 3.8.10 
 * SDE Version 9.7.0+ (the same is best)
@@ -48,7 +50,7 @@ cd FlyMon
 pip install -r ./requirements.txt
 ```
 
-> 'python' and 'pip' refer to the python version of 3.8.10 in this document.
+> 🔔 'python' and 'pip' refer to the python version of 3.8.10 in this document.
 
 ### Get Started
 
@@ -60,7 +62,7 @@ As shown in the figure below, using this repository is roughly divided into thre
 </div>
 
 
-**Step #1**. Generate a customized FlyMon dataplane and build them.
+<details><summary><b>Build a Customized FlyMon Dataplane</b></summary>
 
 ```bash
 python flymon_compiler.py -n 9 -m memory_level_min
@@ -83,8 +85,11 @@ Then, you can build the p4 codes with bf-p4c. Here we give a setup script if you
 # If we are working on SDE 9.7.0
 ./setup.sh
 ```
+</details>
 
-**Step #2**. Run the p4 program and login to FlyMon interactive command line.
+
+
+<details><summary><b>Run FlyMon System and Install Tasks</b></summary>
 
 ```bash
 # Load the P4 program
@@ -121,12 +126,25 @@ Memory Status of CMU 3
 --------------------------------------------------------------------------------
 ```
 
-**Step #3**. Dynamically deploy a measurement task and view the CMU-Group status.
+
+</details>
+
+
+<details><summary><b>Collect Measurement Data and Query Tasks</b></summary>
+
 
 ```bash
 flymon> add_task key=hdr.ipv4.src_addr/32 attribute=frequency memory_size=65536
 task 1 added.
 ```
+
+
+</details>
+
+
+### Deep Use Cases
+
+TODO
 
 
 ## Simulation
