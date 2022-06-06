@@ -3,10 +3,6 @@ import jinja2
 import json
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--num_group", dest="group_num", type=int, required=True, help="How many cmu-groups in data plane?")
-args = parser.parse_args()
-
 # ===================================================
 # P4 Path infomation.
 # ===================================================
@@ -29,6 +25,21 @@ MEM_CONFIGS = {
     "memory_level_8" : {"size" : 65536,   "bit_width" :  16},     
 }
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-n", "--num_group", dest="group_num", type=int, required=True, help="How many cmu-groups in data plane?")
+parser.add_argument("-m", "--memory", dest="memory", type=str, required=True, help="What is the size of a single block of CMU memory?")
+
+args = parser.parse_args()
+
+if args.group_num < 1 or args.group_num > 9:
+    print("Invalid Number of CMU-Groups, need to in [1, 9].")
+    exit(1)
+if args.memory not in MEM_CONFIGS.keys():
+    print("Invalid Memory Type. Need in:")
+    print(str(list(MEM_CONFIGS.keys())))
+    exit(1)
+
 # ===================================================
 # CMU_GROUPS configs.
 # ===================================================
@@ -37,7 +48,7 @@ INGRESS_CMU_GROUP_NUM   = int(TOTAL_CMU_GROUP_NUM/2)
 EGRESS_CMU_GROUP_NUM    = TOTAL_CMU_GROUP_NUM - INGRESS_CMU_GROUP_NUM
 
 CMU_PER_GROUP   = 3
-MEMORY_PER_CMU  = MEM_CONFIGS["memory_level_mini"]
+MEMORY_PER_CMU  = MEM_CONFIGS[args.memory]
 
 CANDIDATE_KEY_LIST = {
     "hdr.ipv4.src_addr" : 32,

@@ -50,32 +50,37 @@ pip install -r ./requirements.txt
 
 > 'python' and 'pip' refer to the python version of 3.8.10 in this document.
 
-### Overview
+### Get Started
+
+
+As shown in the figure below, using this repository is roughly divided into three steps.
 
 <div align="center">
 <img src="docs/controlplane.svg" width=90% />
 </div>
 
 
-
-### Get Started
-Below are running steps of the codes.
-
-
-
-
 **Step #1**. Generate a customized FlyMon dataplane and build them.
 
 ```bash
-python flymon_compiler.py -n 1 
+python flymon_compiler.py -n 9 -m memory_level_min
 ```
 
-The above command will generate two types of files. a) P4-based data plane codes located in [p4src](p4src/). b) Json-based Data plane configurations used to help initialize the control plane interfaces.
+The above command means that 9 CMU-Groups are generated in the data plane, and each CMU has a static (maximum) memory type of 'memory_level_mini'.  
 
-Then, you can build the p4 codes with bf-sde. Here we give a setup script if you don't known how to compile the codes.
+> Here we generate 'mini'-size CMUs (i.e., only 32 16-bit counters in each CMU) for easy viewing of memory status. You can choose a larger level of memory (e.g., memory_level_8) for more practical purposes. The configurable memory levels are visible in `flymon_compiler.py`.
+
+
+
+The above command will generate two types of files. 
+* P4-based data plane codes located in [p4src](p4src/). 
+* Json-based Data plane configurations in [control_plane](control_plane/cmu_groups.json) used to help initialize the control plane interfaces.
+
+Then, you can build the p4 codes with bf-p4c. Here we give a setup script if you don't known how to compile the codes.
+
 
 ```bash
-# If we are working are SDE 9.7.0
+# If we are working on SDE 9.7.0
 ./setup.sh
 ```
 
