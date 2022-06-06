@@ -22,9 +22,9 @@
 * A reference control plane framework realizing task reconfiguration, resource management, data collection.
 * A simulation framework to fast explore algorithms' accuracy.
 
-> :question: **NOTE 1** : We are improving the richness and reliability of this repository. Please submit an issue if you find any bugs/problems.
+> :question: **NOTE** :question: We are improving the richness and reliability of this repository. Please submit an issue if you find any bugs/problems.
 
-> :exclamation: **NOTE 2** : This repository currently serves as an early exploration for academics purpose. We do not provide production-level quality assurance.
+> :exclamation: **NOTE 2** :exclamation: This repository currently serves as an early exploration for academics purpose. We do not provide production-level quality assurance.
 
 ## How To Use
 
