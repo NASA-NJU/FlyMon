@@ -15,11 +15,12 @@ class Hasher:
         self._func = crcmod.mkCrcFun(((1 << bit_width) | polynomial), initCrc=init_crc, rev=is_reverse)
         pass
 
-    def compute(self, phy_bitw, input):
+    def compute(self, phy_bitw, input, offset = 0):
         """
         calcute the crc code for input.
         """
-        return (self._func(input) ^ self._conf["final_xor"]) & int('0'*(32-phy_bitw) + '1'*phy_bitw, base=2)
+        # return (self._func(input) ^ self._conf["final_xor"]) & int('0'*(32-phy_bitw) + '1'*phy_bitw, base=2)
+        return ((self._func(input) ^ self._conf["final_xor"]) >> offset) & int('0'*(32-phy_bitw) + '1'*phy_bitw, base=2)
 
     @property
     def polynomial(self):

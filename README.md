@@ -265,24 +265,29 @@ Now, we inject some traffic into the switch by generating some packets on the se
 If you are using Tofino Model, we provide some commands to help you perform the tests.
 
 ```
+flymon> add_forward -s 0 -d 1
 
+flymon> send_packets -l 64 -n 5 -p 0 -s 10.0.0.0/8
 ```
+
+The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port0 to Port1. The `send_packets` command send 5 packets with SrcIP in 10.0.0.0/8, length 64.
 
 After generating the traffic, we can check the memory of the task again.
 
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[10, 4, 4, 11, 3, 10, 10, 4, 2, 9, 9, 2, 9, 2, 2, 9]
-[6, 5, 9, 5, 5, 8, 7, 9, 7, 6, 5, 5, 7, 5, 5, 6]
-[4, 7, 9, 5, 5, 7, 6, 6, 5, 7, 8, 8, 3, 8, 7, 5]
+[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0]
+[0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1]
+[0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1]
 ```
 
 To query a specific Key (e.g., SrcIP=10.1.1.1), we can use the `query_task` command.
 
 ```
-flymon> query_task -t 1 -k 10.1.1.1,*,*,*,*
-5
+flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
+
+1
 ```
 
 

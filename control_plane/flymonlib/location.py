@@ -25,19 +25,22 @@ class Location:
         # Maintain hash handle
         self._hash = hasher
     
-    def address_translate(self, phy_bitw, bytes):
+    def address_translate(self, phy_bitw, buf):
         """
         Args:
             Flow key to be hash and translate.
         Returns:
             Real memory address.
         """
+        offset = 0
+        if self.group_type == 2:
+            offset = (self.cmu_id - 1) * 8
         mem_range = int( (2**phy_bitw)  /  (2**(self._memory_type-1)) )
-        address_base = self._hash.compute(phy_bitw, bytes)
+        address_base = self._hash.compute(phy_bitw, buf, offset)
         current_idx = int(address_base / mem_range)
         offset = (self._memory_idx - current_idx) * mem_range
-        # print(f"mem_range:{mem_range} current_idx: {current_idx}  current_idx:{current_idx}, offset:{offset}")
-        # print(f"address_base:{address_base}, offset:{offset}, read:{address_base + offset}")
+        print(f"mem_range:{mem_range} current_idx: {current_idx}  current_idx:{current_idx}, offset:{offset}")
+        print(f"address_base:{address_base}, offset:{offset}, read:{address_base + offset}")
         return address_base + offset
 
     @property
