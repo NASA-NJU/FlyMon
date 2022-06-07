@@ -41,7 +41,7 @@ class ResourceManager():
                 dhash_num = 3
             else:
                 dhash_num = 2
-            print(f"Setup Hash Units for CMU-Group {id}")
+            # print(f"Setup Hash Units for CMU-Group {id}")
             for idx in range(dhash_num):
                 dhash_id = idx + 1
                 if type == 2 and dhash_id == 1:

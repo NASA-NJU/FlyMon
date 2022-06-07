@@ -79,14 +79,19 @@ class FlyMonController(cmd.Cmd):
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-g", "--cmu_group", dest="group_id", type=int, required=True, help="Show which cmu-group?")
-        args = parser.parse_args(arg.split())
-        if parser.error_message or args is None:
-            print(parser.error_message)
+        try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
+            # Normal Logic
+            self.resource_manager.show_status(args.group_id)
+            print("\n")
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
             return
-        # Normal Logic
-        self.resource_manager.show_status(args.group_id)
-        print("\n")
-    
+        
     def do_show_task(self, arg):
         """
         Show the status of a CMU-Group.
@@ -97,15 +102,20 @@ class FlyMonController(cmd.Cmd):
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-t", "--task_id", dest="task_id", type=int, default=-1, help="e.g., 1")
-        args = parser.parse_args(arg.split())
-        if parser.error_message or args is None:
-            print(parser.error_message)
+        try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
+            if args.task_id == -1:
+                self.task_manager.show_tasks()
+            else:
+                self.task_manager.show_task(args.task_id)
+            print("\n")
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
             return
-        if args.task_id == -1:
-            self.task_manager.show_tasks()
-        else:
-            self.task_manager.show_task(args.task_id)
-        print("\n")
 
     def do_add_task(self, arg):
         """ Add a task to CMU-Group.

@@ -1,4 +1,5 @@
 import traceback
+from flymonlib.cmu_group import MemoryType
 from flymonlib.param import ParamType
 from flymonlib.resource import *
 from flymonlib.flymon_task import FlyMonTask
@@ -66,11 +67,20 @@ class TaskManager:
                 # Install the initialization stage.
                 if task_instance.attribute.param1.type == ParamType.CompressedKey:
                     self.runtime.compression_stage_config(location.group_id, location.group_type,
-                                                    location.hkeys[1], task_instance.attribute.param1)
+                                                          location.hkeys[1], task_instance.attribute.param1)
                     location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
                                                             task_instance.filter, # Filter
                                                             task_instance.id,
-                                                            location.hkeys[0],
+                                                            location.hkeys[0],   # key
+                                                            (task_instance.attribute.param1, location.hkeys[1]),
+                                                            task_instance.attribute.param2)
+                elif task_instance.attribute.param1.type == ParamType.Key:
+                    self.runtime.compression_stage_config(location.group_id, location.group_type,
+                                                          location.hkeys[1], task_instance.key)
+                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
+                                                            task_instance.filter, # Filter
+                                                            task_instance.id,
+                                                            location.hkeys[0],   # key
                                                             (task_instance.attribute.param1, location.hkeys[1]),
                                                             task_instance.attribute.param2)
                 else:
@@ -81,12 +91,13 @@ class TaskManager:
                                                             (task_instance.attribute.param1, None),
                                                             task_instance.attribute.param2)
                 # # Install the pre-processing stage.
-                location.prep_rules = self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                    task_instance.id, 
-                                                    calc_keymapping(self.cmug_bitw[location.group_id], 
-                                                                    location.memory_type, 
-                                                                    location.memory_idx),  # Key mappings.
-                                                    task_instance.attribute.param_mapping) # Param1 mappings.
+                if location.memory_type != MemoryType.WHOLE.value:
+                    location.prep_rules = self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
+                                                        task_instance.id, 
+                                                        calc_keymapping(self.cmug_bitw[location.group_id], 
+                                                                        location.memory_type, 
+                                                                        location.memory_idx),  # Key mappings.
+                                                        task_instance.attribute.param_mapping) # Param1 mappings.
                 # # Install the operation stage.
                 location.oper_rules = self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
                                                        task_instance.id, task_instance.attribute.operation)
@@ -94,7 +105,7 @@ class TaskManager:
             self.tasks[task_instance.id][0] = True
         except Exception as e:
             print(f"Failed! {e} when install rules for task {task_instance.id}")
-            # print(traceback.format_exc())
+            print(traceback.format_exc())
             # withdraw installed rules.
             self.uninstall_task(task_id)
             return False

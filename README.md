@@ -357,7 +357,7 @@ The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key
 For the convenience of experimentation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation.
 In addition, we constructed an automated testing framework to repeat the experiment. The simulation code is located in the [simulations](./simulations) directory.
 
-## ⚠️ Lisense
+## ⚠️ Licsense
 
 The project is released under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
 

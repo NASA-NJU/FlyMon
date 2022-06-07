@@ -38,7 +38,7 @@ class FlyMonRuntime_BfRt():
                                                 client.DataTuple('hash_bit_width', hasher.bit_width)],
                                             "user_defined")
             hash_algorithm_table.default_entry_set(self.conn, data_algo)
-            print(f"    [DHASH-{dhash_id}] : " + str(hasher))
+            # print(f"    [DHASH-{dhash_id}] : " + str(hasher))
 
     def compression_stage_config(self, group_id, group_type, dhash_id, flow_key):
         """
@@ -103,9 +103,8 @@ class FlyMonRuntime_BfRt():
         match = initialization_table.make_key([client.KeyTuple(f'hdr.ipv4.src_addr', filter[0][0], filter[0][1]),
                                                client.KeyTuple(f'hdr.ipv4.dst_addr', filter[1][0], filter[1][1])])
         action = None
-        if param1[0].type == ParamType.CompressedKey:
+        if param1[0].type == ParamType.CompressedKey or param1[0].type == ParamType.Key:
             action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
-                                                      client.DataTuple('param1', param1[1]),
                                                       client.DataTuple('param2', param2.content),], 
                                                       prefix + f".set_cmu{cmu_id}_hkey{key}_hparam{param1[1]}")
         elif param1[0].type == ParamType.Const:
@@ -216,7 +215,7 @@ class FlyMonRuntime_BfRt():
             action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_and_or")
         elif operation_type == OperationType.CondADD:
             action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_cond_add")
-        elif operation_table == OperationType.Max:
+        elif operation_type == OperationType.Max:
             action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_max")
         else:
             print("Invalid operation type when install runtime rules.")

@@ -1,10 +1,8 @@
 from enum import Enum
-from termios import PARMRK
-from flymonlib.location import Location
 from flymonlib.resource import Resource, ResourceType
 from flymonlib.operation import *
 from flymonlib.param import *
-from flymonlib.flow_key import FlowKey
+from flymonlib.utils import *
 
 class AttributeType(Enum):
     """
@@ -16,29 +14,6 @@ class AttributeType(Enum):
     Existence = 3
     Max = 4 
 
-def parse_param(param_str):
-    """
-    param string to param object.
-    """
-    param = None
-    if param_str == 'pkt_size':
-        param = Param(ParamType.PacketSize)
-    elif param_str == 'timestamp':
-        param = Param(ParamType.Timestamp)
-    elif param_str == 'queue_size':
-        param = Param(ParamType.QueueLen)
-    elif 'hdr' in param_str:
-        # Don't check the validity here.
-        # Check it in Resource Manager when allocating resources.
-        param = Param(ParamType.CompressedKey)
-    else: # Must be a const.
-        try:
-            param = Param(ParamType.Const, int(param_str))
-        except Exception as e:
-            print(f"{e} when set a const param for the frequency attribute.")
-            print(f"WARN: Set the param to Const 1.")
-            param = Param(ParamType.Const, 1)
-    return param
 
 
 class FlowAttribute():
@@ -70,6 +45,10 @@ class FlowAttribute():
     @property
     def param1(self):
         return self._param1
+
+    @param1.setter
+    def param1(self, param):
+        self._param1 = param
 
     @property
     def operation(self):
@@ -131,13 +110,13 @@ class Frequency(FlowAttribute):
         return f"frequency({self.param1})"
 
 class SleKeyDistinct(FlowAttribute):
-    def __init__(self, param_str):
+    def __init__(self):
         """
         Implement the built-in algorithm: HyperLogLog
         Exception:
          - No exception.
         """
-        super(Frequency, self).__init__(param_str)
+        super(SleKeyDistinct, self).__init__("KEY")
         self._param2 = Param(ParamType.Const, 0) # No need
 
     @property
@@ -173,7 +152,7 @@ class MulKeyDistinct(FlowAttribute):
         Exception:
          - No exception.
         """
-        super(Frequency, self).__init__(param_str)
+        super(MulKeyDistinct, self).__init__(param_str)
         self._param2 = Param(ParamType.Const, 0)
 
     @property
@@ -210,7 +189,7 @@ class Existence(FlowAttribute):
         Exception:
          - No exception.
         """
-        super(Frequency, self).__init__(param_str)
+        super(Existence, self).__init__(param_str)
         self._param2 = Param(ParamType.Const, 0)
 
     @property
@@ -247,7 +226,7 @@ class Max(FlowAttribute):
         Exception:
          - No exception.
         """
-        super(Frequency, self).__init__(param_str)
+        super(Max, self).__init__(param_str)
         self._param2 = Param(ParamType.Const, 0)
 
     @property
@@ -275,3 +254,23 @@ class Max(FlowAttribute):
 
     def __str__(self):
         return f"sk_distinct({self.param1})"
+
+
+def parse_attribute(attribute_str):
+    # attribute = None
+    try:
+        re = match_format_string("{attr_name}({param})", attribute_str)
+    except Exception as e:
+        raise RuntimeError(f"Invalid attribute format {attribute_str}")
+    if re['attr_name'] == 'frequency':
+        return Frequency(re['param'])
+    if re['attr_name'] == "distinct":
+        if re['param'] == "":
+            return SleKeyDistinct() ## 
+        else:
+            return MulKeyDistinct(re['param'])
+    else:
+        raise RuntimeError(f"Invalid attribute name {re['attr_name']}")
+
+
+

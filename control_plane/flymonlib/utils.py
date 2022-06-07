@@ -176,3 +176,42 @@ def calc_keymapping(total_bitw, mem_type, mem_idx):
             match_value = idx << int(total_bitw - (mem_type-1))
             key_mapping[(match_value, mask_value)] = (offset+2**total_bitw)%(2**total_bitw)
     return key_mapping
+
+
+def parse_filter(filter_str):
+    """
+    Args:
+        filter_std: e.g., a.b.c.d/32,a.b.c.d/24
+    Returns:
+        [(a.b.c.d, 255.255.0.0), (0.0.0.0, 0.0.0.0)]
+    """
+    filters = ["src_filter",  "dst_filter"]
+    results = []
+    try:
+        re_step1 = match_format_string("{src_filter},{dst_filter}", filter_str)
+        for filter in filters:
+            if re_step1[filter] == "*":
+                results.append(("0.0.0.0", "0.0.0.0"))
+            else:
+                if '/' in re_step1[filter]:
+                    re_step2 = match_format_string("{ip}/{prefix}", re_step1[filter])
+                    ip = re_step2['ip']
+                    prefix = int(re_step2['prefix'])
+                    if prefix > 32 or prefix < 0 or len(ip)<7 or len(ip)>15:
+                        raise RuntimeError()
+                    mask = '1' * prefix + '0' * (32-prefix)
+                    splt_mask = []
+                    temp = ''
+                    for idx, bit in enumerate(mask):
+                        if idx != 0 and idx % 8 == 0:
+                            splt_mask.append(temp)
+                            temp = ''
+                        else:
+                            temp += bit
+                    splt_mask.append(temp)
+                    results.append((ip, f"{int(splt_mask[0], base=2)}.{int(splt_mask[1], base=2)}.{int(splt_mask[2], base=2)}.{int(splt_mask[3], base=2)}"))
+                else:
+                    results.append((re_step1[filter], "255.255.255.255"))
+    except Exception as e:
+        raise RuntimeError("Invalid filter format, example: 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,*")
+    return results
