@@ -223,6 +223,7 @@ class FlyMonController(cmd.Cmd):
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-c", "--clear", dest="clear", type=bool, required=False, default=False, help="e.g., False")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
@@ -234,6 +235,8 @@ class FlyMonController(cmd.Cmd):
                 return
             self.resource_manager.release_task(task_instance)
             self.task_manager.uninstall_task(task_instance.id)
+            if args.clear:
+                self.data_collector.clear_task(task_instance)
         except Exception as e:
             print(traceback.format_exc())
             print(e)

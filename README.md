@@ -73,7 +73,7 @@ pip install -r ./requirements.txt
 In order to generate your custom data plane code, use the Jinja2 code generator we provide.
 
 ```bash
-python flymon_compiler.py -n 2 -m memory_level_min
+python flymon_compiler.py -n 2 -m memory_level_mini
 ```
 
 The above command will generate 2 CMU-Groups in the data plane, and each CMU has a static (maximum) memory type of 'memory_level_mini' (32 counters in each register).  
@@ -89,7 +89,7 @@ export FLYMON_DIR=/path/to/your/flymon
 ```
 > 🔔 You also need to check if SDE environment variables (e.g., `SDE` and `SDE_INSTALL`) are set correctly.
 
-> 🔔 The compilation process usually takes between 20 and 60 minutes. Yes, it does compile slowly, but please be patient. 
+> 🔔 The compilation process usually takes between 20 and 60 minutes. Yes, it does compile so slowly QAQ. We expect subsequent optimizations from the compiler.
 
 
 ### 🚀 Running FlyMon
@@ -172,15 +172,15 @@ Currently, we implement the functions of task deployment, deletion, status show,
 
 ### 📝 Use Cases
 
-We demonstrate the dynamic features of FlyMon through three typical use cases.
+We demonstrate the dynamic features of FlyMon through several typical use cases.
 
 <details><summary><b>Frequency Estimation</b></summary>
 
-Suppose we want to measure the frequency (i.e., number of packets) of each SrcIP for the traffic with SrcIP/24 in 10.0.0.0/8.
+Suppose we want to measure the frequency (i.e., number of packets) of each SrcIP for the traffic with SrcIP in 10.0.0.0/8.
 We can define the key as SrcIP/24 and attribute as frequency(1). We can deploy this measurement task with the `add_task` command.
 
 ```
-add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
 ```
 
 The above command will deploy a Count-Min Sketch (d=3, w=16) in the data plane for this task.
@@ -188,6 +188,7 @@ The above command will deploy a Count-Min Sketch (d=3, w=16) in the data plane f
 If there are enough resources in the data plane to deploy this measurement task, you will get the following output.
 
 ```
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
 Required resources:
 [ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
 [ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
@@ -251,7 +252,7 @@ Read all data for task: 1
 
 Now, we inject some traffic into the switch by generating some packets on the server that is directly connected to the switch.
 
-> 🔔 You need to connect the network cable correctly and configure the port as well as the forwarding table. See `add_port` and `add_forward` for details.
+> 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., scapy). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
 
 After generating the traffic, we can check the memory of the task again.
 
@@ -276,7 +277,56 @@ flymon> query_task -t 1 -k 10.1.1.1,*,*,*,*
 
 
 <details><summary><b>Dynamic Memory Allocation</b></summary>
+Below we show FlyMon's dynamic memory allocation. First we issue two tasks with different memory sizes under the same CMU-Group.
 
+```
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+```
+These two tasks have the same key and attribute, but focus on different sets of traffic. The resource manager will assign them to the same CMU-Group.
+
+The first task will be allocated 3x16 buckets, while the second task will be allocated 3x8 buckets. To verify this, we inject some packets into the switch.
+
+> 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., scapy). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
+
+After injecting the traffic of 10.0.0.0/8 and 20.0.0.0/8, we observe the memory status of whole CMU-Group, Task 1, and Task 2 respectively.
+
+```
+Read all data for task: 5
+[2, 9, 9, 2, 9, 2, 2, 9, 10, 4, 4, 11, 3, 10, 10, 4, 12, 13, 13, 13, 12, 12, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0]
+[6, 5, 9, 5, 5, 8, 7, 9, 7, 6, 5, 5, 7, 5, 5, 6, 13, 11, 14, 10, 12, 13, 12, 15, 0, 0, 0, 0, 0, 0, 0, 0]
+[4, 7, 9, 5, 5, 7, 6, 6, 5, 7, 8, 8, 3, 8, 7, 5, 9, 14, 17, 13, 8, 15, 13, 11, 0, 0, 0, 0, 0, 0, 0, 0]
+----------------------------------------------------
+
+flymon> read_task -t 1
+Read all data for task: 1
+[2, 9, 9, 2, 9, 2, 2, 9, 10, 4, 4, 11, 3, 10, 10, 4]
+[6, 5, 9, 5, 5, 8, 7, 9, 7, 6, 5, 5, 7, 5, 5, 6]
+[4, 7, 9, 5, 5, 7, 6, 6, 5, 7, 8, 8, 3, 8, 7, 5]
+----------------------------------------------------
+
+flymon> read_task -t 2
+Read all data for task: 2
+[12, 13, 13, 13, 12, 12, 12, 13]
+[13, 11, 14, 10, 12, 13, 12, 15]
+[9, 14, 17, 13, 8, 15, 13, 11]
+----------------------------------------------------
+```
+We can find that the data of both Task 1 and Task 2 are on CMU-Group5. The memory range of task 1 is [0,16), while the memory range of task 2 is [16,24).
+
+Next, we delete task 1 and its data.
+
+```
+flymon> del_task -t 1 -c True
+
+flymon> read_cmug -g 5
+Read all data for task: 5
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 13, 13, 13, 12, 12, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 11, 14, 10, 12, 13, 12, 15, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 14, 17, 13, 8, 15, 13, 11, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+Finally, we find that all the data of task 1 is cleared.
 
 </details>
 

@@ -268,6 +268,33 @@ class FlyMonRuntime_BfRt():
             buf.append(value_lo)
         return buf
     
+    def clear_data(self, group_id, group_type, cmu_id, begin, end):
+        """
+        reset memories in [begin, end)
+        """
+        prefix = ""
+        if group_type == 1:
+            prefix = f"FlyMonIngress.cmu_group{group_id}"
+        else:
+            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        register_table = self.context.table_get(prefix + f".cmu{cmu_id}_buckets")
+        # buf = [0] * (end-begin)
+        buf = []
+        # batch entries to read faster
+        batch_key = []
+        for register_idx in range(begin, end):
+            batch_key.append(register_table.make_key([client.KeyTuple('$REGISTER_INDEX', register_idx)]))
+        batch_data = [register_table.make_data(
+                                        [client.DataTuple(f'{prefix + f".cmu{cmu_id}_buckets"}.f1', 0)]
+                                              )
+                     ] * (end-begin)
+        register_table.entry_add(
+            self.conn,
+            batch_key,
+            batch_data)
+        register_table.entry_add( self.conn, batch_key, batch_data)
+      
+    
     def clear_all(self, group_id, group_type, cmu_num):
         """
         Clear all table rules.
