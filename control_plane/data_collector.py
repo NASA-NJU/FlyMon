@@ -84,7 +84,12 @@ class DataCollector:
             """
             For single-key tasks.
             """
-            print("Here for single key.")
+            for loc in task_instance.locations:
+                key_bitw = self.cmug_bitw[loc.group_id] - loc.memory_type + 1  
+                # the lowwer and higher bound of the memory range
+                low = loc.memory_idx*(2**key_bitw)
+                high = (loc.memory_idx+1)*(2**key_bitw)
+                data.append(self.runtime.read(loc.group_id, loc.group_type, loc.cmu_id, low, high))
             pass
         # print(data)
         print(task_instance.attribute.analyze(data))

@@ -60,8 +60,8 @@ class FlowAttribute():
         resource_list = []
         if self._param1.type == ParamType.CompressedKey:
             resource_list.append(Resource(ResourceType.CompressedKey, self._param1))
-        elif self._param1.type != ParamType.Const:
-            resource_list.append(Resource(ResourceType.StdParam, self._param1))
+        elif self._param1.type != ParamType.Const and self._param1.type != ParamType.Key:
+            resource_list.append(Resource(ResourceType.StdParam, self._param1.content))
         return resource_list
 
     def __str__(self):
@@ -143,7 +143,7 @@ class SleKeyDistinct(FlowAttribute):
         """ Parse attribute data.
             datas: is an list of data list.
         """
-        # 	double estimate = 0;                
+        datas = datas[0]        
         V = 0
         dZ = 0
         Z = 0   
@@ -152,9 +152,9 @@ class SleKeyDistinct(FlowAttribute):
         for bits in datas:
             if bits == 0:
                 V+=1
-            p = 0
+            p = 16 ## Check the C++?
             for i in range(15, -1, -1):
-                bit = (bits & (1<<i)) >> i
+                bit = int(bits & (1<<i)) >> i
                 if bit == 0:
                     p = (15 - i) + 1
                     break
@@ -172,40 +172,7 @@ class SleKeyDistinct(FlowAttribute):
             E_star = E 
         else: 
             E_star = -1*pow232*log2(1-E/pow232)
-        return E_star
-
-# uint32_t HyperLogLogCalc(const vector<uint16_t>& data){
-# 	double estimate = 0;                
-# 	double V = 0;
-# 	double dZ = 0;
-# 	double Z = 0;
-# 	double E = 0;
-# 	double m = data.size();
-# 	for(auto& bits : data){
-# 		if(bits == 0){
-# 			V+=1;
-# 		}
-# 		int p = 0;
-# 		for(int i = 15; i >= 0; --i){
-# 			uint16_t bit = (bits & (1<<i)) >> i;
-# 			if(bit == 0){
-# 				p = (15 - i) + 1;
-# 				break;
-# 			}
-# 		}
-# 		dZ += pow(2, -1*p);
-# 	}
-# 	Z = 1.0 / dZ;
-# 	E = 0.679 * pow(m, 2) * Z;
-# 	double E_star = 0;
-# 	if (E < 2.5*m){
-# 		E_star = (V != 0)? m * log2(m/V) : E;
-# 	}
-# 	double pow232 = pow(2, 32);
-# 	E_star = (E <= pow232/30)? E : -1*pow232*log2(1-E/pow232);
-# 	return E_star;
-# }
-
+        return int(E_star)
 
     @property
     def operation(self):
@@ -298,9 +265,15 @@ class Max(FlowAttribute):
         super(Max, self).__init__(param_str)
         self._param2 = Param(ParamType.Const, 0)
 
+    def analyze(self, datas):
+        """ Parse attribute data.
+            datas: is an list of data list.
+        """
+        return min(datas)
+
     @property
     def type(self):
-        return AttributeType.MultiKeyDistinct
+        return AttributeType.Max
 
     @property
     def param2(self):
@@ -308,7 +281,7 @@ class Max(FlowAttribute):
 
     @property
     def memory_num(self):
-        return 1
+        return 3
 
     @property
     def param_mapping(self):
@@ -322,7 +295,7 @@ class Max(FlowAttribute):
         return OperationType.Max
 
     def __str__(self):
-        return f"sk_distinct({self.param1})"
+        return f"max({self.param1})"
 
 
 def parse_attribute(attribute_str):
@@ -333,11 +306,13 @@ def parse_attribute(attribute_str):
         raise RuntimeError(f"Invalid attribute format {attribute_str}")
     if re['attr_name'] == 'frequency':
         return Frequency(re['param'])
-    if re['attr_name'] == "distinct":
+    elif re['attr_name'] == "distinct":
         if re['param'] == "":
             return SleKeyDistinct() ## 
         else:
             return MulKeyDistinct(re['param'])
+    elif re['attr_name'] == "max":
+        return Max(re['param'])
     else:
         raise RuntimeError(f"Invalid attribute name {re['attr_name']}")
 

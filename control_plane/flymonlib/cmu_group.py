@@ -211,6 +211,8 @@ class CMU_Group():
                         self._compressed_keys[idx][2].append(task_id)
                         hkey_list.append(idx+1)
                         break
+                    else:
+                        pass
                 else:
                     self._compressed_keys[idx][2].append(task_id)
                     hkey_list.append(idx+1)
@@ -221,6 +223,7 @@ class CMU_Group():
                 # TODO: support XOR in Ingress Pipeline Here
                 
                 # return back
+                print("Here!!!!!!!!!!!!!!!!")
                 self.release_compressed_keys(task_id, hkey_list)
                 return None
         return hkey_list

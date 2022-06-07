@@ -138,8 +138,8 @@ class ResourceManager():
                             else:
                                 # print("No enough memory")
                                 pass
-                if len(hkeys) != 0:
-                    cmug.release_compressed_keys(task_id, hkeys) # release unused hkeys.
+                # if len(hkeys) != 0:
+                #     cmug.release_compressed_keys(task_id, hkeys) # release unused hkeys.
                 if len(required_memorys) == 0:
                     break
         if len(required_memorys) != 0:

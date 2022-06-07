@@ -333,27 +333,58 @@ Finally, we find that all the data of task 1 is cleared.
 
 <details><summary><b>Single-key Distinct Counting (Flow Cardinality)</b></summary>
 
+FlyMon uses the HyperLogLog algorithm to implement single-key distinct Count statistics. If we want to count the different number of IP-Pair in the network, we can deploy this task with the following command.
+
+```
+flymon> add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 32
+```
+
+We can inject some packets into the switch like this. For example, using scapy to generate 100 packets with different IP addresses. 
+
+> 🔔 Since the memory in our demo scenario is relatively small (i.e., only 32 16-bits counters in each CMU), we choose a very small size of traffic to be measured. HyperLogLog usually yields more reliable measurements in larger traffic scenarios.
+
+After the flow run, we can query the measurement data.
+
+```
+flymon> read_task -t 1
+Read all data for task: 1
+[0, 65407, 65407, 48622, 44099, 65534, 49151, 65534, 64351, 65535, 65375, 49151, 0, 65535, 47967, 65535, 0, 65535, 64479, 49151, 2735, 64511, 49119, 56567, 32767, 65535, 64511, 49150, 0, 64510, 49151, 65534]
+
+
+flymon> query_task -t 1
+127
+```
+As you can see, the output of the HyperLogLog algorithm is not intuitive. We implemented the parsing of the HLL algorithm data in the `query_test` command.
 
 </details>
 
 
 <details><summary><b>Capture Maximum Packet Size</b></summary>
 
+Here, we show how to use FlyMon for the measurement of the maximum value property and how to set standard metadata as parameters.
+We do this by measuring the maximum packet size for each flow. We can deploy such a task with the following command.
 
+```
+flymon> add_task -f *,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 32
+```
+
+After randomly injecting traffic of different packet sizes into the network, we can get the following measurement results.
+
+```
+flymon> read_task -t 1
+Read all data for task: 1
+[511, 507, 511, 511, 511, 511, 511, 511, 251, 511, 511, 371, 511, 321, 423, 511]
+[511, 511, 509, 511, 511, 511, 511, 511, 511, 511, 511, 511, 511, 511, 383, 511]
+[511, 447, 511, 511, 511, 511, 511, 255, 511, 511, 511, 511, 511, 439, 511, 511]
+
+flymon> query_task -t 1 -k 20.100.194.98,*,*,*,*
+511
+```
+The underlying logic of the Max property is the SuMax algorithm, which obtains the closest estimate to the true value by minimizing the value of multiple rows.
+In addition to packet size, FlyMon currently supports standard metadata including queue length, timestamp, etc.
 </details>
 
-
-
-<details><summary><b>Multi-key Distinct Counting</b></summary>
-
-[TODO] The data plane already supports this feature. The corresponding control plane use case will come soon.
-
-</details>
-
-
-
-The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key, flow attribute, and memory size for the above tasks. The tasks that FlyMon can perform are not limited to the above use cases. We will add more use cases in the future.
-
+The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key, flow attribute, and memory size. The tasks that FlyMon can perform are not limited to the above use cases. We will add more use cases in the future.
 
 ## 📏 Simulation Framework
 

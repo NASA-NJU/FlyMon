@@ -112,18 +112,10 @@ class FlyMonRuntime_BfRt():
                                                       client.DataTuple('param1', param1[0].content),
                                                       client.DataTuple('param2', param2.content),], 
                                                       prefix + f".set_cmu{cmu_id}_hkey{key}_cparam")
-        elif param1[0].type == ParamType.PacketSize:
+        elif param1[0].type == ParamType.StdParam:
             action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
                                                       client.DataTuple('param2', param2.content)], 
-                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_pktsize")
-        elif param1[0].type == ParamType.Timestamp:
-            action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
-                                                      client.DataTuple('param2', param2.content)], 
-                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_timestamp")
-        elif param1[0].type == ParamType.QueueLen:
-            action = initialization_table.make_data([ client.DataTuple('task_id', task_id),
-                                                      client.DataTuple('param2', param2.content)], 
-                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_queue_length")
+                                                      prefix + f".set_cmu{cmu_id}_hkey{key}_{param1[0].content}")
         else:
             raise RuntimeError(f"Unkonwn ParamType of param 1.")
         initialization_table.entry_add(self.conn, [match], [action])
