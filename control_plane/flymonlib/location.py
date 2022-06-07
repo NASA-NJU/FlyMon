@@ -102,5 +102,5 @@ class Location:
 
     def __str__(self) -> str: 
         memory_type = MemoryType(self.memory_type)
-        info = f"group_id={self._group_id}, group_type={self._group_type}, hkeys={self._hkeys}, cmu_id={self._cmu_id}, memory_type:{memory_type.name} offset:{self._memory_idx})"
+        info = f"group_id={self._group_id}, group_type={self._group_type}, hkeys={self._hkeys}, cmu_id={self._cmu_id}, memory_type:{memory_type.name} offset:{self._memory_idx}"
         return info

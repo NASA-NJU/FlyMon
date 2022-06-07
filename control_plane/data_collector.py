@@ -84,6 +84,7 @@ class DataCollector:
             """
             For single-key tasks.
             """
+            print("Here for single key.")
             pass
         # print(data)
         print(task_instance.attribute.analyze(data))

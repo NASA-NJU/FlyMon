@@ -3,6 +3,7 @@ from flymonlib.resource import Resource, ResourceType
 from flymonlib.operation import *
 from flymonlib.param import *
 from flymonlib.utils import *
+from math import pow, log2
 
 class AttributeType(Enum):
     """
@@ -137,6 +138,74 @@ class SleKeyDistinct(FlowAttribute):
             # key : param
             # val : code
         }
+
+    def analyze(self, datas):
+        """ Parse attribute data.
+            datas: is an list of data list.
+        """
+        # 	double estimate = 0;                
+        V = 0
+        dZ = 0
+        Z = 0   
+        E = 0
+        m = len(datas)
+        for bits in datas:
+            if bits == 0:
+                V+=1
+            p = 0
+            for i in range(15, -1, -1):
+                bit = (bits & (1<<i)) >> i
+                if bit == 0:
+                    p = (15 - i) + 1
+                    break
+            dZ += pow(2, -1*p) 
+        Z = 1.0 / dZ
+        E = 0.679 * pow(m, 2) * Z
+        E_star = 0
+        if E < 2.5*m:
+            if V != 0:
+                E_star = m * log2(m/V) 
+            else:
+                E_star = E
+        pow232 = pow(2, 32)
+        if E <= pow232/30:
+            E_star = E 
+        else: 
+            E_star = -1*pow232*log2(1-E/pow232)
+        return E_star
+
+# uint32_t HyperLogLogCalc(const vector<uint16_t>& data){
+# 	double estimate = 0;                
+# 	double V = 0;
+# 	double dZ = 0;
+# 	double Z = 0;
+# 	double E = 0;
+# 	double m = data.size();
+# 	for(auto& bits : data){
+# 		if(bits == 0){
+# 			V+=1;
+# 		}
+# 		int p = 0;
+# 		for(int i = 15; i >= 0; --i){
+# 			uint16_t bit = (bits & (1<<i)) >> i;
+# 			if(bit == 0){
+# 				p = (15 - i) + 1;
+# 				break;
+# 			}
+# 		}
+# 		dZ += pow(2, -1*p);
+# 	}
+# 	Z = 1.0 / dZ;
+# 	E = 0.679 * pow(m, 2) * Z;
+# 	double E_star = 0;
+# 	if (E < 2.5*m){
+# 		E_star = (V != 0)? m * log2(m/V) : E;
+# 	}
+# 	double pow232 = pow(2, 32);
+# 	E_star = (E <= pow232/30)? E : -1*pow232*log2(1-E/pow232);
+# 	return E_star;
+# }
+
 
     @property
     def operation(self):

@@ -337,16 +337,19 @@ Finally, we find that all the data of task 1 is cleared.
 </details>
 
 
-<details><summary><b>Multi-key Distinct Counting</b></summary>
-
-
-</details>
-
-
 <details><summary><b>Capture Maximum Packet Size</b></summary>
 
 
 </details>
+
+
+
+<details><summary><b>Multi-key Distinct Counting</b></summary>
+
+[TODO] The data plane already supports this feature. The corresponding control plane use case will come soon.
+
+</details>
+
 
 
 The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key, flow attribute, and memory size for the above tasks. The tasks that FlyMon can perform are not limited to the above use cases. We will add more use cases in the future.
