@@ -3,5 +3,4 @@ build
 *.pyc
 *.log
 pcap_output
-zlog-cfg-cur
 simulations/bin/test_*

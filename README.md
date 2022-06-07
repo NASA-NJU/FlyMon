@@ -239,7 +239,7 @@ flymon> show_cmug -g 5
 ------------------------------------------------------------
                    Status of CMU-Group 5                    
 ------------------------------------------------------------
-Compressed Key 1 (32b): hdr.ipv4.src_addr/24
+Compressed Key 1 (32b): hdr.ipv4.src_addr/32
 Compressed Key 2 (16b): Empty
 ------------------------------------------------------------
 CMU-1 Rest Memory: 16
@@ -261,6 +261,12 @@ Read all data for task: 1
 Now, we inject some traffic into the switch by generating some packets on the server that is directly connected to the switch.
 
 > 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., scapy). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
+
+If you are using Tofino Model, we provide some commands to help you perform the tests.
+
+```
+
+```
 
 After generating the traffic, we can check the memory of the task again.
 
