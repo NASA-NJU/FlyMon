@@ -103,6 +103,13 @@ Firstly, load the program for the data plane.
 $SDE/run_switchd.sh -p flymon
 ```
 
+If you are working on a Tofino Model, we need to run the model **before** running the switchd. You also need to setup several virtual ports for the model.
+
+```bash
+$SDE/run_tofino_model.sh -p flymon
+$SDE/run_switchd.sh -p flymon
+```
+
 Secondly, start the FlyMon interactive control plane in another terminal.
 ```
 cd $FLYMON_DIR/control_plane/
