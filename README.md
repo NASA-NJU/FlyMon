@@ -7,11 +7,11 @@
 <h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
 
 <p align="center">
-  <a href="#🎯-key-features">Key Features</a> •
-  <a href="#🚄-hardware-implementation">Hardware Implementation</a> •
-  <a href="#simulation-framework">Simulation Framework</a> •
-  <a href="#license">License</a> •
-  <a href="#links">Links</a>
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-hardware-implementation">Hardware Implementation</a> •
+  <a href="#-simulation-framework">Simulation Framework</a> •
+  <a href="#-license">License</a> •
+  <a href="#-links">Links</a>
 </p>
 
 ## 🎯 Key Features
@@ -281,7 +281,7 @@ Below we show FlyMon's dynamic memory allocation. First we issue two tasks with 
 
 ```
 flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
-flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 24
 ```
 These two tasks have the same key and attribute, but focus on different sets of traffic. The resource manager will assign them to the same CMU-Group.
 
@@ -357,11 +357,13 @@ The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key
 For the convenience of experimentation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation.
 In addition, we constructed an automated testing framework to repeat the experiment. The simulation code is located in the [simulations](./simulations) directory.
 
-## Lisense
+## ⚠️ Lisense
 
-TODO: we need a lisense.
+The project is released under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
 
-## Links
+## 🔗 Links
 
-* [Open-Tofino](https://github.com/barefootnetworks/Open-Tofino/tree/master/p4-examples/p4_16_programs/tna_dyn_hashing).
+* [Open-source Tofino](https://github.com/barefootnetworks/Open-Tofino).
+* [BeauCoup](https://github.com/Princeton-Cabernet/BeauCoup).
+
 
