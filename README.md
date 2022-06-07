@@ -73,10 +73,10 @@ pip install -r ./requirements.txt
 In order to generate your custom data plane code, use the Jinja2 code generator we provide.
 
 ```bash
-python flymon_compiler.py -n 2 -m memory_level_mini
+python flymon_compiler.py -n 9 -m memory_level_mini
 ```
 
-The above command will generate 2 CMU-Groups in the data plane, and each CMU has a static (maximum) memory type of 'memory_level_mini' (32 counters in each register).  
+The above command will generate 9 CMU-Groups in the data plane, and each CMU has a static (maximum) memory type of 'memory_level_mini' (32 counters in each register).  
 
 > 🔔 For easy viewing of memory status, we generate mini-level CMUs (i.e., only 32 16-bit counters in each CMU) here. You can choose a larger level of memory (e.g., memory_level_8) for more practical purposes. The available memory levels are list in `flymon_compiler.py`.
 
@@ -89,7 +89,7 @@ export FLYMON_DIR=/path/to/your/flymon
 ```
 > 🔔 You also need to check if SDE environment variables (e.g., `SDE` and `SDE_INSTALL`) are set correctly.
 
-> 🔔 The compilation process usually takes between 20 and 60 minutes. Yes, it does compile so slowly QAQ. We expect subsequent optimizations from the compiler.
+> 🔔 The compilation process usually takes 20~60 minutes. Yes, it compiles so slowly QAQ. We expect some deep optimizations for the compiler.
 
 
 ### 🚀 Running FlyMon
@@ -389,6 +389,8 @@ The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key
 ## 📏 Simulation Framework
 
 For the convenience of experimentation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation.
+
+
 In addition, we constructed an automated testing framework to repeat the experiment. The simulation code is located in the [simulations](./simulations) directory.
 
 ## ⚠️ Licsense
