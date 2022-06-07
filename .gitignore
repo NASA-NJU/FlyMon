@@ -3,4 +3,4 @@ build
 *.pyc
 *.log
 pcap_output
-simulations/bin/test_*
+simulations/bin/test*
