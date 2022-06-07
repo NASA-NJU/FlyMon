@@ -16,16 +16,23 @@ This is the simulation implementation part of flymon. We have implemented relate
     * `BeauCoup` tests original BeauCoup algorithm.
 * `test_xxx.py` are scripts to automate test measurement algorithms.
 
-## How to Build
+## Get Started
 
-``` bash
+Below we show how to perform the test. Firstly, build the code.
+
+```bash
+cd /path/to/simuations
 mkdir -p ./build
-cd build
-cmake ..
-make
+cd build; cmake ..; make -j 2; cd ..
 ```
 
-## How to run test.
+> ⚠️ It needs to support C++17 on your system. Out gcc version is 8.4.0
+
+
+
+
+
+## 
 
 ```bash
 python test_xxxx.py

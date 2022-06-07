@@ -42,7 +42,7 @@ uint16_t count_min( Manager& manager,
 }
 
 vector<double> measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver_fs("{{RESULT_CSV_FLOW_SIZE}}");
+    //CSVer csver_fs("{{RESULT_CSV_FLOW_SIZE}}");
     CSVer csver_hv("{{RESULT_CSV_HEAVY_HITTER}}");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
@@ -100,7 +100,7 @@ vector<double> measure_main(DataTrace& trace, Manager& tbc_manager){
     double f1 = (2 * precision * recall) / (precision + recall);
     // HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
     delete filter;
-    csver_fs.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), temp_relation_error_sum/Real_Freq.size());
+    //csver_fs.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), temp_relation_error_sum/Real_Freq.size());
     csver_hv.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), precision, recall, f1);
     return {temp_relation_error_sum/Real_Freq.size(), precision, recall, f1, hh_relative_error_sum/estimate_right};
 }

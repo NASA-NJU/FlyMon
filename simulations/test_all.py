@@ -1,9 +1,22 @@
+from argparse import ArgumentParser
 import bin.tester
 import time
 import functools
 from multiprocessing import  Process
 
-TEST_DIR_BASE = 'test/'
+
+
+parser = ArgumentParser()
+parser.add_argument("-d", "--dir", dest="work_dir", type=str, required=True, help="Directory of simulation codes.")
+args = parser.parse_args()
+work_dir = args.work_dir
+data = work_dir  +'/data/WIDE/fifteen1.dat'
+log_dir = work_dir + '/log/'
+test_dir_base = work_dir + 'test/'
+result_dir = work_dir + 'results/'
+result_dir_heavyhitter = result_dir + "heavyhitter"
+
+HEAVY_HITTER_MEMORY = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
 
 def logtime():
     return time.strftime("%m_%d_%H_%M", time.localtime())
@@ -17,24 +30,22 @@ def _instance_method_alias(obj, arg1, arg2=None):
     return
 
 def test_univmon_heavyhitter():
-    test_dir = TEST_DIR_BASE + 'UnivMon/'
+    test_dir = test_dir_base + 'UnivMon/'
     test_file = 'test_univmon.cpp_template'
     test_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
-        "DATA_FILE" : 'data/WIDE/fifteen1.dat',
+        "WORK_DIR" : work_dir,
+        "DATA_FILE" : data,
         # "DATA_FILE" : 'data/WIDE/one_sec_15.dat',
         "TOT_MEM_IN_BUCKETS" : 0,
         "TOTAL_MEMORY_KB" : 0,
         "UNIV_DEP" : 0,
         "RESULT_CSV" : ""
     }
-    out_file = 'logs/test_univmon_flow_heavyhitter_'+logtime()+'.log'
-    test_args['RESULT_CSV'] = 'outputs_30/heavyhitters_new/' + 'heavyhitter_univmon.csv'
-    # M_LIST = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
-    MEMORY = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    out_file = log_dir + 'test_univmon_flow_heavyhitter_'+logtime()+'.log'
+    test_args['RESULT_CSV'] = result_dir_heavyhitter + 'univmon.csv'
     D_LIST = [ 14,  14,  14,  14,  14,  14,  14,  14,   14,   14,   14,   14,   14,   14,   14,   14,   14,    14]
-    for i in range(len(MEMORY)):
-        test_args['TOTAL_MEMORY_KB'] = MEMORY[i]
+    for i in range(len(HEAVY_HITTER_MEMORY)):
+        test_args['TOTAL_MEMORY_KB'] = HEAVY_HITTER_MEMORY[i]
         test_args['UNIV_DEP'] = D_LIST[i]
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
@@ -50,25 +61,22 @@ def test_univmon_heavyhitter():
     print("Done.")
 
 def test_beaucoup_heavyhitter(table_num = 1):
-    test_dir = TEST_DIR_BASE + 'BEAUCOUP/'
+    test_dir = test_dir_base + 'BEAUCOUP/'
     test_file = 'test_beaucoup_heavyhitter.cpp_template'
     test_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
-        "DATA_FILE" : 'data/WIDE/fifteen1.dat',
+        "WORK_DIR" : work_dir,
+        "DATA_FILE" : work_dir+'/data/WIDE/fifteen1.dat',
         # "DATA_FILE" : 'data/WIDE/one_sec_15.dat',
         "MEMORY_KB" : 0,  #TBD
         "THRESHOLD" : 0,
         "TABLE_NUM" : table_num,
         "RESULT_CSV" : ""    ## TBD
     }
-    out_file = 'logs/test_beaucoup_heavyhitter_'+logtime()+'.log'
-    test_args['RESULT_CSV'] = 'outputs_30/heavyhitters_new/' + 'heavyhitter_beaucoup_%dd.csv' %(table_num)
+    out_file = log_dir + 'test_beaucoup_heavyhitter_'+logtime()+'.log'
+    test_args['RESULT_CSV'] = result_dir_heavyhitter + 'beaucoup_%dd.csv' %(table_num)
     test_args['THRESHOLD'] = 1024
-    # M_LIST = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
-    # M_LIST = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
-    M_LIST = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
-    for i in range(len(M_LIST)):
-        test_args['MEMORY_KB'] = M_LIST[i]
+    for i in range(len(HEAVY_HITTER_MEMORY)):
+        test_args['MEMORY_KB'] = HEAVY_HITTER_MEMORY[i]
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes("test_beaucoup")
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -83,23 +91,20 @@ def test_beaucoup_heavyhitter(table_num = 1):
     print("Done.")
 
 def test_tbc_cmsketch_heavy_hitter():
-    test_dir = TEST_DIR_BASE + 'TBC_CMSketch/'
+    test_dir = test_dir_base + 'TBC_CMSketch/'
     test_file = 'test_tbc_cmsketch.cpp_template'
     test_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
-        "DATA_FILE" : 'data/WIDE/fifteen1.dat',
+        "WORK_DIR" : work_dir,
+        "DATA_FILE" : work_dir+'/data/WIDE/fifteen1.dat',
         "TBC_NUM" : 1,
         "BLOCK_NUM" : 3,
         "SUB_BLOCK_NUM" : 16,
         "MEMORY" : 0 , # TBD
-        "RESULT_CSV_FLOW_SIZE" :  'outputs_30/' + 'tbc_cmsketch_flowsize_ignore.csv',
-        "RESULT_CSV_HEAVY_HITTER": 'outputs_30/heavyhitters_new/' + 'heavyhitter_tmu_cmsketch.csv' 
+        "RESULT_CSV_HEAVY_HITTER": result_dir_heavyhitter + 'flymon_cmsketch.csv' 
     }
-    out_file = 'logs/test_tbc_cketch_'+logtime()+'.log'
-    M_LIST = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
-    # M_LIST = [1500]
-    for i in range(len(M_LIST)):
-        test_args['MEMORY'] = M_LIST[i] * 1024
+    out_file = log_dir + 'test_tbc_cketch_'+logtime()+'.log'
+    for i in range(len(HEAVY_HITTER_MEMORY)):
+        test_args['MEMORY'] = HEAVY_HITTER_MEMORY[i] * 1024 # it use Bytes in the code.
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -114,25 +119,24 @@ def test_tbc_cmsketch_heavy_hitter():
     print("Done.")
 
 def test_tbc_cusketch_heavy_hitter():
-    test_dir = TEST_DIR_BASE + 'TBC_CUSketch/'
+    test_dir = test_dir_base + 'TBC_CUSketch/'
     test_file = 'test_tbc_cusketch.cpp_template'
     test_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
-        "DATA_FILE" : 'data/WIDE/fifteen1.dat',
+        "WORK_DIR" : work_dir,
+        "DATA_FILE" : data,
         "TBC_NUM" : 1,
         "BLOCK_NUM" : 3,
         "SUB_BLOCK_NUM" : 16,
         "MEMORY" : 0 , # TBD
         # "RESULT_CSV_FLOW_SIZE" :  'outputs/' + 'tbc_cusketch_flowsize.csv',
         # "RESULT_CSV_HEAVY_HITTER": 'outputs/' + 'tbc_cusketch_heavyhitter.csv' 
-        "RESULT_CSV_FLOW_SIZE" :  'outputs_30/' + 'test_tbc_acusketch_flowsize_ignore.csv',
-        "RESULT_CSV_HEAVY_HITTER": 'outputs_30/heavyhitters_new/' + 'heavyhitter_tmu_sumax.csv' 
+        # "RESULT_CSV_FLOW_SIZE" :  result_dir + 'test_tbc_acusketch_flowsize_ignore.csv',
+        "RESULT_CSV_HEAVY_HITTER": result_dir_heavyhitter + 'flymon_sumax.csv' 
     }
     # out_file = 'logs/test_tbc_cuketch_'+logtime()+'.log'
-    out_file = 'logs/original_cuketch_'+logtime()+'.log'
-    M_LIST = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
-    for i in range(len(M_LIST)):
-        test_args['MEMORY'] = M_LIST[i] * 1024
+    out_file = log_dir + 'original_cuketch_'+logtime()+'.log'
+    for i in range(len(HEAVY_HITTER_MEMORY)):
+        test_args['MEMORY'] = HEAVY_HITTER_MEMORY[i] * 1024 # it use Bytes in the code.
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -147,22 +151,21 @@ def test_tbc_cusketch_heavy_hitter():
     print("Done.")
 
 def test_tbc_beaucoup_heavy_hitter():
-    test_dir = TEST_DIR_BASE + 'TBC_BEAUCOUP_HH/'
+    test_dir = test_dir_base + 'TBC_BEAUCOUP_HH/'
     test_file = 'test_tbc_beaucoup_hh.cpp_template'
     test_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
-        "DATA_FILE" : 'data/WIDE/fifteen1.dat',
+        "WORK_DIR" : work_dir,
+        "DATA_FILE" : data,
         # "DATA_FILE" : 'data/WIDE/head1000.dat',
         "BLOCK_NUM" : 3,
         "MEMORY_BYTES" : 0 , # TBD
-        "RESULT_CSV": 'outputs_30/heavyhitters_new/' + 'heavyhitter_tmu_beaucoup_3d.csv' 
+        "RESULT_CSV": result_dir_heavyhitter + 'flymon_beaucoup_3d.csv' 
     }
     # out_file = 'logs/test_tbc_cuketch_'+logtime()+'.log'
     out_file = 'logs/original_tmu_beaucoup_'+logtime()+'.log'
-    M_LIST = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
     # M_LIST = [1000]
-    for i in range(len(M_LIST)):
-        test_args['MEMORY_BYTES'] = M_LIST[i] * 1024
+    for i in range(len(HEAVY_HITTER_MEMORY)):
+        test_args['MEMORY_BYTES'] = HEAVY_HITTER_MEMORY[i] * 1024  # it use Bytes in the code.
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -178,10 +181,10 @@ def test_tbc_beaucoup_heavy_hitter():
 
 
 def test_tmu_hll_ddos_victim(m=8, offset=3):
-    test_dir = TEST_DIR_BASE + 'TEST_TBC_DDOS_VICTIM/'
+    test_dir = test_dir_base + 'TEST_TBC_DDOS_VICTIM/'
     test_file = 'test_tbc_ddos_victim.cpp_template'
     test_ddos_visctim_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
+        "WORK_DIR" : work_dir,
         "DATA_FILE" : 'data/WIDE/thirty_sec_0.dat',
         # "DATA_FILE" : 'data/WIDE/one_sec_15.dat',
         "RESULT_CSV" : '', ##TBD
@@ -224,10 +227,10 @@ def test_tmu_hll_ddos_victim(m=8, offset=3):
 
        
 def test_beaucoup_ddos_victim(table_num=1):
-    test_dir = TEST_DIR_BASE + 'BEAUCOUP/'
+    test_dir = test_dir_base + 'BEAUCOUP/'
     test_file = 'test_beaucoup_ddos.cpp_template'
     test_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
+        "WORK_DIR" : work_dir,
         "DATA_FILE" : 'data/WIDE/sixty_sec_0.dat',
         "MEMORY_KB" : 0,  #TBD
         "THRESHOLD" : 0,
@@ -254,10 +257,10 @@ def test_beaucoup_ddos_victim(table_num=1):
     print("Done.")
 
 def test_tbc_beaucoup_ddos_victim(d = 3):
-    test_dir = TEST_DIR_BASE + 'TBC_BEAUCOUP_DDOS/'
+    test_dir = test_dir_base + 'TBC_BEAUCOUP_DDOS/'
     test_file = 'test_tbc_beaucoup_ddos.cpp_template'
     test_args = {
-        "WORK_DIR" : '/home/hzheng/workSpace/SketchLab',
+        "WORK_DIR" : work_dir,
         "DATA_FILE" : 'data/WIDE/sixty_sec_0.dat',
         # "DATA_FILE" : 'data/WIDE/head1000.dat',
         "BLOCK_NUM" : d,
@@ -285,19 +288,18 @@ def test_tbc_beaucoup_ddos_victim(d = 3):
 
 if __name__ == '__main__':
     ## Heavy Hitters
-    # test_univmon_heavyhitter()
-    # test_tbc_beaucoup_heavy_hitter()
-    # test_beaucoup_heavyhitter(table_num=1)
-    # test_beaucoup_heavyhitter(table_num=3)
-    # test_tbc_cmsketch_heavy_hitter()
-    # test_tbc_cusketch_heavy_hitter()
+    test_univmon_heavyhitter()
+    test_tbc_beaucoup_heavy_hitter()
+    test_beaucoup_heavyhitter(table_num=1)
+    test_tbc_cmsketch_heavy_hitter()
+    test_tbc_cusketch_heavy_hitter()
 
     ## DDoS Victims
     test_tbc_beaucoup_ddos_victim(d=1)
     test_tbc_beaucoup_ddos_victim(d=3)
     test_beaucoup_ddos_victim(table_num=1)
     test_beaucoup_ddos_victim(table_num=3)
-    # test_tmu_hll_ddos_victim(m=8, offset=3)
-    # test_tmu_hll_ddos_victim(m=16, offset=4)
-    # test_tmu_hll_ddos_victim(m=64, offset=5)
+    test_tmu_hll_ddos_victim(m=8, offset=3)
+    test_tmu_hll_ddos_victim(m=16, offset=4)
+    test_tmu_hll_ddos_victim(m=64, offset=5)
     
