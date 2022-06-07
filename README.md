@@ -76,7 +76,7 @@ In order to generate your custom data plane code, use the Jinja2 code generator 
 python flymon_compiler.py -n 9 -m memory_level_mini
 ```
 
-The above command will generate 9 CMU-Groups in the data plane, and each CMU has a static (maximum) memory type of 'memory_level_mini' (32 counters in each register).  
+The above command will generate 9 CMU-Groups in the data plane (see [p4src](./p4src/)), and each CMU has a static (maximum) memory type of 'memory_level_mini' (32 counters in each register).  
 
 > 🔔 For easy viewing of memory status, we generate mini-level CMUs (i.e., only 32 16-bit counters in each CMU) here. You can choose a larger level of memory (e.g., memory_level_8) for more practical purposes. The available memory levels are list in `flymon_compiler.py`.
 
@@ -84,7 +84,8 @@ Once the data plane codes are generated, you can build the p4 codes with bf-p4c.
 
 ```bash
 # If you are working on SDE 9.7.0+
-export FLYMON_DIR=/path/to/your/flymon
+# Make sure you are in the directory of FlyMon, currently.
+export FLYMON_DIR=`pwd`     
 ./setup.sh
 ```
 > 🔔 You also need to check if SDE environment variables (e.g., `SDE` and `SDE_INSTALL`) are set correctly.
