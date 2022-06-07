@@ -6,6 +6,8 @@ import traceback
 import json
 import cmd
 import argparse
+from scapy.all import Ether, IP, UDP, sendp
+import ipaddress
 
 import bfrt_grpc.client as gc
 from task_manager import TaskManager
@@ -56,6 +58,8 @@ class FlyMonController(cmd.Cmd):
 
     def __init__(self, config_file = 'cmu_groups.json'):
         cmd.Cmd.__init__(self)
+        import os
+        print('List of paths in PYTHONPATH:',os.environ['PYTHONPATH'])
         try:
             cmug_configs = json.load(open(config_file, 'r'))
             self.runtime = None
@@ -189,7 +193,7 @@ class FlyMonController(cmd.Cmd):
             print(f"Read all data for task: {task_instance.id}")
             for row in data:
                 print(row)
-            print("----------------------------------------------------")
+            print("")
         except Exception as e:
             print(traceback.format_exc())
             print(e)
@@ -330,6 +334,48 @@ class FlyMonController(cmd.Cmd):
         self.do_add_port("-p 24 -s 40G")
         self.do_add_forward("-s 16 -d 24")
         self.do_add_forward("-s 24 -d 16")
+
+    def do_send_packets(self, arg):
+        """Send several packets to model's virtual ports.
+            -n packet_num
+            -s packet_size
+            -p virtual_port
+        """
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-l", "--len", dest="len", type=int, required=True, help="e.g., 64")
+        parser.add_argument("-n", "--num", dest="num", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-p", "--port", dest="port", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-s", "--srcip", dest="srcip", type=str, required=True, help="e.g., 10.0.0.0/24")
+        try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
+            packet_num = args.num
+            packet_size = args.len
+            port = args.port
+            port_dict = {}
+            for i in range(64):
+                port_dict[i] = f'veth{2*i+1}'
+            if packet_num < 0 or packet_size < 0 or port not in port_dict.keys():
+                print("Invalid Inputs.")
+                return
+            net4 = ipaddress.ip_network(args.srcip)
+            count = 0
+            for src_ip in net4.hosts():
+                if count < packet_num:
+                    pkt = Ether(src="00:00:00:00:00:00", dst="ff:ff:ff:ff:ff:ff") / IP(src=src_ip) / UDP(dport=4321, sport=1234)
+                    pkt = pkt / ('a'* (packet_size - len(pkt)))
+                    sendp(pkt, iface=port_dict[port], verbose=0)
+                    count += 1
+                    print(f"Send a packet with src_ip={src_ip}, pktlen={packet_size}.")
+                else:
+                    print("Done.")
+                    return
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
 
     def do_query_task(self, arg):
         """Query a task for a given flowkey.

@@ -1,9 +1,7 @@
 # -*- coding:UTF-8 -*-
 import time
-from numpy import mat
 from flymonlib.operation import OperationType
 from flymonlib.param import ParamType
-from flymonlib.flow_key import FlowKey
 import bfrt_grpc.client as client
 
 class FlyMonRuntime_BfRt():

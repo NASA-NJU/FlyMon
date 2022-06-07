@@ -16,6 +16,8 @@ This is the simulation implementation part of flymon. We have implemented relate
     * `BeauCoup` tests original BeauCoup algorithm.
 * `test_xxx.py` are scripts to automate test measurement algorithms.
 
+> 🔔 For historical reasons, the Transformable Measurement Block (TBC) is referred to as Composable Measurement Unit (CMU).
+
 ## Get Started
 
 Below we show how to perform the test. Firstly, build the code.
@@ -28,8 +30,11 @@ cd build; cmake ..; make -j 2; cd ..
 
 > ⚠️ It needs to support C++17 on your system. Out gcc version is 8.4.0
 
+After the project has been compiled, we can prepare it for testing. But before that, we should download the test traffic.
 
-
+```
+wget http://mawi.nezu.wide.ad.jp/mawi/samplepoint-G/2020/202002121400.pcap.gz -O ./data/
+```
 
 
 ## 
@@ -39,5 +44,3 @@ python test_xxxx.py
 ```
 
 ---
-
-**NOTE** : for historical reasons, the Transformable Measurement Block (TBC) is referred to as composable measurement unit (CMU).

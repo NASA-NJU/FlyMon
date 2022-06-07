@@ -4,8 +4,6 @@ import time
 import functools
 from multiprocessing import  Process
 
-
-
 parser = ArgumentParser()
 parser.add_argument("-d", "--dir", dest="work_dir", type=str, required=True, help="Directory of simulation codes.")
 args = parser.parse_args()
