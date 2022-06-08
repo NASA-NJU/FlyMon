@@ -257,7 +257,7 @@ Now, we inject some traffic into the switch to verify the measurement task.
 
 > 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., [scapy](https://scapy.net/)). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
 
-If you are using Tofino Model, we provide some commands to help you perform the tests.
+If you are using a Tofino Model, we provide some commands to help you perform the tests.
 
 ```
 flymon> add_forward -s 0 -d 1
@@ -387,7 +387,7 @@ The first task will be allocated 3x16 buckets, while the second task will be all
 
 > 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., scapy). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
 
-If you are using Tofino Model, we provide some commands to help you perform the tests.
+If you are using a Tofino Model, we provide some commands to help you perform the tests.
 
 ```
 flymon> add_forward -s 0 -d 1
@@ -459,7 +459,7 @@ We can inject some packets into the switch like this. For example, using scapy t
 
 > 🔔 Since the memory in our demo scenario is relatively small (i.e., only 32 16-bits counters in each CMU), we choose a very small size of traffic to be measured. HyperLogLog usually yields more reliable measurements (i.e., smaller variance) in larger traffic scenarios.
 
-If you are using Tofino Model, we provide some commands to help you perform the tests.
+If you are using a Tofino Model, we provide some commands to help you perform the tests.
 
 ```
 flymon> add_forward -s 0 -d 1
