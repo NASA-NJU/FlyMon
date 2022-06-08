@@ -221,9 +221,8 @@ class CMU_Group():
                     break
             if not ok:
                 # TODO: support XOR in Ingress Pipeline Here
-                
-                # return back
-                print("Here!!!!!!!!!!!!!!!!")
+                # # return back
+                # print("Here!!!!!!!!!!!!!!!!")
                 self.release_compressed_keys(task_id, hkey_list)
                 return None
         return hkey_list

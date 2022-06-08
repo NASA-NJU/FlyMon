@@ -73,10 +73,25 @@ class FlowKey:
         { key_name: [(start bits, length)] }
         """
         config_dict = {}
-        for key in self.key_list.keys():
-            _, prefix = self.key_list[key]
-            config_dict[key] = [] # each key may contains multiple inner-tupples.
-            config_dict[key].append((0, prefix))
+        for key_name in self.key_list.keys():
+            bits, prefix = self.key_list[key_name]
+            config_dict[key_name] = []
+            # if prefix != 0:
+            # how many full bytes does the prefix have
+            full_byte_num = prefix // 8
+            # how many empty bytes dose the prefix have
+            empty_byte_num = (bits-prefix) // 8
+            # print(full_byte_num + empty_byte_num, bits // 8)
+            if (full_byte_num + empty_byte_num) != bits // 8:
+                # where to truncate in the middle byte
+                full_lenth = prefix % 8
+                config_dict[key_name].append((empty_byte_num*8, full_lenth))
+                config_dict[key_name].append((bits - full_byte_num*8, full_byte_num*8))
+            else:
+                config_dict[key_name].append((bits - full_byte_num*8-1, full_byte_num*8))
+            # print(config_dict)
+            # else:
+            #     config_dict[key_name] = [(bits-1, 0)]
         return config_dict
 
 def parse_key(key_str):

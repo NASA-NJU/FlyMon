@@ -58,19 +58,19 @@ class FlyMonRuntime_BfRt():
             for key in key_configs.keys(): 
                 inner_tuple = [] # inner tupples for a specific key container.
                 for start_bit, bit_len in key_configs[key]:
-                    # print(key, order, (start_bit, bit_len))
+                    # print(key, (start_bit, bit_len), order)
                     inner_tuple.append(
                         { 
-                        "order": client.DataTuple("order", order),
-                        "start_bit": client.DataTuple("start_bit", start_bit),
-                        "length": client.DataTuple("length", bit_len)
+                            "order": client.DataTuple("order", order),
+                            "start_bit": client.DataTuple("start_bit", start_bit),
+                            "length": client.DataTuple("length", bit_len)
                         }
                     )
                     order += 1
                 target_config_list.append(client.DataTuple(key, container_arr_val = inner_tuple))
             data = hash_configure_table.make_data(target_config_list)
             hash_configure_table.default_entry_set(self.conn, data)
-        self.hash_status[(group_id, dhash_id)] = flow_key
+            self.hash_status[(group_id, dhash_id)] = flow_key
         return True
 
     def initialization_stage_add(self, group_id, group_type, cmu_id, filter, task_id, key, param1, param2):
