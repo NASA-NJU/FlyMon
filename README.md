@@ -279,7 +279,7 @@ Read all data for task: 1
 [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1]
 ```
 
-The memory above is a visual representation of the Count-min sketch. To query a specific Key (e.g., SrcIP=10.1.1.1), we can use the `query_task` command.
+The memory above is a visual representation of the Count-min sketch. To query a specific Key (e.g., SrcIP=10.0.0.1), we can use the `query_task` command.
 
 ```
 flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
@@ -301,7 +301,7 @@ flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 24
 ```
 These two tasks have the same key and attribute, but focus on different sets of traffic. The resource manager will assign them to the same CMU-Group.
 
-> 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be reassigned from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskIP assigned to you by the task manager when you read/query the task.
+> 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
 
 The first task will be allocated 3x16 buckets, while the second task will be allocated 3x8 buckets. To verify this, we inject some packets into the switch.
 
@@ -372,7 +372,7 @@ FlyMon uses the HyperLogLog algorithm to implement single-key distinct Count sta
 flymon> reset_all
 flymon> add_task -f *,* -k hdr.ipv4.src_addr -a distinct() -m 32
 ```
-> 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be reassigned from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskIP assigned to you by the task manager when you read/query the task.
+> 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
 
 We can inject some packets into the switch like this. For example, using scapy to generate 100 packets with different IP addresses. 
 
@@ -400,21 +400,21 @@ Read all data for task: 1
 [0, 49151, 57113, 0, 34029, 49119, 57145, 62474, 42159, 40861, 65403, 0, 0, 40893, 65371, 0, 57113, 58411, 38092, 49151, 57145, 0, 0, 49119, 65403, 0, 0, 40861, 65371, 50281, 46222, 40893]
 
 ```
-As you can see, the output of the original measurement data is not intuitive. We implement the parsing of the HLL algorithm data in the `query_test` command.
+As you can see, the output of the original measurement data is not intuitive. We implement the HLL algorithm data parsing in the `query_test` command.
 
 ```
 flymon> query_task -t 1
 133
 ```
 
-The results seem to be not accurate enough due to the fact that we used a very small number of packets and a very small amount of memory. HyperLogLog usually yields more reliable measurements (i.e., smaller variance) in larger traffic scenarios. More importantly, adjusting the parameters of the data plane hash function is also a technical task. We will further optimize the configuration of the FlyMon data plane's hash functiones in future.
+The results seem not accurate enough because we used a minimal number of packets and a tiny amount of memory. HyperLogLog usually yields more reliable measurements (i.e., more minor variance) in more significant traffic scenarios. More importantly, adjusting the data plane hash function parameters is also a technical task. We will further optimize the configuration of the FlyMon data plane's hash functions in the future.
 
 </details>
 
 
 <details><summary><b>Capture Maximum Packet Size</b></summary>
 
-Here, we show how to use FlyMon for the measurement of the maximum value property and how to set standard metadata as parameters.
+Here, we show how to use FlyMon to measure the max attribute and how to set standard metadata as an attribute parameter.
 We do this by measuring the maximum packet size for each flow. We can deploy such a task with the following command.
 
 ```
@@ -422,7 +422,7 @@ flymon> reset_all
 flymon> add_task -f *,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 32
 ```
 
-> 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be reassigned from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskIP assigned to you by the task manager when you read/query the task.
+> 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
 
 Then we generate several packets of different sizes. If you are using Tofino Model, we provide some commands to help you perform the tests.
 
@@ -448,14 +448,14 @@ flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
 80
 ```
 
-The underlying logic of the Max property is the SuMax algorithm, which obtains the closest estimate to the true value by minimizing the value of multiple rows.
-In addition to packet size, FlyMon currently supports standard metadata including queue length, timestamp, etc.
+The underlying logic of the Max property is the SuMax algorithm, which obtains the closest estimate to the actual value by minimizing the value of multiple rows.
+In addition to packet size, FlyMon currently supports standard metadata, including queue length, timestamp, etc.
 
 </details>
 
 ## 📏 Simulation Framework
 
-For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In addition, we constructed an automated testing framework to repeat the experiment. The simulation code is located in the [simulations](./simulations) directory.
+For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In addition, we built an automated testing framework for repeating the experiment. The simulation code is located in the [simulations](./simulations) directory.
 
 ## ⚠️ Licsense
 
