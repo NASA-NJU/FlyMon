@@ -607,7 +607,7 @@ There are two different ways to deploy for this task. One with a threshold-trigg
 
 For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In addition, we built an automated testing framework for repeating the experiment. The simulation code is located in the [simulations](./simulations) directory.
 
-## ⚠️ Licsense
+## 📖 License
 
 The project is released under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
 
