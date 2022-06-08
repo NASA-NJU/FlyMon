@@ -40,6 +40,10 @@ class FlyMonArgumentParser(argparse.ArgumentParser):
             pass
         return result
 
+VPORT_DICT = {}
+for i in range(64):
+    VPORT_DICT[i] = f'veth{2*i+1}'
+
 class FlyMonController(cmd.Cmd):
     intro = """
 ----------------------------------------------------
@@ -58,15 +62,13 @@ class FlyMonController(cmd.Cmd):
 
     def __init__(self, config_file = 'cmu_groups.json'):
         cmd.Cmd.__init__(self)
-        import os
-        print('List of paths in PYTHONPATH:',os.environ['PYTHONPATH'])
         try:
-            cmug_configs = json.load(open(config_file, 'r'))
+            self.cmug_configs = json.load(open(config_file, 'r'))
             self.runtime = None
             self.grpc_setup(0, 'flymon')
-            self.task_manager = TaskManager(self.runtime, cmug_configs)
-            self.resource_manager = ResourceManager(self.runtime, cmug_configs)
-            self.data_collector = DataCollector(self.runtime, cmug_configs)
+            self.task_manager = TaskManager(self.runtime, self.cmug_configs)
+            self.resource_manager = ResourceManager(self.runtime, self.cmug_configs)
+            self.data_collector = DataCollector(self.runtime, self.cmug_configs)
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when loading configure file.")
@@ -312,6 +314,9 @@ class FlyMonController(cmd.Cmd):
             if parser.error_message or args is None:
                 print(parser.error_message)
                 return
+            if args.source not in VPORT_DICT.keys() or args.dest not in VPORT_DICT.keys():
+                print(f"Invalid port number {args.source} and {args.dest}")
+                return
             self.forward_table = self.bfrt_info.table_get("FlyMonIngress.simple_fwd")
             self.forward_table.entry_add(
                 self.target,
@@ -319,8 +324,7 @@ class FlyMonController(cmd.Cmd):
                 [self.forward_table.make_data([gc.DataTuple('port', args.dest)],
                                             "FlyMonIngress.hit")])
         except Exception as e:
-            print(traceback.format_exc())
-            print(e)
+            print("OK, the forwarding rules already exist.")
             return
 
     def do_default_setup(self, arg):
@@ -354,10 +358,7 @@ class FlyMonController(cmd.Cmd):
             packet_num = args.num
             packet_size = args.len
             port = args.port
-            port_dict = {}
-            for i in range(64):
-                port_dict[i] = f'veth{2*i+1}'
-            if packet_num < 0 or packet_size < 0 or port not in port_dict.keys():
+            if packet_num < 0 or packet_size < 0 or port not in VPORT_DICT.keys():
                 print("Invalid Inputs.")
                 return
             net4 = ipaddress.ip_network(args.srcip)
@@ -366,7 +367,7 @@ class FlyMonController(cmd.Cmd):
                 if count < packet_num:
                     pkt = Ether(src="00:00:00:00:00:00", dst="ff:ff:ff:ff:ff:ff") / IP(src=src_ip) / UDP(dport=4321, sport=1234)
                     pkt = pkt / ('a'* (packet_size-4 - len(pkt)))
-                    sendp(pkt, iface=port_dict[port], verbose=0)
+                    sendp(pkt, iface=VPORT_DICT[port], verbose=0)
                     count += 1
                     print(f"Send a packet with src_ip={src_ip}, pktlen={packet_size}.")
                 else:
@@ -407,6 +408,20 @@ class FlyMonController(cmd.Cmd):
             print(traceback.format_exc())
             print(e)
             return
+
+    def do_reset_all(self, arg):
+        """
+        Dangerous! Reset the status of the data plane and the control plane.
+        """
+        try:
+            self.task_manager = TaskManager(self.runtime, self.cmug_configs)
+            self.resource_manager = ResourceManager(self.runtime, self.cmug_configs)
+            self.data_collector = DataCollector(self.runtime, self.cmug_configs)
+            print("Done.")
+        except Exception as e:
+            print(traceback.format_exc())
+            print(f"{e} when reset.")
+            exit(1)
 
     def emptyline(self):
         pass
