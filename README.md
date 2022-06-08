@@ -3,9 +3,7 @@
   FlyMon
   <br>
 </h1>
-
 <h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
-
 <p align="center">
   <a href="#-key-features">Key Features</a> •
   <a href="#-hardware-implementation">Hardware Implementation</a> •
@@ -424,7 +422,7 @@ flymon> add_task -f *,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 32
 
 > 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
 
-Then we generate several packets of different sizes. If you are using Tofino Model, we provide some commands to help you perform the tests.
+Then we generate several packets of different sizes. If you are using a Tofino Model, we provide some commands to help you perform the tests.
 
 ```
 flymon> add_forward -s 0 -d 1
@@ -450,6 +448,39 @@ flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
 
 The underlying logic of the Max property is the SuMax algorithm, which obtains the closest estimate to the actual value by minimizing the value of multiple rows.
 In addition to packet size, FlyMon currently supports standard metadata, including queue length, timestamp, etc.
+
+</details>
+
+
+<details><summary><b>Flow Existence Check</b></summary>
+Flow existence check is a measurement task to collect or inspect a set of flows present in the network.
+FlyMon uses a bloom filter to implement a large flow set's collection (bitwise-or) or inspection (bitwise-and). The flow inspection requires other functional modules depending on different scenarios, such as forwarding, dropping, sending to the control plane, etc.
+Here we use a bloom filter to demonstrate the collection of flows in the network.
+
+We can issue an existence collection task with the following command.
+
+```
+flymon> reset_all   # optional 
+flymon> add_task -f *,* -k hdr.ipv4.src_addr -a existence() -m 32
+```
+
+Then we inject some traffic. If you are using a Tofino Model, we provide some commands to help you perform the tests.
+
+```
+flymon> add_forward -s 0 -d 1
+
+flymon> send_packets -l 64 -n 10 -p 0 -s 10.0.0.0/8
+```
+
+Then, we can query the measurement data of the data plane. 
+
+```
+flymon> read_task -t 1
+Read all data for task: 1
+[0, 44271, 56328, 0, 0, 0, 19745, 0, 0, 0, 28003, 0, 0, 36013, 32768, 0, 0, 0, 0, 0, 52265, 0, 0, 48334, 0, 0, 0, 40076, 32066, 0, 0, 0]
+```
+
+As shown above, the measurement result of the bloom filter in FlyMon is not intuitive because we use all the 16 bits of each counter by encoding the param in the pre-processing stage. Despite this, it is easy to expand this bloom filter into its original form.
 
 </details>
 

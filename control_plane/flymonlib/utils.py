@@ -167,6 +167,8 @@ def calc_keymapping(total_bitw, mem_type, mem_idx):
         Thus, all offsets will be a positive value and can cause overflow.
         Overflow is just we want to mimic the Sub translation.
     """
+    if mem_type == 1:
+        return {(0,0) : 0}
     key_mapping = {}
     mask_value = int('1'*(mem_type-1), base=2) << int(total_bitw - (mem_type-1))
     mem_range = int(2**total_bitw/2**(mem_type-1))
@@ -176,7 +178,6 @@ def calc_keymapping(total_bitw, mem_type, mem_idx):
             match_value = idx << int(total_bitw - (mem_type-1))
             key_mapping[(match_value, mask_value)] = (offset+2**total_bitw)%(2**total_bitw)
     return key_mapping
-
 
 def parse_filter(filter_str):
     """

@@ -91,7 +91,7 @@ class TaskManager:
                                                             (task_instance.attribute.param1, None),
                                                             task_instance.attribute.param2)
                 # # Install the pre-processing stage.
-                if location.memory_type != MemoryType.WHOLE.value:
+                if location.memory_type != MemoryType.WHOLE.value or len(task_instance.attribute.param_mapping) != 0:
                     location.prep_rules = self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
                                                         task_instance.id, 
                                                         calc_keymapping(self.cmug_bitw[location.group_id], 

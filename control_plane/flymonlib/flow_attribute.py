@@ -179,7 +179,7 @@ class SleKeyDistinct(FlowAttribute):
         return OperationType.Max
 
     def __str__(self):
-        return f"sk_distinct({self.param1})"
+        return f"SK_Distinct(Key)"
 
 class MulKeyDistinct(FlowAttribute):
     def __init__(self, param_str):
@@ -201,36 +201,43 @@ class MulKeyDistinct(FlowAttribute):
 
     @property
     def memory_num(self):
-        return 1
+        return 3
 
     @property
     def param_mapping(self):
-        return { 
-            # key : param
+        param_mapping = {
+            # a dict of mappings.
+            # key : (param, mask)
             # val : code
         }
+        mask_value = int('1'*4, base=2) << 12
+        for i in range(16):
+            param = i << 12
+            code = 1 << i
+            param_mapping[(param, mask)] = code
+        return param_mapping
 
     @property
     def operation(self):
         return OperationType.Max
 
     def __str__(self):
-        return f"sk_distinct({self.param1})"
+        return f"MK_Distinct({self.param1})"
 
 
 class Existence(FlowAttribute):
-    def __init__(self, param_str):
+    def __init__(self):
         """
         Implement the built-in algorithm: BloomFilter.
         Exception:
          - No exception.
         """
-        super(Existence, self).__init__(param_str)
+        super(Existence, self).__init__("KEY")
         self._param2 = Param(ParamType.Const, 0)
 
     @property
     def type(self):
-        return AttributeType.MultiKeyDistinct
+        return AttributeType.Existence
 
     @property
     def param2(self):
@@ -242,17 +249,24 @@ class Existence(FlowAttribute):
 
     @property
     def param_mapping(self):
-        return { 
-            # key : param
+        param_mapping = {
+            # a dict of mappings.
+            # key : (param, mask)
             # val : code
         }
+        mask_value = int('1'*4, base=2) << 12
+        for i in range(16):
+            param = i << 12
+            code = 1 << i
+            param_mapping[(param, mask_value)] = code
+        return param_mapping
 
     @property
     def operation(self):
         return OperationType.Max
 
     def __str__(self):
-        return f"sk_distinct({self.param1})"
+        return f"Existence(Key)"
 
 
 class Max(FlowAttribute):
@@ -295,7 +309,7 @@ class Max(FlowAttribute):
         return OperationType.Max
 
     def __str__(self):
-        return f"max({self.param1})"
+        return f"Max({self.param1})"
 
 
 def parse_attribute(attribute_str):
@@ -313,6 +327,8 @@ def parse_attribute(attribute_str):
             return MulKeyDistinct(re['param'])
     elif re['attr_name'] == "max":
         return Max(re['param'])
+    elif re['attr_name'] == "existence":
+        return Existence()
     else:
         raise RuntimeError(f"Invalid attribute name {re['attr_name']}")
 

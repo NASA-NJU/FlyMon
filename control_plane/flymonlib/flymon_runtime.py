@@ -146,7 +146,6 @@ class FlyMonRuntime_BfRt():
         else:
             prefix = f"FlyMonEgress.cmu_group{group_id}"
         perprocessing_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_preprocessing")
-        entry_dict = {}
         # batch entries to make operations faster
         batch_match = []
         batch_action = []
@@ -157,19 +156,16 @@ class FlyMonRuntime_BfRt():
                                                         client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param1', 0, 0)])
                     action = perprocessing_table.make_data([ client.DataTuple('offset', key_mappings[(key, mask)])], 
                                                              prefix + f".process_cmu{cmu_id}_key")
-                    entry_dict[match] = action
                     batch_match.append(match)
                     batch_action.append(action)
             else:
-                for param_tuple in param_mappings:
+                for param, pmask in param_mappings.keys():
                     match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
                                                         client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.key', key, mask),
-                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param1', param_tuple[0], param_tuple[1])])
+                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param1', param, pmask)])
                     action = perprocessing_table.make_data([ client.DataTuple('offset', key_mappings[(key, mask)]),
-                                                            client.DataTuple('code', param_tuple[2]),], 
+                                                             client.DataTuple('code', param_mappings[(param, pmask)])], 
                                                             prefix + f".process_cmu{cmu_id}_key_param")
-                    # Z what's it
-                entry_dict[match] = action
                 batch_match.append(match)
                 batch_action.append(action)
         perprocessing_table.entry_add(self.conn, batch_match, batch_action)
