@@ -369,25 +369,26 @@ class FlyMonController(cmd.Cmd):
             net_dst = ipaddress.ip_network(args.dstip)
             count = 0
             skip_num = 0
-            for src_ip in net_src.hosts():
-                pos = 0
-                for dst_ip in net_dst.hosts():
-                    if pos < skip_num:
-                        pos += 1
-                        continue
-                    if count < packet_num:
-                        pkt = Ether(src="00:00:00:00:00:00", dst="ff:ff:ff:ff:ff:ff") / IP(src=src_ip, dst=dst_ip) / UDP(dport=4321, sport=1234)
-                        pkt = pkt / ('a'* (packet_size-4 - len(pkt)))
-                        sendp(pkt, iface=VPORT_DICT[port], verbose=0)
-                        skip_num += 1
-                        if skip_num >= 2**(32 - net_dst.prefixlen):
-                            skip_num = 0
-                        count += 1
-                        print(f"Send a packet with src_ip={src_ip}, dst_ip={dst_ip}, pktlen={packet_size}.")
-                        break
-                    else:
-                        print("Done.")
-                        return
+            while count != packet_num:
+                for src_ip in net_src.hosts():
+                    pos = 0
+                    for dst_ip in net_dst.hosts():
+                        if pos < skip_num:
+                            pos += 1
+                            continue
+                        if count < packet_num:
+                            pkt = Ether(src="00:00:00:00:00:00", dst="ff:ff:ff:ff:ff:ff") / IP(src=src_ip, dst=dst_ip) / UDP(dport=4321, sport=1234)
+                            pkt = pkt / ('a'* (packet_size-4 - len(pkt)))
+                            sendp(pkt, iface=VPORT_DICT[port], verbose=0)
+                            skip_num += 1
+                            if skip_num >= 2**(32 - net_dst.prefixlen):
+                                skip_num = 0
+                            count += 1
+                            print(f"Send a packet with src_ip={src_ip}, dst_ip={dst_ip}, pktlen={packet_size}.")
+                            break
+                        else:
+                            print("Done.")
+                            return
         except Exception as e:
             print(traceback.format_exc())
             print(e)

@@ -290,6 +290,85 @@ flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
 
 </details>
 
+<details><summary><b>Set arbitrary flow key from a candidate key set</b></summary>
+With the dynamic feature of Tofino's hash computation unit, FlyMon can support setting any subpart (bit level) of the candidate key set as flow key. In this implementation, the candidate key set is the 5-tuple (i.e., SrcIP, DstIP, SrcPort, DstPort, Protocol). The source-destination port can be either for the UDP protocol or for the TCP protocol. To demonstrate this, we can test it with several tasks.
+
+**Task 1**: Set the Key as `hdr.ipv4.src_addr/24`
+```
+add_task -f *,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+```
+We then generate traffic with SrcIP in 192.168.0.0/24. As the task only care about the first 24 for SrcIP, all packets will be treated as a single flow. Sketch should have only one non-zero counter in each row.
+
+```
+flymon> send_packets -p 0 -s 192.168.0.0/24 -n 10
+Send a packet with src_ip=192.168.0.1, dst_ip=30.60.90.1, pktlen=64.
+Send a packet with src_ip=192.168.0.2, dst_ip=30.60.90.1, pktlen=64.
+Send a packet with src_ip=192.168.0.3, dst_ip=30.60.90.1, pktlen=64.
+...
+
+flymon> read_task -t 1
+Read all data for task: 1
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0]
+[0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+The experimental result is consistent with our expectation.
+
+**Task 2**: Set the Key as `hdr.ipv4.src_addr, hdr.ipv4.dst_addr`
+
+We use following command to deploy this task. The controller will assign this task as Task 2.
+
+```
+add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 48
+...
+...
+[Success] Allocate TaskID: 2
+```
+
+To test this, we send two packets. These two packets have the same src IP address, but have different Dst IP addresses. The measurement task should treat the two packets as two distinct flows. In other words, each row of the task should have two non-zero counters, unless there is a hash conflict.
+
+```
+flymon> send_packets -p 0 -s 10.0.0.1 -d 20.0.0.0/8 -n 2
+Send a packet with src_ip=10.0.0.1, dst_ip=20.0.0.1, pktlen=64.
+Send a packet with src_ip=10.0.0.1, dst_ip=20.0.0.2, pktlen=64.
+
+flymon> read_task -t 2
+Read all data for task: 2
+[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0]
+```
+
+The experimental result is consistent with our expectation.
+
+**Task 3**: Set the Key as `hdr.ipv4.src_addr, hdr.ipv4.dst_addr/24`
+
+Follow the Task 2, if we add a prefix length of 24 to the DstIP in the key. There should be only one non-zero counter per row in the measurement data.
+
+```
+flymon> add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr/24 -a frequency(1) -m 48
+...
+[Success] Allocate TaskID: 3
+
+
+flymon> send_packets -p 0 -s 10.0.0.1 -d 20.0.0.0/8 -n 2
+Send a packet with src_ip=10.0.0.1, dst_ip=20.0.0.1, pktlen=64.
+Send a packet with src_ip=10.0.0.1, dst_ip=20.0.0.2, pktlen=64.
+
+
+flymon> read_task -t 3
+Read all data for task: 3
+[0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0]
+[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+The experimental result is consistent with our expectation.
+
+Through the above experiments, we basically verified that flymon supports bit-level arbitrary key settings. If you are interested, you can set other keys for testing (such as ports, etc.).
+
+</details>
 
 
 <details><summary><b>Dynamic Memory Allocation</b></summary>
@@ -363,6 +442,7 @@ Read all data for task: 5
 Finally, we find that all the data of task 1 is cleared. This use case demonstrates that FlyMon can dynamically distribute measurement tasks to different size and location memory ranges, and achieve isolation between tasks.
 
 </details>
+
 
 
 <details><summary><b>Single-key Distinct Counting (Flow Cardinality)</b></summary>
