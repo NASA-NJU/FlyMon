@@ -144,15 +144,15 @@ class SleKeyDistinct(FlowAttribute):
             datas: is an list of data list.
         """
         datas = datas[0]        
-        V = 0
-        dZ = 0
-        Z = 0   
-        E = 0
-        m = len(datas)
+        V = 0.0
+        dZ = 0.0
+        Z = 0.0   
+        E = 0.0
+        m = len(datas) * 1.0
         for bits in datas:
             if bits == 0:
                 V+=1
-            p = 16 ## Check the C++?
+            p = 16
             for i in range(15, -1, -1):
                 bit = int(bits & (1<<i)) >> i
                 if bit == 0:
@@ -161,7 +161,7 @@ class SleKeyDistinct(FlowAttribute):
             dZ += pow(2, -1*p) 
         Z = 1.0 / dZ
         E = 0.679 * pow(m, 2) * Z
-        E_star = 0
+        E_star = 0.0
         if E < 2.5*m:
             if V != 0:
                 E_star = m * log2(m/V) 

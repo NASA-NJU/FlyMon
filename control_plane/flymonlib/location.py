@@ -39,8 +39,8 @@ class Location:
         address_base = self._hash.compute(phy_bitw, buf, offset)
         current_idx = int(address_base / mem_range)
         offset = (self._memory_idx - current_idx) * mem_range
-        print(f"mem_range:{mem_range} current_idx: {current_idx}  current_idx:{current_idx}, offset:{offset}")
-        print(f"address_base:{address_base}, offset:{offset}, read:{address_base + offset}")
+        # print(f"mem_range:{mem_range} current_idx: {current_idx}  current_idx:{current_idx}, offset:{offset}")
+        # print(f"address_base:{address_base}, offset:{offset}, read:{address_base + offset}")
         return address_base + offset
 
     @property

@@ -258,9 +258,9 @@ Read all data for task: 1
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ```
 
-Now, we inject some traffic into the switch by generating some packets on the server that is directly connected to the switch.
+Now, we inject some traffic into the switch to verify the measurement task.
 
-> 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., scapy). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
+> 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., [scapy](https://scapy.net/)). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
 
 If you are using Tofino Model, we provide some commands to help you perform the tests.
 
@@ -270,7 +270,7 @@ flymon> add_forward -s 0 -d 1
 flymon> send_packets -l 64 -n 5 -p 0 -s 10.0.0.0/8
 ```
 
-The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port0 to Port1. The `send_packets` command send 5 packets with SrcIP in 10.0.0.0/8, length 64.
+The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port-0 to Port-1 (i.e., DP Port). The `send_packets` command sends 5 packets with length 64 and SrcIP in network range 10.0.0.0/8.
 
 After generating the traffic, we can check the memory of the task again.
 
@@ -282,14 +282,13 @@ Read all data for task: 1
 [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1]
 ```
 
-To query a specific Key (e.g., SrcIP=10.1.1.1), we can use the `query_task` command.
+The memory above is a visual representation of the Count-min sketch. To query a specific Key (e.g., SrcIP=10.1.1.1), we can use the `query_task` command.
 
 ```
 flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
 
 1
 ```
-
 
 </details>
 
@@ -300,6 +299,7 @@ Below we show FlyMon's dynamic memory allocation. First we issue two tasks with 
 
 ```
 flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+
 flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 24
 ```
 These two tasks have the same key and attribute, but focus on different sets of traffic. The resource manager will assign them to the same CMU-Group.
@@ -308,29 +308,44 @@ The first task will be allocated 3x16 buckets, while the second task will be all
 
 > 🔔 You can inject traffic into the physical switch through an additional server.  You can also inject traffic into the Tofino Model's virtual interface via software (e.g., scapy). Both require the FlyMon data plane's simple_fwd table to be configured in advance. We offer `add_port` and `add_forward` commands to fast configure you switch/model. 
 
+If you are using Tofino Model, we provide some commands to help you perform the tests.
+
+```
+flymon> add_forward -s 0 -d 1
+
+flymon> send_packets -l 64 -n 10 -p 0 -s 10.0.0.0/8
+Send a packet with src_ip=10.0.0.1, pktlen=64.
+Send a packet with src_ip=10.0.0.2, pktlen=64
+...
+flymon> send_packets -l 64 -n 10 -p 0 -s 20.0.0.0/8
+Send a packet with src_ip=20.0.0.1, pktlen=64.
+Send a packet with src_ip=20.0.0.2, pktlen=64.
+...
+```
+
 After injecting the traffic of 10.0.0.0/8 and 20.0.0.0/8, we observe the memory status of whole CMU-Group, Task 1, and Task 2 respectively.
 
 ```
-Read all data for task: 5
-[2, 9, 9, 2, 9, 2, 2, 9, 10, 4, 4, 11, 3, 10, 10, 4, 12, 13, 13, 13, 12, 12, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0]
-[6, 5, 9, 5, 5, 8, 7, 9, 7, 6, 5, 5, 7, 5, 5, 6, 13, 11, 14, 10, 12, 13, 12, 15, 0, 0, 0, 0, 0, 0, 0, 0]
-[4, 7, 9, 5, 5, 7, 6, 6, 5, 7, 8, 8, 3, 8, 7, 5, 9, 14, 17, 13, 8, 15, 13, 11, 0, 0, 0, 0, 0, 0, 0, 0]
+flymon> read_cmug -g 5
+Read all data for CMU-Group 5
+[1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 2, 0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3, 0, 2, 2, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
 ----------------------------------------------------
 
 flymon> read_task -t 1
 Read all data for task: 1
-[2, 9, 9, 2, 9, 2, 2, 9, 10, 4, 4, 11, 3, 10, 10, 4]
-[6, 5, 9, 5, 5, 8, 7, 9, 7, 6, 5, 5, 7, 5, 5, 6]
-[4, 7, 9, 5, 5, 7, 6, 6, 5, 7, 8, 8, 3, 8, 7, 5]
-----------------------------------------------------
+[1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0]
+[0, 0, 2, 0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3]
+[0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1]
 
 flymon> read_task -t 2
 Read all data for task: 2
-[12, 13, 13, 13, 12, 12, 12, 13]
-[13, 11, 14, 10, 12, 13, 12, 15]
-[9, 14, 17, 13, 8, 15, 13, 11]
-----------------------------------------------------
+[2, 2, 1, 1, 1, 1, 1, 1]
+[0, 2, 2, 0, 3, 0, 0, 3]
+[1, 2, 2, 1, 1, 1, 1, 1]
 ```
+
 We can find that the data of both Task 1 and Task 2 are on CMU-Group5. The memory range of task 1 is [0,16), while the memory range of task 2 is [16,24).
 
 Next, we delete task 1 and its data.
@@ -340,12 +355,12 @@ flymon> del_task -t 1 -c True
 
 flymon> read_cmug -g 5
 Read all data for task: 5
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 13, 13, 13, 12, 12, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0]
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 11, 14, 10, 12, 13, 12, 15, 0, 0, 0, 0, 0, 0, 0, 0]
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 14, 17, 13, 8, 15, 13, 11, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
 ```
 
-Finally, we find that all the data of task 1 is cleared.
+Finally, we find that all the data of task 1 is cleared. This use case demonstrates that FlyMon can dynamically distribute measurement tasks to different size and location memory ranges, and achieve isolation between tasks.
 
 </details>
 
@@ -355,25 +370,43 @@ Finally, we find that all the data of task 1 is cleared.
 FlyMon uses the HyperLogLog algorithm to implement single-key distinct Count statistics. If we want to count the different number of IP-Pair in the network, we can deploy this task with the following command.
 
 ```
-flymon> add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 32
+flymon> add_task -f *,* -k hdr.ipv4.src_addr -a distinct() -m 32
 ```
 
 We can inject some packets into the switch like this. For example, using scapy to generate 100 packets with different IP addresses. 
 
-> 🔔 Since the memory in our demo scenario is relatively small (i.e., only 32 16-bits counters in each CMU), we choose a very small size of traffic to be measured. HyperLogLog usually yields more reliable measurements in larger traffic scenarios.
+> 🔔 Since the memory in our demo scenario is relatively small (i.e., only 32 16-bits counters in each CMU), we choose a very small size of traffic to be measured. HyperLogLog usually yields more reliable measurements (i.e., smaller variance) in larger traffic scenarios.
 
-After the flow run, we can query the measurement data.
+If you are using Tofino Model, we provide some commands to help you perform the tests.
+
+```
+flymon> add_forward -s 0 -d 1
+
+flymon> send_packets -l 64 -n 100 -p 0 -s 10.0.0.0/8
+Send a packet with src_ip=10.0.0.1, pktlen=64.
+Send a packet with src_ip=10.0.0.2, pktlen=64.
+...
+Send a packet with src_ip=10.0.0.98, pktlen=64.
+Send a packet with src_ip=10.0.0.99, pktlen=64.
+Send a packet with src_ip=10.0.0.100, pktlen=64.
+```
+
+After inserting the traffic, we can query the measurement data of the single-key distinct counting task.
 
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[0, 65407, 65407, 48622, 44099, 65534, 49151, 65534, 64351, 65535, 65375, 49151, 0, 65535, 47967, 65535, 0, 65535, 64479, 49151, 2735, 64511, 49119, 56567, 32767, 65535, 64511, 49150, 0, 64510, 49151, 65534]
+[0, 49151, 57113, 0, 34029, 49119, 57145, 62474, 42159, 40861, 65403, 0, 0, 40893, 65371, 0, 57113, 58411, 38092, 49151, 57145, 0, 0, 49119, 65403, 0, 0, 40861, 65371, 50281, 46222, 40893]
 
-
-flymon> query_task -t 1
-127
 ```
-As you can see, the output of the HyperLogLog algorithm is not intuitive. We implemented the parsing of the HLL algorithm data in the `query_test` command.
+As you can see, the output of the original measurement data is not intuitive. We implement the parsing of the HLL algorithm data in the `query_test` command.
+
+```
+flymon> query_task -t 1
+133
+```
+
+The results seem to be not accurate enough due to the fact that we used a very small number of packets and a very small amount of memory. HyperLogLog usually yields more reliable measurements (i.e., smaller variance) in larger traffic scenarios. More importantly, adjusting the parameters of the data plane hash function is also a technical task. We will further optimize the configuration of the FlyMon data plane's hash functiones in future.
 
 </details>
 
@@ -387,30 +420,40 @@ We do this by measuring the maximum packet size for each flow. We can deploy suc
 flymon> add_task -f *,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 32
 ```
 
-After randomly injecting traffic of different packet sizes into the network, we can get the following measurement results.
+Then we generate several packets of different sizes. If you are using Tofino Model, we provide some commands to help you perform the tests.
+
+```
+flymon> add_forward -s 0 -d 1
+
+flymon> send_packets -l 64 -n 10 -p 0 -s 10.0.0.0/8
+...
+flymon> send_packets -l 80 -n 10 -p 0 -s 10.0.0.0/8
+...
+```
+
+Finally, we can get the following measurement results.
 
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[511, 507, 511, 511, 511, 511, 511, 511, 251, 511, 511, 371, 511, 321, 423, 511]
-[511, 511, 509, 511, 511, 511, 511, 511, 511, 511, 511, 511, 511, 511, 383, 511]
-[511, 447, 511, 511, 511, 511, 511, 255, 511, 511, 511, 511, 511, 439, 511, 511]
+[80, 80, 80, 0, 0, 80, 0, 0, 80, 80, 0, 80, 80, 0, 80, 80]
+[0, 0, 80, 0, 80, 0, 0, 0, 0, 80, 0, 0, 0, 0, 0, 80]
+[0, 80, 80, 80, 0, 0, 0, 0, 80, 80, 80, 0, 80, 80, 80, 80]
 
-flymon> query_task -t 1 -k 20.100.194.98,*,*,*,*
-511
+flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
+80
 ```
+
 The underlying logic of the Max property is the SuMax algorithm, which obtains the closest estimate to the true value by minimizing the value of multiple rows.
 In addition to packet size, FlyMon currently supports standard metadata including queue length, timestamp, etc.
+
 </details>
 
-The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key, flow attribute, and memory size. The tasks that FlyMon can perform are not limited to the above use cases. We will add more use cases in the future.
+The flexibility of FlyMon lies in the ability to arbitrarily adjust the flow key, flow attribute, and memory size. The tasks that FlyMon can perform are not limited to the above use cases. We will add more use cases in future.
 
 ## 📏 Simulation Framework
 
-For the convenience of experimentation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation.
-
-
-In addition, we constructed an automated testing framework to repeat the experiment. The simulation code is located in the [simulations](./simulations) directory.
+For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test algorithms accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In addition, we constructed an automated testing framework to repeat the experiment. The simulation code is located in the [simulations](./simulations) directory.
 
 ## ⚠️ Licsense
 

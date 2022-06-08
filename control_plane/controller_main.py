@@ -218,7 +218,7 @@ class FlyMonController(cmd.Cmd):
                 print(parser.error_message)
                 return
             data = self.data_collector.read_group(args.group_id)
-            print(f"Read all data for task: {args.group_id}")
+            print(f"Read all data for CMU-Group {args.group_id}")
             for row in data:
                 print(row)
             print("----------------------------------------------------")
@@ -365,7 +365,7 @@ class FlyMonController(cmd.Cmd):
             for src_ip in net4.hosts():
                 if count < packet_num:
                     pkt = Ether(src="00:00:00:00:00:00", dst="ff:ff:ff:ff:ff:ff") / IP(src=src_ip) / UDP(dport=4321, sport=1234)
-                    pkt = pkt / ('a'* (packet_size - len(pkt)))
+                    pkt = pkt / ('a'* (packet_size-4 - len(pkt)))
                     sendp(pkt, iface=port_dict[port], verbose=0)
                     count += 1
                     print(f"Send a packet with src_ip={src_ip}, pktlen={packet_size}.")
