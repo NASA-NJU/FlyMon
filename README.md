@@ -262,7 +262,11 @@ If you are using Tofino Model, we provide some commands to help you perform the 
 ```
 flymon> add_forward -s 0 -d 1
 
-flymon> send_packets -l 64 -n 5 -p 0 -s 10.0.0.0/8
+flymon> send_packets -l 64 -n 20 -p 0 -s 10.0.0.0/8
+Send a packet with src_ip=10.0.0.1, dst_ip=30.60.90.1, pktlen=64.
+Send a packet with src_ip=10.0.0.2, dst_ip=30.60.90.1, pktlen=64.
+Send a packet with src_ip=10.0.0.3, dst_ip=30.60.90.1, pktlen=64.
+...
 ```
 
 The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port-0 to Port-1 (i.e., DP Port). The `send_packets` command sends 5 packets with length 64 and SrcIP in network range 10.0.0.0/8.
@@ -272,16 +276,15 @@ After generating the traffic, we can check the memory of the task again.
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0]
-[0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1]
-[0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1]
+[2, 1, 1, 1, 0, 1, 2, 1, 1, 1, 2, 2, 1, 2, 1, 1]
+[0, 0, 0, 0, 3, 0, 4, 3, 0, 0, 0, 0, 2, 0, 4, 4]
+[2, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 0, 1, 2, 1]
 ```
 
 The memory above is a visual representation of the Count-min sketch. To query a specific Key (e.g., SrcIP=10.0.0.1), we can use the `query_task` command.
 
 ```
 flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
-
 1
 ```
 
@@ -294,8 +297,8 @@ Below we show FlyMon's dynamic memory allocation. First we issue two tasks with 
 
 ```
 flymon> reset_all
-flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
-flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 24
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
+flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 24
 ```
 These two tasks have the same key and attribute, but focus on different sets of traffic. The resource manager will assign them to the same CMU-Group.
 
@@ -325,22 +328,22 @@ After injecting the traffic of 10.0.0.0/8 and 20.0.0.0/8, we observe the memory 
 ```
 flymon> read_cmug -g 5
 Read all data for CMU-Group 5
-[1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
-[0, 0, 2, 0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3, 0, 2, 2, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0]
-[0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 2, 4, 0, 0, 3, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 2, 2, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
 ----------------------------------------------------
 
 flymon> read_task -t 1
 Read all data for task: 1
-[1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0]
-[0, 0, 2, 0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3]
-[0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1]
+[0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1]
+[0, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 2, 4]
+[0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1]
 
 flymon> read_task -t 2
 Read all data for task: 2
-[2, 2, 1, 1, 1, 1, 1, 1]
-[0, 2, 2, 0, 3, 0, 0, 3]
-[1, 2, 2, 1, 1, 1, 1, 1]
+[1, 1, 2, 1, 2, 0, 1, 2]
+[0, 0, 3, 7, 0, 0, 0, 0]
+[1, 1, 0, 2, 2, 1, 1, 2]
 ```
 
 We can find that the data of both Task 1 and Task 2 are on CMU-Group 5. The memory range of task 1 is [0,16), while the memory range of task 2 is [16,24).
@@ -352,9 +355,9 @@ flymon> del_task -t 1 -c True
 
 flymon> read_cmug -g 5
 Read all data for task: 5
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0]
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 2, 2, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
 ```
 
 Finally, we find that all the data of task 1 is cleared. This use case demonstrates that FlyMon can dynamically distribute measurement tasks to different size and location memory ranges, and achieve isolation between tasks.
@@ -395,7 +398,7 @@ After inserting the traffic, we can query the measurement data of the single-key
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[0, 49151, 57113, 0, 34029, 49119, 57145, 62474, 42159, 40861, 65403, 0, 0, 40893, 65371, 0, 57113, 58411, 38092, 49151, 57145, 0, 0, 49119, 65403, 0, 0, 40861, 65371, 50281, 46222, 40893]
+[0, 49151, 57113, 0, 34029, 49119, 57145, 0, 42159, 40861, 65403, 0, 0, 40893, 65371, 0, 57113, 58411, 38092, 49151, 57145, 0, 0, 49119, 65403, 0, 0, 40861, 65371, 0, 46222, 40893]
 
 ```
 As you can see, the output of the original measurement data is not intuitive. We implement the HLL algorithm data parsing in the `query_test` command.
@@ -438,9 +441,9 @@ Finally, we can get the following measurement results.
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[80, 80, 80, 0, 0, 80, 0, 0, 80, 80, 0, 80, 80, 0, 80, 80]
-[0, 0, 80, 0, 80, 0, 0, 0, 0, 80, 0, 0, 0, 0, 0, 80]
-[0, 80, 80, 80, 0, 0, 0, 0, 80, 80, 80, 0, 80, 80, 80, 80]
+[0, 0, 80, 80, 0, 80, 80, 0, 80, 80, 0, 80, 0, 80, 80, 80]
+[0, 0, 0, 0, 0, 0, 80, 80, 0, 0, 0, 0, 0, 0, 80, 80]
+[0, 80, 80, 0, 0, 80, 80, 0, 80, 80, 80, 80, 0, 80, 0, 80]
 
 flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
 80
@@ -481,6 +484,42 @@ Read all data for task: 1
 ```
 
 As shown above, the measurement result of the bloom filter in FlyMon is not intuitive because we use all the 16 bits of each counter by encoding the param in the pre-processing stage. Despite this, it is easy to expand this bloom filter into its original form.
+
+</details>
+
+<details><summary><b>Multi-key Distinct Counting </b></summary>
+
+Distinct counting for multiple keys means that measurement are performed for a set of different keys on a single CMU at the same time. FlyMon uses a variant of BeauCoup algorithm to perform this measurement task. To deploy the task in FlyMon, we can :
+
+```
+flymon> reset_all   # optional 
+flymon> add_task -f *,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 32
+```
+
+The above command deploys a measurement task that counts different DstIPs for each SrcIP (i.e., super spreader detection). The processing of flows that meet the threshold needs to be combined with other network components depending on user's scenarios (e.g., combined with a reporting module like [SketchLib](https://github.com/SketchLib/P4_SketchLib)). Here we only demonstrate how the measurement is performed.
+
+After the task is deployed, we inject traffic with different source and destination IP addresses into the network. If you are using a Tofino Model, we provide some commands to help you perform the tests.
+
+```
+flymon> add_forward -s 0 -d 1
+
+flymon> send_packets -l 64 -n 20 -p 0 -s 10.0.0.0/8 -d 20.0.0.0/8
+Send a packet with src_ip=10.0.0.1, dst_ip=20.0.0.1, pktlen=64.
+Send a packet with src_ip=10.0.0.2, dst_ip=20.0.0.2, pktlen=64.
+Send a packet with src_ip=10.0.0.3, dst_ip=20.0.0.3, pktlen=64.
+Send a packet with src_ip=10.0.0.4, dst_ip=20.0.0.4, pktlen=64.
+....
+```
+
+When the traffic generation is finished, we can read the memory of this task. 
+
+```
+[15523, 30460, 0, 0, 12795, 31652, 0, 44721, 32768, 27724, 62214, 47449, 32768, 0, 65118, 46081]
+[0, 0, 65455, 0, 65533, 0, 0, 0, 0, 65525, 0, 0, 0, 0, 0, 65511]
+[14167, 30460, 62890, 46081, 62214, 45741, 12795, 28752, 65118, 49141, 15523, 0, 14863, 31652, 63730, 47449]
+```
+
+There are two different ways to deploy for this task. One with a threshold-triggered approach similar to BeauCoup's. The other is a maximum likelihood estimation (MLE) approach similar to [Linear Couting](https://www.waitingforcode.com/big-data-algorithms/cardinality-estimation-linear-probabilistic-counting/read). 
 
 </details>
 

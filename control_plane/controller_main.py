@@ -344,12 +344,16 @@ class FlyMonController(cmd.Cmd):
             -n packet_num
             -s packet_size
             -p virtual_port
+            -s network address set of src_ip
+            -d network address set of dst_ip (optional)
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-l", "--len", dest="len", type=int, required=True, help="e.g., 64")
-        parser.add_argument("-n", "--num", dest="num", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-l", "--len", dest="len", type=int, required=False, default=64, help="e.g., 64")
+        parser.add_argument("-n", "--num", dest="num", type=int, required=False, default=1, help="e.g., 1")
         parser.add_argument("-p", "--port", dest="port", type=int, required=True, help="e.g., 1")
         parser.add_argument("-s", "--srcip", dest="srcip", type=str, required=True, help="e.g., 10.0.0.0/24")
+        parser.add_argument("-d", "--dstip", dest="dstip", type=str, required=False, default="30.60.90.1", 
+                                             help="e.g., 30.60.90.1 or 30.60.90.0/24 ")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
@@ -361,18 +365,29 @@ class FlyMonController(cmd.Cmd):
             if packet_num < 0 or packet_size < 0 or port not in VPORT_DICT.keys():
                 print("Invalid Inputs.")
                 return
-            net4 = ipaddress.ip_network(args.srcip)
+            net_src = ipaddress.ip_network(args.srcip)
+            net_dst = ipaddress.ip_network(args.dstip)
             count = 0
-            for src_ip in net4.hosts():
-                if count < packet_num:
-                    pkt = Ether(src="00:00:00:00:00:00", dst="ff:ff:ff:ff:ff:ff") / IP(src=src_ip) / UDP(dport=4321, sport=1234)
-                    pkt = pkt / ('a'* (packet_size-4 - len(pkt)))
-                    sendp(pkt, iface=VPORT_DICT[port], verbose=0)
-                    count += 1
-                    print(f"Send a packet with src_ip={src_ip}, pktlen={packet_size}.")
-                else:
-                    print("Done.")
-                    return
+            skip_num = 0
+            for src_ip in net_src.hosts():
+                pos = 0
+                for dst_ip in net_dst.hosts():
+                    if pos < skip_num:
+                        pos += 1
+                        continue
+                    if count < packet_num:
+                        pkt = Ether(src="00:00:00:00:00:00", dst="ff:ff:ff:ff:ff:ff") / IP(src=src_ip, dst=dst_ip) / UDP(dport=4321, sport=1234)
+                        pkt = pkt / ('a'* (packet_size-4 - len(pkt)))
+                        sendp(pkt, iface=VPORT_DICT[port], verbose=0)
+                        skip_num += 1
+                        if skip_num >= 2**(32 - net_dst.prefixlen):
+                            skip_num = 0
+                        count += 1
+                        print(f"Send a packet with src_ip={src_ip}, dst_ip={dst_ip}, pktlen={packet_size}.")
+                        break
+                    else:
+                        print("Done.")
+                        return
         except Exception as e:
             print(traceback.format_exc())
             print(e)

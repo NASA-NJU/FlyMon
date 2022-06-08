@@ -67,7 +67,7 @@ class TaskManager:
                 # Install the initialization stage.
                 if task_instance.attribute.param1.type == ParamType.CompressedKey:
                     self.runtime.compression_stage_config(location.group_id, location.group_type,
-                                                          location.hkeys[1], task_instance.attribute.param1)
+                                                          location.hkeys[1], task_instance.attribute.param1.content)
                     location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
                                                             task_instance.filter, # Filter
                                                             task_instance.id,

@@ -59,7 +59,7 @@ class FlowAttribute():
     def resource_list(self):
         resource_list = []
         if self._param1.type == ParamType.CompressedKey:
-            resource_list.append(Resource(ResourceType.CompressedKey, self._param1))
+            resource_list.append(Resource(ResourceType.CompressedKey, self._param1.content))
         elif self._param1.type != ParamType.Const and self._param1.type != ParamType.Key:
             resource_list.append(Resource(ResourceType.StdParam, self._param1.content))
         return resource_list
@@ -214,7 +214,7 @@ class MulKeyDistinct(FlowAttribute):
         for i in range(16):
             param = i << 12
             code = 1 << i
-            param_mapping[(param, mask)] = code
+            param_mapping[(param, mask_value)] = code
         return param_mapping
 
     @property
