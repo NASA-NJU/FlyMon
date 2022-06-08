@@ -88,7 +88,7 @@ export FLYMON_DIR=`pwd`
 ```
 > 🔔 You also need to check if SDE environment variables (e.g., `SDE` and `SDE_INSTALL`) are set correctly.
 
-> 🔔 The compilation process usually takes 20~60 minutes. Yes, it compiles so slowly QAQ. We expect some deep optimizations for the compiler. Noth taht although the compilation is slow, this does not affect the forwarding performance of the switch after the compilation is complete.
+> 🔔 The compilation process usually takes 20~60 minutes. Yes, it compiles so slowly QAQ. We expect some deep optimizations for the compiler. Note taht although the compilation is slow, this does not affect the forwarding performance of the switch after the compilation is complete.
 
 ### 🚀 Running FlyMon
 

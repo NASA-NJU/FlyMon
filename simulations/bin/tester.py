@@ -24,13 +24,15 @@ class Tester():
         mdata_temp_out = mdata_template.render(self._test_args)
         print("Generating codes...")
         with open(generated_file, 'w') as f:
-            f.writelines(mdata_temp_out.encode('raw_unicode_escape'))
+            # f.writelines(mdata_temp_out.encode('raw_unicode_escape'))
+            # f.writelines(bytes(mdata_temp_out, encoding='utf8'))
+            f.writelines(mdata_temp_out)
             f.close()
         print("Compile codes...")
         # temp_build_dir = 'build_' + self._test_name + '_%d' %(random.randint(1,10000),)
         process_build = subprocess.Popen('cd ./build; cmake ..; make -j2; cd ..; exit 0', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for line in iter(process_build.stdout.readline, b''):
-            sys.stdout.write(line)
+            sys.stdout.write(line.decode())
         process_build.wait()
         if process_build.returncode != 0:
             print("Compile Failed! See "+ self._output + ' for detail.')
@@ -48,8 +50,8 @@ class Tester():
             print("Running codes...")
             process_execute = subprocess.Popen(test_exec, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for line in iter(process_execute.stdout.readline, b''):
-                sys.stdout.write(line)
-                output.write(line)
+                # sys.stdout.write(line.decode())
+                output.write(line.decode())
             process_execute.wait()
             if process_execute.returncode !=0:
                 print("Runtime Failed! See "+ self._output + ' for detail.')

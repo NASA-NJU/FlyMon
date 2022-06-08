@@ -1,1 +1,1 @@
-We only reserve 1 second of trace, the full traffic can be downloaded from [WIDE](http://mawi.wide.ad.jp/mawi/).
+You should download the trace files (i.e., fifteen1.dat, thirty_sec_0.dat, sixty_sec_0.dat) into this directory.

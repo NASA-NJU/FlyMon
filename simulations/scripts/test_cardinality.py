@@ -93,6 +93,6 @@ def test_beaucoup_flow_cardinality():
 
 if __name__ == '__main__':
     test_tbc_hll_flow_cardinality()
-    # test_beaucoup_flow_cardinality()
+    test_beaucoup_flow_cardinality()
 
     

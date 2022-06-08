@@ -2,7 +2,48 @@
 
 This is the simulation implementation part of flymon. We have implemented related measurement algorithms based on CMU-Groups. In addition, we constructed an automated testing framework to repeat the experiment.
 
+## Get Started
+
+Below we show how to perform the test. 
+
+### Requirements
+
+* gcc version 9.4.0
+* cmake version 3.16.3
+* python
+
+
+### Download Traces
+
+Our packet trace is download from [the MAWI Working Group of the WIDE Project](http://mawi.wide.ad.jp/mawi/). 
+We preprocessed the trace according to the period (e.g., 15s and 30s) and kept only the information related to the flows (i.e., 5-tuple).
+You can download the trace from our [google cloud drive](https://drive.google.com/drive/folders/1vs46_1Tr-k3SZZb-i5r9u0irbcDbL-JJ?usp=sharing).
+
+After the download is complete, we recommend that you place the three files (i.e., thirty_sec_0.dat, fifteen1.dat, sixty_sec_0.dat) in the `simulations/data` directory.
+
+### Build Project
+
+You can use cmake to build our project easily.
+
+> ⚠️ It needs to support C++17 on your system. Our gcc version is 8.4.0. You also need to check your CMAKE version.
+
+```bash
+cd /path/to/simuations
+mkdir -p ./build
+cd build; cmake ..; make -j 2; cd ..
+```
+
+After the project has been compiled, we can prepare it for testing. We give a simple parallelized test framework for repeating the experiments.
+
+```bash
+python test_all.py
+```
+
+It took about 3 hours to perform the above tests. When all tests are completed, you can view the results in the results/ directory. We prepared a copy of the output from our early run end in the result_snapshot directory.
+
 ## File Description
+
+> 🔔 For historical reasons, the Transformable Measurement Block (TBC) is referred to as Composable Measurement Unit (CMU).
 
 * `include/tbc` contains the simulation of the CMU-Groups and builds a set of table structures, which can be configured as many measurement algorithms (in `include/tbc_manager.h`).
 * The other files in `include/` includes other measurement algorithms and utilts.
@@ -16,31 +57,3 @@ This is the simulation implementation part of flymon. We have implemented relate
     * `BeauCoup` tests original BeauCoup algorithm.
 * `test_xxx.py` are scripts to automate test measurement algorithms.
 
-> 🔔 For historical reasons, the Transformable Measurement Block (TBC) is referred to as Composable Measurement Unit (CMU).
-
-## Get Started
-
-Below we show how to perform the test. Firstly, build the code.
-
-```bash
-cd /path/to/simuations
-mkdir -p ./build
-cd build; cmake ..; make -j 2; cd ..
-```
-
-> ⚠️ It needs to support C++17 on your system. Out gcc version is 8.4.0
-
-After the project has been compiled, we can prepare it for testing. But before that, we should download the test traffic.
-
-```
-wget http://mawi.nezu.wide.ad.jp/mawi/samplepoint-G/2020/202002121400.pcap.gz -O ./data/
-```
-
-
-## 
-
-```bash
-python test_xxxx.py
-```
-
----
