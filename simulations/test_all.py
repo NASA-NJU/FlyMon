@@ -587,7 +587,7 @@ def test_tbc_heavyhitter_prob():
     test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
     test_once.generate_codes()
     _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
-    p = Process(target=_bound_instance_method_alias,args=(i,)) 
+    p = Process(target=_bound_instance_method_alias,args=(0,)) 
     p.start()
     p.join()
     print("Done.")

@@ -128,11 +128,11 @@ bool RandomFTupleMatch::hit(TracePacket* hdr, Metadata* meta)const{
         HOW_LOG(L_INFO, "TBC structure coin size %d, input rule coin size %d", in_coins.size(), _coins.size());
         exit(1);
     }
-    // templor no need coins.
-    // for(auto i =0; i<in_coins.size(); ++i){
-    //     if(_coins[i] != '*' && in_coins[i] != _coins[i])
-    //         return false;
-    // }
+
+    for(auto i =0; i<in_coins.size(); ++i){
+        if(_coins[i] != '*' && in_coins[i] != _coins[i])
+            return false;
+    }
     if( _extra_match_key != ""){
         bitset<32> extra_val = bitset<32>(pipe_meta->get_metadata(_extra_match_key));
         // for(auto i=0; i<_extra_match_val.size(); ++i){   // 从低位向高位匹配, 防止param过小.

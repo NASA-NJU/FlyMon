@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "any": "cpp",
+        "bitset": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "optional": "cpp",
+        "tuple": "cpp",
+        "streambuf": "cpp"
+    }
+}
