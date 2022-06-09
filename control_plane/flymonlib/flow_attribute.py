@@ -110,6 +110,10 @@ class Frequency(FlowAttribute):
     def __str__(self):
         return f"frequency({self.param1})"
 
+
+class FrequencySuMax(FlowAttribute):
+    pass
+
 class SleKeyDistinct(FlowAttribute):
     def __init__(self):
         """

@@ -294,10 +294,15 @@ flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
 With the dynamic feature of Tofino's hash computation unit, FlyMon can support setting any subpart (bit level) of the candidate key set as flow key. In this implementation, the candidate key set is the 5-tuple (i.e., SrcIP, DstIP, SrcPort, DstPort, Protocol). The source-destination port can be either for the UDP protocol or for the TCP protocol. To demonstrate this, we can test it with several tasks.
 
 **Task 1**: Set the Key as `hdr.ipv4.src_addr/24`
+
 ```
+flymon> reset_all
 add_task -f *,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
 ```
-We then generate traffic with SrcIP in 192.168.0.0/24. As the task only care about the first 24 for SrcIP, all packets will be treated as a single flow. Sketch should have only one non-zero counter in each row.
+
+> 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
+
+We then generate traffic with SrcIP in 192.168.0.0/24. As the task only care about the first 24 bits of SrcIP, all the packets will be treated as a single flow. Count-Min Sketch should have only one non-zero counter in each row.
 
 ```
 flymon> send_packets -p 0 -s 192.168.0.0/24 -n 10
@@ -326,7 +331,7 @@ add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 48
 [Success] Allocate TaskID: 2
 ```
 
-To test this, we send two packets. These two packets have the same src IP address, but have different Dst IP addresses. The measurement task should treat the two packets as two distinct flows. In other words, each row of the task should have two non-zero counters, unless there is a hash conflict.
+To test this, we send two packets. The two packets have the same src IP address, but have different Dst IP addresses. The measurement task should treat the two packets as two distinct flows. In other words, each row of the task should have two non-zero counters, unless there is a hash conflict.
 
 ```
 flymon> send_packets -p 0 -s 10.0.0.1 -d 20.0.0.0/8 -n 2
