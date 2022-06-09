@@ -8,25 +8,21 @@ import os
 import shutil  
 import math
 
-# Memory Settgings.
+# Memory Settings (In KB or Bytes).
 # HEAVY_HITTER_MEMORY = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
-HEAVY_HITTER_MEMORY = [400]
-
 # DDOS_VICTOM_MEMORY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
-DDOS_VICTOM_MEMORY = [1]
-
 # BLOOM_MEMORY = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000]
-BLOOM_MEMORY = [10]
-
 # CARD_MEMORY = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 8192]  
-CARD_MEMORY = [4]  
-
 # ENTROPY_MEMORY = [600, 700, 800, 900, 1000]
-ENTROPY_MEMORY = [600]
-
 # MAX_MEMORY = [10000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100]
-MAX_MEMORY = [10000]
 
+### Debug
+MAX_MEMORY = [10000]
+ENTROPY_MEMORY = [600]
+CARD_MEMORY = [4]  
+BLOOM_MEMORY = [10]
+DDOS_VICTOM_MEMORY = [1]
+HEAVY_HITTER_MEMORY = [400]
 
 parser = ArgumentParser()
 parser.add_argument("-d", "--dir", dest="work_dir", type=str, required=True, help="Directory of simulation codes.")
@@ -40,7 +36,6 @@ repeat_time = args.repeat
 data15 = work_dir  +'/data/fifteen1.dat'
 data30 = work_dir  +'/data/thirty_sec_0.dat'
 data60 = work_dir  +'/data/sixty_sec_0.dat'
-
 
 ## Our Dirs
 log_dir = work_dir + '/log/'
@@ -99,8 +94,8 @@ def _instance_method_alias(obj, arg1, arg2=None):
     return
 
 def test_univmon_heavyhitter():
-    test_dir = test_dir_base + 'UnivMon/'
-    test_file = 'test_univmon.cpp_template'
+    test_dir = test_dir_base + 'UnivMon_HH/'
+    test_file = 'test_univmon_hh.cpp_template'
     test_args = {
         "WORK_DIR" : work_dir,
         "DATA_FILE" : data15,
@@ -511,8 +506,8 @@ def test_tbc_flow_entropy():
     print("Done.")
 
 def test_univmon_entropy():
-    test_dir = test_dir_base + 'UnivMon/'
-    test_file = 'test_univmon.cpp_template'
+    test_dir = test_dir_base + 'UnivMon_Entropy/'
+    test_file = 'test_univmon_entropy.cpp_template'
     test_args = {
         "WORK_DIR" : work_dir,
         "DATA_FILE" : data15,
@@ -541,7 +536,7 @@ def test_univmon_entropy():
     print("Done.")
 
 
-def test_tbc_maxtable_max_interval():
+def test_tbc_maxtable_max_interval(depth=3):
     test_dir = test_dir_base + 'TBC_MAX_TABLE/'
     test_file = 'test_tbc_max_table.cpp_template'
     test_args = {
@@ -549,8 +544,8 @@ def test_tbc_maxtable_max_interval():
         "DATA_FILE" : data15,
         # "DATA_FILE" : 'data/WIDE/head1000.dat',
         "MEMORY" : 0, # TBD
-        "DEPTH" : 3,
-        "RESULT_CSV" :  result_dir_max + 'tbc_maxtable_max_interval.csv'
+        "DEPTH" : depth,
+        "RESULT_CSV" :  result_dir_max + f'tbc_maxtable_max_interval_d{depth}.csv'
     }
     out_file = log_dir + 'test_tbc_maxtable_'+logtime()+'.log'
     # M_LIST = [10000]
@@ -594,36 +589,39 @@ def test_tbc_heavyhitter_prob():
 
 if __name__ == '__main__':
     begin = datetime.datetime.now()
-    ## Heavy Hitters
-    # test_univmon_heavyhitter()
-    # test_beaucoup_heavyhitter(table_num=1)
-    # test_tbc_beaucoup_heavy_hitter(block_num=1)
-    # test_tbc_beaucoup_heavy_hitter(block_num=3)
-    # test_tbc_cmsketch_heavy_hitter()
-    # test_tbc_cusketch_heavy_hitter()
 
-    # ## DDoS Victims
-    # test_tbc_beaucoup_ddos_victim(d=1)
-    # test_tbc_beaucoup_ddos_victim(d=3)
-    # test_beaucoup_ddos_victim(table_num=1)
-    # test_beaucoup_ddos_victim(table_num=3)
-
-    # ## Bloomfilter
-    # test_tbc_bloom_filter_wo_optm()
-    # test_tbc_bloom_filter()
-
-    ## Cardinality
-    # test_tbc_hll_flow_cardinality()
-    # test_beaucoup_flow_cardinality()
-
-    # ## Entropy
-    # test_tbc_flow_entropy()
-    # test_univmon_entropy()
-
-    ## Max Table
-    # test_tbc_maxtable_max_interval()
-
+    # Heavy Hitters
+    test_univmon_heavyhitter()
+    test_beaucoup_heavyhitter(table_num=1)
+    test_tbc_beaucoup_heavy_hitter(block_num=1)
+    test_tbc_beaucoup_heavy_hitter(block_num=3)
+    test_tbc_cmsketch_heavy_hitter()
+    test_tbc_cusketch_heavy_hitter()
+    
+    # Probabilistic Heavy Hitters
     test_tbc_heavyhitter_prob()
+
+    ## DDoS Victims
+    test_tbc_beaucoup_ddos_victim(d=1)
+    test_tbc_beaucoup_ddos_victim(d=3)
+    test_beaucoup_ddos_victim(table_num=1)
+    test_beaucoup_ddos_victim(table_num=3)
+
+    ## Bloomfilter
+    test_tbc_bloom_filter_wo_optm()
+    test_tbc_bloom_filter()
+
+    # Cardinality
+    test_tbc_hll_flow_cardinality()
+    test_beaucoup_flow_cardinality()
+
+    ## Entropy
+    test_univmon_entropy()
+    test_tbc_flow_entropy()
+
+    # Max Table
+    test_tbc_maxtable_max_interval(depth=2)
+    test_tbc_maxtable_max_interval(depth=3)
 
     end = datetime.datetime.now()
     print("Simulation Costs Time: "+str((end-begin).seconds)+" seconds.")

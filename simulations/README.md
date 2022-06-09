@@ -1,10 +1,10 @@
 # FlyMon Simulation
 
-This is the simulation implementation part of flymon. We have implemented related measurement algorithms based on CMU-Groups. In addition, we constructed an automated testing framework to repeat the experiment.
+This is the simulation implementation part of flymon. We have implemented related measurement algorithms based on CMU-Groups. In addition, we constructed an automated testing framework to repeat the experiments.
 
 ## Get Started
 
-Below we show how to perform the test. 
+Below we show how to perform the tests. 
 
 ### Requirements
 
@@ -16,9 +16,7 @@ Below we show how to perform the test.
 
 Our packet trace is download from [the MAWI Working Group of the WIDE Project](http://mawi.wide.ad.jp/mawi/). 
 We preprocessed the trace according to the period (e.g., 15s and 30s) and kept only the information related to the flows (i.e., 5-tuple).
-You can download the trace from our [google cloud drive](https://drive.google.com/drive/folders/1vs46_1Tr-k3SZZb-i5r9u0irbcDbL-JJ?usp=sharing).
-
-After the download is complete, we recommend that you place the three files (i.e., thirty_sec_0.dat, fifteen1.dat, sixty_sec_0.dat) in the `simulations/data` directory.
+Here is a [guide](./data/README.md) to download these pre-processed traces.
 
 ### Build Project
 
@@ -29,19 +27,19 @@ You can use cmake to build our project easily.
 ```bash
 cd /path/to/simuations
 mkdir -p ./build
-cd build; cmake ..; make -j 2; cd ..
+cd build; cmake ..; make -j; cd ..
 ```
 
 After the project has been compiled, we can prepare it for testing. We give a simple parallelized test framework for repeating the experiments.
 
 ```bash
-python test_all.py python test_all.py -d ./ -r 3
+python test_all.py -d ./ -r 3
 ```
 
 The above script automatically parallelizes the execution of all the accuracy test code.
 The `-r` parameter means how many times each set of parameters is repeated.
 
-It took about 3 hours to perform the above tests. When all tests are completed, you can view the results in the [results](./results/) directory. 
+It took about 3~5 hours to complete the above tests. When all tests are completed, you can view the results in the [results](./results/) directory. 
 We prepared a snapshot of the results from our early experiments in the [result_snapshot](./result_snapshot) directory. 
 The output results are saved in CSV format. 
 We explain the meaning of the output in the first line of the csv files in the result snapshot.

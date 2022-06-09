@@ -82,7 +82,7 @@ int main(){
     double f1 = (2 * precision * recall) / (precision + recall);
     HOW_LOG(L_INFO, "[Result] BeauCoup %d B, Estimate precision %.2f, recall %.2f, f1 %.2f", TOTAL_MEMORY, precision, recall, f1);
     CSVer csver("{{RESULT_CSV}}");
-    csver.write({{MEMORY_KB}}, 0, 0, precision, recall, f1);
+    csver.write({{MEMORY_KB}}, precision, recall, f1);
     delete bc;
 }
 

@@ -51,6 +51,7 @@ void measure_main(DataTrace& trace, Manager& tbc_manager){
     // HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
     delete filter;
     csver.write(TOTAL_MEM/1024, BLOCK_NUM, precision, recall, f1);
+    // csver.write(TOTAL_MEM/1024, BLOCK_NUM, precision, recall, f1);
     return;
 }
 

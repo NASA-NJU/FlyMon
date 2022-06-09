@@ -82,7 +82,8 @@ double measure_main(DataTrace& trace, Manager& tbc_manager){
     double entrypy_esti = get_entropy(dist_est);
     double re = abs(entrypy_esti - entrypy_real) / entrypy_real;
     CSVer csver("{{RESULT_CSV}}");
-    csver.write({{MEMORY}}, wmre, re);
+    // csver.write({{MEMORY}}, wmre, re);
+    csver.write({{MEMORY}}, re);
     delete filter;
 }
 

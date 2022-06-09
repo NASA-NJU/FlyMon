@@ -155,7 +155,8 @@ double measure_main(DataTrace& trace, Manager& tbc_manager){
     double recall = (double)estimate_right / (double)real_ddos.size();
     double f1 = (2 * precision * recall) / (precision + recall);
     HOW_LOG(L_INFO, "[Result] MultiHll %d KB, Estimate precision %.2f, recall %.2f, f1 %.2f", {{HLL_MEMORY}}, precision, recall, f1);
-    csver.write({{HLL_MEMORY}}, {{HLL_BLOCK_NUM}}, {{HLL_SUB_BLOCK_NUM}}, precision, recall, f1);
+    csver.write({{HLL_MEMORY}}, precision, recall, f1);
+    // csver.write({{HLL_MEMORY}}, f1);
     delete filter;
     return 0;
 }

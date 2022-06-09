@@ -7,7 +7,7 @@
 #include "Csver.h"
 
 
-#define HH_THRESHOLD 0.0001
+#define HH_THRESHOLD 0.00005
 
 const uint32_t MEMORY_0_0_2_BLOCK_SIZE = 0.02 * 1024 * 1024 / 3 / 4;
 const uint32_t MEMORY_0_0_4_BLOCK_SIZE = 0.04 * 1024 * 1024 / 3 / 4;
@@ -203,7 +203,7 @@ int main(){
             const vector<double>& result = coin_result.second;
             HOW_LOG(L_INFO, "Coin %s, ARE(all)=%.2f, WARE(all)=%.2f, HH Precision=%.2f, HH Recall=%.2f, F1 Score=%.2f, ARE(hh)%.2f.", 
                                                     coin.c_str(), result[0], result[1], result[2], result[3], result[4], result[5]);
-            csver.write(memory_map[i], coin_to_float(coin), result[4]);
+            csver.write(memory_map[i], coin_to_float(coin), result[2], result[3], result[4]);
         }
     }
     clock_t ends = clock();

@@ -62,7 +62,8 @@ void measure_main(DataTrace& trace, Manager& tbc_manager){
     }
     double re_fp = fp / f;
     double re_tp = tp / InsertSet.size();
-    csver.write({{MEMORY_BYTES}}/1024, {{BLOOM_K}}, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
+    // csver.write({{MEMORY_BYTES}}/1024, {{BLOOM_K}}, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
+    csver.write({{MEMORY_BYTES}}/1024, fp);
     return;
 }
 

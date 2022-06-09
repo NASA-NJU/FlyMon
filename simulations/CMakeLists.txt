@@ -67,11 +67,6 @@ link_directories(${TBC_SRC})
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 
-set(TEST_UNIVMON test_univmon)
-aux_source_directory(${PROJECT_SOURCE_DIR}/test/UnivMon TEST_UNIVMON_SRC)
-add_executable( ${TEST_UNIVMON} ${TEST_UNIVMON_SRC})
-target_link_libraries(${TEST_UNIVMON} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
-
 # set(TEST_BASIC_NETWORK test_basic_network)
 # aux_source_directory(${PROJECT_SOURCE_DIR}/test/NetworkTest TEST_BASIC_NETWORK_SRC)
 # add_executable( ${TEST_BASIC_NETWORK} ${TEST_BASIC_NETWORK_SRC})
@@ -82,11 +77,17 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_CMSketch TEST_TBC_CMSKETCH_S
 add_executable( ${TEST_TBC_CMSKETCH} ${TEST_TBC_CMSKETCH_SRC})
 target_link_libraries(${TEST_TBC_CMSKETCH} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
 
+set(TEST_UNIVMON_HH test_univmon_hh)
+aux_source_directory(${PROJECT_SOURCE_DIR}/test/UnivMon_HH TEST_UNIVMON_HH_SRC)
+add_executable(${TEST_UNIVMON_HH} ${TEST_UNIVMON_HH_SRC})
+target_link_libraries(${TEST_UNIVMON_HH} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
+
 
 set(TEST_TBC_CMSKETCH_PROB test_tbc_cmsketch_prob)
 aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_CMSketch_Prob TEST_TBC_CMSKETCH_Prob_SRC)
 add_executable( ${TEST_TBC_CMSKETCH_PROB} ${TEST_TBC_CMSKETCH_Prob_SRC})
 target_link_libraries(${TEST_TBC_CMSKETCH_PROB} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
+
 
 set(TEST_TBC_CUSKETCH test_tbc_cusketch)
 aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_CUSketch TEST_TBC_CUSKETCH_SRC)
@@ -107,6 +108,11 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_MRAC TBC_MRAC_SRC)
 add_executable( ${TBC_MRAC} ${TBC_MRAC_SRC})
 target_link_libraries(${TBC_MRAC} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG})
 
+
+set(TEST_UNIVMON_ENTROPY test_univmon_entropy)
+aux_source_directory(${PROJECT_SOURCE_DIR}/test/UnivMon_Entropy TEST_UNIVMON_ENTROPY_SRC)
+add_executable(${TEST_UNIVMON_ENTROPY} ${TEST_UNIVMON_ENTROPY_SRC} )
+target_link_libraries(${TEST_UNIVMON_ENTROPY} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
 
 set(TBC_DISTRIBUTION test_tbc_distribution)
 aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_DISTRIBUTION TBC_DISTRIBUTION_SRC)

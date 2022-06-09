@@ -55,6 +55,7 @@ void measure_main(DataTrace& trace, Manager& tbc_manager){
         }
         re_sum += abs(esti_intv - real_intv) / real_intv;
     }
+    // csver.write(TOTAL_MEM/1024, {{DEPTH}}, re_sum / RealInterval.size());
     csver.write(TOTAL_MEM/1024, {{DEPTH}}, re_sum / RealInterval.size());
     return;
 }

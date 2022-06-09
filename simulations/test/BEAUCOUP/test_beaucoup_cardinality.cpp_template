@@ -51,7 +51,8 @@ int main(){
             double real_size = ground_truth.size();
             double estimate_size = 20000;
             double re = abs(real_size- estimate_size) / real_size;
-            csver.write({{COUPON_NUM_MAX}}/8, {{COUPON_NUM_MAX}}, coupon_num, {{P_RATIO}}, 20000, real_size, re);
+            // csver.write({{COUPON_NUM_MAX}}/8, {{COUPON_NUM_MAX}}, coupon_num, {{P_RATIO}}, 20000, real_size, re);
+            csver.write({{COUPON_NUM_MAX}}/8, re);
             return 0;
         }
     }
