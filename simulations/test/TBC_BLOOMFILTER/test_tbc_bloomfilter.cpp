@@ -62,7 +62,8 @@ void measure_main(DataTrace& trace, Manager& tbc_manager){
     }
     double re_fp = fp / f;
     double re_tp = tp / InsertSet.size();
-    csver.write(10240/1024, 3, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
+    // csver.write(10240/1024, 3, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
+    csver.write(10240/1024, re_fp);
     return;
 }
 

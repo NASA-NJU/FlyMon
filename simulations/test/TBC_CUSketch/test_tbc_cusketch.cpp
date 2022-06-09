@@ -104,7 +104,8 @@ vector<double> measure_main(DataTrace& trace, Manager& tbc_manager){
     // HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
     delete filter;
     // csver_fs.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), temp_relative_error_sum/Real_Freq.size());
-    csver_hv.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), precision, recall, f1);
+    // csver_hv.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), precision, recall, f1);
+    csver_hv.write(TOTAL_MEM/1024, precision, recall, f1);
     return {temp_relative_error_sum/Real_Freq.size(), temp_weighted_error_sum/total_size, precision, recall, f1, hh_relative_error_sum/estimate_right};
 }
 

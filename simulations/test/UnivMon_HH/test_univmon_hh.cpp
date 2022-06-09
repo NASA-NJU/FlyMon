@@ -24,7 +24,7 @@ double get_real_entropy(unordered_map<string, int>& flow_map){
 }
 
 
-#define TOT_MEM_IN_BYTES   400 * 1024
+#define TOT_MEM_IN_BYTES   500 * 1024
 
 int main(){
 
@@ -85,8 +85,8 @@ int main(){
     double f1 = (2 * precision * recall) / (precision + recall);
     HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", (int)real_heavy_hitters.size(), precision, recall, f1); 
     CSVer csver("./results/heavyhitter/univmon.csv");
-    csver.write(400, precision, recall, f1);
-    // csver.write(400, f1);
+    csver.write(500, precision, recall, f1);
+    // csver.write(500, f1);
 
     // int es_cardinality = umsketch->get_cardinality();
     // double re = abs(es_cardinality - real_cardinality) / (double)real_cardinality;
@@ -98,5 +98,5 @@ int main(){
     //double re = abs(real_entropy - es_entropy) / (double)real_entropy;
     //HOW_LOG(L_DEBUG, "Real Entropy = %d, UNV Entropy = %d, RE = %.2f", real_entropy, es_entropy, re); 
     //CSVer csver("./results/heavyhitter/univmon.csv");
-    //csver.write(400, re);
+    //csver.write(500, re);
 }

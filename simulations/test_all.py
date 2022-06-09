@@ -9,20 +9,20 @@ import shutil
 import math
 
 # Memory Settings (In KB or Bytes).
-# HEAVY_HITTER_MEMORY = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
-# DDOS_VICTOM_MEMORY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
-# BLOOM_MEMORY = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000]
-# CARD_MEMORY = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 8192]  
-# ENTROPY_MEMORY = [600, 700, 800, 900, 1000]
-# MAX_MEMORY = [10000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100]
+HEAVY_HITTER_MEMORY = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+DDOS_VICTOM_MEMORY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+BLOOM_MEMORY = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000]
+CARD_MEMORY = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 8192]  
+ENTROPY_MEMORY = [600, 700, 800, 900, 1000]
+MAX_MEMORY = [10000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100]
 
 ### Debug
-MAX_MEMORY = [10000]
-ENTROPY_MEMORY = [600]
-CARD_MEMORY = [4]  
-BLOOM_MEMORY = [10]
-DDOS_VICTOM_MEMORY = [1]
-HEAVY_HITTER_MEMORY = [400]
+# MAX_MEMORY = [10000]
+# ENTROPY_MEMORY = [600]
+# CARD_MEMORY = [4]  
+# BLOOM_MEMORY = [10]
+# DDOS_VICTOM_MEMORY = [1]
+# HEAVY_HITTER_MEMORY = [400]
 
 parser = ArgumentParser()
 parser.add_argument("-d", "--dir", dest="work_dir", type=str, required=True, help="Directory of simulation codes.")
@@ -294,7 +294,7 @@ def test_beaucoup_ddos_victim(table_num=1):
     test_file = 'test_beaucoup_ddos.cpp_template'
     test_args = {
         "WORK_DIR" : work_dir,
-        "DATA_FILE" : data30,
+        "DATA_FILE" : data60,
         "MEMORY_KB" : 0,  #TBD
         "THRESHOLD" : 0,
         "RESULT_CSV" : ""    ## TBD
@@ -322,7 +322,7 @@ def test_tbc_beaucoup_ddos_victim(d = 3):
     test_file = 'test_tbc_beaucoup_ddos.cpp_template'
     test_args = {
         "WORK_DIR" : work_dir,
-        "DATA_FILE" : data30,
+        "DATA_FILE" : data60,
         # "DATA_FILE" : 'data/WIDE/head1000.dat',
         "BLOCK_NUM" : d,
         "MEMORY_BYTES" : 0 , # TBD
@@ -545,7 +545,7 @@ def test_tbc_maxtable_max_interval(depth=3):
         # "DATA_FILE" : 'data/WIDE/head1000.dat',
         "MEMORY" : 0, # TBD
         "DEPTH" : depth,
-        "RESULT_CSV" :  result_dir_max + f'tbc_maxtable_max_interval_d{depth}.csv'
+        "RESULT_CSV" :  result_dir_max + f'sumax_d{depth}.csv'
     }
     out_file = log_dir + 'test_tbc_maxtable_'+logtime()+'.log'
     # M_LIST = [10000]

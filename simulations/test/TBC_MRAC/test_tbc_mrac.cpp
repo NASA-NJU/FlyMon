@@ -82,7 +82,8 @@ double measure_main(DataTrace& trace, Manager& tbc_manager){
     double entrypy_esti = get_entropy(dist_est);
     double re = abs(entrypy_esti - entrypy_real) / entrypy_real;
     CSVer csver("./results/entropy/flymon_mrac.csv");
-    csver.write(600, wmre, re);
+    // csver.write(600, wmre, re);
+    csver.write(600, re);
     delete filter;
 }
 

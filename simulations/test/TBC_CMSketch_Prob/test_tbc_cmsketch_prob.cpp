@@ -96,10 +96,10 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
  		int estimate = count_min<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>(tbc_manager, task_id, sketch, (const uint8_t *)key.c_str(), 8, coff);
 		double relative_error = abs(item.second - estimate) / (double)item.second;
         double x_error = abs(item.second - estimate) / (double)item.second;
-        if(item.second > HH_THRESHOLD*trace.size()){
+        if(item.second > HH_THRESHOLD * total_size){
             Real_HH.push_back(make_pair(key, item.second));
         }
-        if(item.second > HH_THRESHOLD*trace.size()){
+        if(estimate > HH_THRESHOLD * total_size){
             Esti_HH.push_back(make_pair(key, estimate));
         }
 		temp_weighted_error_sum += x_error;
@@ -118,7 +118,7 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
         {
             if(Real_HH[j].first == key){
                 hh_relative_error_sum +=  abs(Real_HH[j].second - Esti_HH[i].second) / (double)Real_HH[j].second;
-                // HOW_LOG(L_DEBUG, "Heavy Hitter %d, Real %d, Estimate %d", j, Real_HH[j].second, Esti_HH[i].second); 
+                HOW_LOG(L_DEBUG, "Heavy Hitter %d, Real %d, Estimate %d", j, Real_HH[j].second, Esti_HH[i].second); 
                 estimate_right += 1;
                 break;
             }
@@ -127,7 +127,7 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
     double precision =  (double)estimate_right / (double)Esti_HH.size();
     double recall = (double)estimate_right / (double)Real_HH.size();
     double f1 =  (2 * precision * recall) / (precision + recall);
-    // HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
+    HOW_LOG(L_INFO, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
     delete filter;
     return {temp_relative_error_sum/Real_Freq.size(), temp_weighted_error_sum/total_size, precision, recall, f1, hh_relative_error_sum/estimate_right};
     // HOW_LOG(L_DEBUG, "Total %d packets, %d flows, ARE = %f", trace.size(), 
@@ -165,26 +165,26 @@ int main(){
     for(int t=0; t<4; ++t){
         const string& coin = coins[t];
         int coff = coffs[t];
-        vector<double> result0_1 = measure_main<1, 3, MEMORY_0_0_2_BLOCK_SIZE>(trace, tbc_manager_0_1, coin, coff);
-        results[0][coin] = result0_1;
-        vector<double> result0_2 = measure_main<1, 3, MEMORY_0_0_4_BLOCK_SIZE>(trace, tbc_manager_0_2, coin, coff);
-        results[1][coin] = result0_2;
+        //vector<double> result0_1 = measure_main<1, 3, MEMORY_0_0_2_BLOCK_SIZE>(trace, tbc_manager_0_1, coin, coff);
+        //results[0][coin] = result0_1;
+        //vector<double> result0_2 = measure_main<1, 3, MEMORY_0_0_4_BLOCK_SIZE>(trace, tbc_manager_0_2, coin, coff);
+        //results[1][coin] = result0_2;
         vector<double> result0_3 = measure_main<1, 3, MEMORY_0_0_6_BLOCK_SIZE>(trace, tbc_manager_0_3, coin, coff);
         results[2][coin] = result0_3;
-        vector<double> result0_4 = measure_main<1, 3, MEMORY_0_0_8_BLOCK_SIZE>(trace, tbc_manager_0_4, coin, coff);
-        results[3][coin] = result0_4;
-        vector<double> result0_5 = measure_main<1, 3, MEMORY_0_1_0_BLOCK_SIZE>(trace, tbc_manager_0_5, coin, coff);
-        results[4][coin] = result0_5;
-        vector<double> result0_6 = measure_main<1, 3, MEMORY_0_1_2_BLOCK_SIZE>(trace, tbc_manager_0_6, coin, coff);
-        results[5][coin] = result0_6;
-        vector<double> result0_7 = measure_main<1, 3, MEMORY_0_1_4_BLOCK_SIZE>(trace, tbc_manager_0_7, coin, coff);
-        results[6][coin] = result0_7;
-        vector<double> result0_8 = measure_main<1, 3, MEMORY_0_1_6_BLOCK_SIZE>(trace, tbc_manager_0_8, coin, coff);
-        results[7][coin] = result0_8;
-        vector<double> result0_9 = measure_main<1, 3, MEMORY_0_1_8_BLOCK_SIZE>(trace, tbc_manager_0_9, coin, coff);
-        results[8][coin] = result0_9;
-        vector<double> result1_0 = measure_main<1, 3, MEMORY_0_2_0_BLOCK_SIZE>(trace, tbc_manager_1_0, coin, coff);
-        results[9][coin] = result1_0;
+        //vector<double> result0_4 = measure_main<1, 3, MEMORY_0_0_8_BLOCK_SIZE>(trace, tbc_manager_0_4, coin, coff);
+        //results[3][coin] = result0_4;
+        //vector<double> result0_5 = measure_main<1, 3, MEMORY_0_1_0_BLOCK_SIZE>(trace, tbc_manager_0_5, coin, coff);
+        //results[4][coin] = result0_5;
+        //vector<double> result0_6 = measure_main<1, 3, MEMORY_0_1_2_BLOCK_SIZE>(trace, tbc_manager_0_6, coin, coff);
+        //results[5][coin] = result0_6;
+        //vector<double> result0_7 = measure_main<1, 3, MEMORY_0_1_4_BLOCK_SIZE>(trace, tbc_manager_0_7, coin, coff);
+        //results[6][coin] = result0_7;
+        //vector<double> result0_8 = measure_main<1, 3, MEMORY_0_1_6_BLOCK_SIZE>(trace, tbc_manager_0_8, coin, coff);
+        //results[7][coin] = result0_8;
+        //vector<double> result0_9 = measure_main<1, 3, MEMORY_0_1_8_BLOCK_SIZE>(trace, tbc_manager_0_9, coin, coff);
+        //results[8][coin] = result0_9;
+        //vector<double> result1_0 = measure_main<1, 3, MEMORY_0_2_0_BLOCK_SIZE>(trace, tbc_manager_1_0, coin, coff);
+        //results[9][coin] = result1_0;
         tbc_manager_0_1.reset();
         tbc_manager_0_2.reset();
         tbc_manager_0_3.reset();
@@ -203,7 +203,7 @@ int main(){
             const vector<double>& result = coin_result.second;
             HOW_LOG(L_INFO, "Coin %s, ARE(all)=%.2f, WARE(all)=%.2f, HH Precision=%.2f, HH Recall=%.2f, F1 Score=%.2f, ARE(hh)%.2f.", 
                                                     coin.c_str(), result[0], result[1], result[2], result[3], result[4], result[5]);
-            csver.write(memory_map[i], coin_to_float(coin), result[4]);
+            csver.write(memory_map[i], coin_to_float(coin), result[2], result[3], result[4]);
         }
     }
     clock_t ends = clock();

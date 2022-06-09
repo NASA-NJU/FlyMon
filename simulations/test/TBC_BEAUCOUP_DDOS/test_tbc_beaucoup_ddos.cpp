@@ -61,7 +61,7 @@ int main(){
     LOG_LEVEL = L_INFO;
     clock_t start = clock();
     DataTrace trace;
-    trace.LoadFromFile(".//.//data/thirty_sec_0.dat");
+    trace.LoadFromFile(".//.//data/sixty_sec_0.dat");
     HOW_LOG(L_INFO, "Dataplane Info: %d TBC, each with %d block, each block contains %d counters, TOTAL %d Bytes.", TBC_NUM, BLOCK_NUM, BLOCK_SIZE, TOTAL_MEM);
     auto& tbc_manager = Manager::getDataplane();
     measure_main(trace, tbc_manager);

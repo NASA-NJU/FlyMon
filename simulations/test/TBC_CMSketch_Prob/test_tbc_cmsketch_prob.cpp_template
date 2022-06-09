@@ -7,7 +7,7 @@
 #include "Csver.h"
 
 
-#define HH_THRESHOLD 0.00005
+#define HH_THRESHOLD 0.0001
 
 const uint32_t MEMORY_0_0_2_BLOCK_SIZE = 0.02 * 1024 * 1024 / 3 / 4;
 const uint32_t MEMORY_0_0_4_BLOCK_SIZE = 0.04 * 1024 * 1024 / 3 / 4;
@@ -96,10 +96,10 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
  		int estimate = count_min<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>(tbc_manager, task_id, sketch, (const uint8_t *)key.c_str(), 8, coff);
 		double relative_error = abs(item.second - estimate) / (double)item.second;
         double x_error = abs(item.second - estimate) / (double)item.second;
-        if(item.second > HH_THRESHOLD*trace.size()){
+        if(item.second > HH_THRESHOLD * total_size){
             Real_HH.push_back(make_pair(key, item.second));
         }
-        if(item.second > HH_THRESHOLD*trace.size()){
+        if(estimate > HH_THRESHOLD * total_size){
             Esti_HH.push_back(make_pair(key, estimate));
         }
 		temp_weighted_error_sum += x_error;
@@ -118,7 +118,7 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
         {
             if(Real_HH[j].first == key){
                 hh_relative_error_sum +=  abs(Real_HH[j].second - Esti_HH[i].second) / (double)Real_HH[j].second;
-                // HOW_LOG(L_DEBUG, "Heavy Hitter %d, Real %d, Estimate %d", j, Real_HH[j].second, Esti_HH[i].second); 
+                HOW_LOG(L_DEBUG, "Heavy Hitter %d, Real %d, Estimate %d", j, Real_HH[j].second, Esti_HH[i].second); 
                 estimate_right += 1;
                 break;
             }
@@ -127,7 +127,7 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
     double precision =  (double)estimate_right / (double)Esti_HH.size();
     double recall = (double)estimate_right / (double)Real_HH.size();
     double f1 =  (2 * precision * recall) / (precision + recall);
-    // HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
+    HOW_LOG(L_INFO, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
     delete filter;
     return {temp_relative_error_sum/Real_Freq.size(), temp_weighted_error_sum/total_size, precision, recall, f1, hh_relative_error_sum/estimate_right};
     // HOW_LOG(L_DEBUG, "Total %d packets, %d flows, ARE = %f", trace.size(), 

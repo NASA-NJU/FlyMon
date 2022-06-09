@@ -19,7 +19,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("./results/max_interval_time/tbc_maxtable_max_interval.csv");
+    CSVer csver("./results/max_interval_time/tbc_maxtable_max_interval_d3.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     vector<int> task_ids;
@@ -55,6 +55,7 @@ void measure_main(DataTrace& trace, Manager& tbc_manager){
         }
         re_sum += abs(esti_intv - real_intv) / real_intv;
     }
+    // csver.write(TOTAL_MEM/1024, 3, re_sum / RealInterval.size());
     csver.write(TOTAL_MEM/1024, 3, re_sum / RealInterval.size());
     return;
 }
