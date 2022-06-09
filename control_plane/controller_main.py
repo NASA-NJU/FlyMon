@@ -439,6 +439,47 @@ class FlyMonController(cmd.Cmd):
             print(f"{e} when reset.")
             exit(1)
 
+    def do_latency_test(self, arg):
+        """
+        Perform the latency test corresponding to the experiments in the paper.
+        """
+        try:
+            # the dict of the commands: {"name of algorithm": [commands]}
+            command_dict = {
+                "CM Sketch" :    ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48"],
+                "BeauCoup" :     ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 48"],
+                "Bloom Filter" : ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a existence() -m 32"],
+                "SuMax(Max)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 48"],
+                "HyperLogLog" :  ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct() -m 32"],
+                "SuMax(Sum)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
+                                  "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
+                                  "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"],
+                "MRAC" :         ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"]
+            }
+            # the dict of the latency: {"name of algorithm": [latency]} 
+            latency_dict = {k:[] for k,_ in command_dict.items()}
+
+            # the latency experiment is performed five time, and the avg. value is used
+            for _ in range(5):
+                for alg, cmds in command_dict.items():
+                    start_time = time.time()
+                    for cmd in cmds:
+                        print(cmd)
+                        self.do_add_task(cmd)
+                    end_time = time.time()
+                    latency_dict[alg].append(end_time - start_time)
+                    self.do_reset_all("")
+            
+            # print the result
+            print("The results of the latency experiments are shown below:")
+            for alg, lats in latency_dict.items():
+                print(alg, f"'s average latency is:\t{sum(lats)/len(lats)*1e3}ms")
+                    
+        except Exception as e:
+            print(traceback.format_exc())
+            print(f"{e} when reset.")
+            exit(1)
+
     def emptyline(self):
         pass
     
