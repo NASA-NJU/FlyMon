@@ -13,7 +13,8 @@ class AttributeType(Enum):
     SingleKeyDistinct  = 2
     MultiKeyDistinct  = 2
     Existence = 3
-    Max = 4 
+    Max = 4
+    FrequencySuMax = 5
 
 
 
@@ -112,7 +113,46 @@ class Frequency(FlowAttribute):
 
 
 class FrequencySuMax(FlowAttribute):
-    pass
+    def __init__(self, param_str):
+        """
+        Implement the built-in algorithm: SuMax.
+        Exception:
+         - No exception.
+        """
+        super(FrequencySuMax, self).__init__(param_str)
+        self._param2 = Param(ParamType.Const, 65535)
+
+    def analyze(self, datas):
+        """ Parse attribute data.
+            datas: is an list of data list.
+        """
+        return min(datas)
+
+    @property
+    def type(self):
+        return AttributeType.FrequencySuMax
+
+    @property
+    def param2(self):
+        return self._param2
+
+    @property
+    def memory_num(self):
+        return 1
+
+    @property
+    def param_mapping(self):
+        return { 
+            # key : param
+            # val : code
+        }
+
+    @property
+    def operation(self):
+        return OperationType.CondADD
+
+    def __str__(self):
+        return f"frequency_sumax({self.param1})"
 
 class SleKeyDistinct(FlowAttribute):
     def __init__(self):
@@ -324,6 +364,8 @@ def parse_attribute(attribute_str):
         raise RuntimeError(f"Invalid attribute format {attribute_str}")
     if re['attr_name'] == 'frequency':
         return Frequency(re['param'])
+    elif re['attr_name'] == 'frequency_sumax':
+        return FrequencySuMax(re['param'])
     elif re['attr_name'] == "distinct":
         if re['param'] == "":
             return SleKeyDistinct() ## 
