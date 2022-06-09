@@ -8,7 +8,7 @@
 
 
 #define HH_THRESHOLD 4096
-const uint32_t TOTAL_MEM = 10240000;
+const uint32_t TOTAL_MEM = 409600;
 const uint32_t TBC_NUM =   1;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM / BLOCK_NUM / 2;  // each counter use 2 Bytes.
@@ -44,8 +44,8 @@ uint16_t count_min( Manager& manager,
 vector<double> measure_main(DataTrace& trace, Manager& tbc_manager){
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
-    CSVer csver_fs("outputs_30/test_tbc_acusketch_flowsize_ignore.csv");
-    CSVer csver_hv("outputs_30/heavyhitters_new/heavyhitter_tmu_sumax.csv");
+    //CSVer csver_fs("");
+    CSVer csver_hv("./results/heavyhitter/flymon_sumax3d.csv");
     int task_id = tbc_manager.allocate_cusketch(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_CONST);
     if(task_id < 0){
         return {0,0,0,0};
@@ -103,7 +103,7 @@ vector<double> measure_main(DataTrace& trace, Manager& tbc_manager){
     double f1 =  (2 * precision * recall) / (precision + recall);
     // HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
     delete filter;
-    csver_fs.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), temp_relative_error_sum/Real_Freq.size());
+    // csver_fs.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), temp_relative_error_sum/Real_Freq.size());
     csver_hv.write(TOTAL_MEM/1024, TBC_NUM, BLOCK_NUM, Real_Freq.size(), precision, recall, f1);
     return {temp_relative_error_sum/Real_Freq.size(), temp_weighted_error_sum/total_size, precision, recall, f1, hh_relative_error_sum/estimate_right};
 }
@@ -116,7 +116,7 @@ int main(){
     // trace.LoadFromFile("../data/WIDE/head1000.dat");
     // trace.LoadFromFile("../data/WIDE/test.dat");
     // trace.LoadFromFile("../data/WIDE/ten_sec_1.dat");
-     trace.LoadFromFile("/home/hzheng/workSpace/SketchLab/data/WIDE/fifteen1.dat");
+     trace.LoadFromFile(".//.//data/fifteen1.dat");
     HOW_LOG(L_INFO, "Dataplane Info: %d TBC, each with %d block, each block contains %d counters, TOTAL %d Bytes.", TBC_NUM, BLOCK_NUM, BLOCK_SIZE, TOTAL_MEM);
     auto& tbc_manager = Manager::getDataplane();
     vector<double> result = measure_main(trace, tbc_manager);

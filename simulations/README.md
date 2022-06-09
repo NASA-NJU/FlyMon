@@ -12,7 +12,6 @@ Below we show how to perform the test.
 * cmake version 3.16.3
 * python
 
-
 ### Download Traces
 
 Our packet trace is download from [the MAWI Working Group of the WIDE Project](http://mawi.wide.ad.jp/mawi/). 
@@ -36,10 +35,16 @@ cd build; cmake ..; make -j 2; cd ..
 After the project has been compiled, we can prepare it for testing. We give a simple parallelized test framework for repeating the experiments.
 
 ```bash
-python test_all.py
+python test_all.py python test_all.py -d ./ -r 3
 ```
 
-It took about 3 hours to perform the above tests. When all tests are completed, you can view the results in the results/ directory. We prepared a copy of the output from our early run end in the result_snapshot directory.
+The above script automatically parallelizes the execution of all the accuracy test code.
+The `-r` parameter means how many times each set of parameters is repeated.
+
+It took about 3 hours to perform the above tests. When all tests are completed, you can view the results in the [results](./results/) directory. 
+We prepared a snapshot of the results from our early experiments in the [result_snapshot](./result_snapshot) directory. 
+The output results are saved in CSV format. 
+We explain the meaning of the output in the first line of the csv files in the result snapshot.
 
 ## File Description
 
@@ -55,5 +60,4 @@ It took about 3 hours to perform the above tests. When all tests are completed, 
     * `TBC_MAX_TABBLE` tests FlyMon-based SuMax(Max).
     * `TBC_MRAC` tests FlyMon-based MRAC.
     * `BeauCoup` tests original BeauCoup algorithm.
-* `test_xxx.py` are scripts to automate test measurement algorithms.
-
+* `scripts/test_xxx.py` are scripts to automate test measurement algorithms.

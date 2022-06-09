@@ -14,12 +14,12 @@
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 5;
 const uint32_t SUB_BLOCK_NUM = 1;
-const uint32_t MEMORY = 8192; 
+const uint32_t MEMORY = 4; 
 const uint32_t BLOCK_SIZE = MEMORY / 2;
 
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 double measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("outputs_30/test_tmu_hll_cardinalities.csv");
+    CSVer csver("./results/cardinality/hyperloglog.csv");
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     int hll_task_id = tbc_manager.allocate_hyperloglog_new(BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_IPPAIR_HASH, 0);
     if(hll_task_id < 0) {
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
     clock_t start = clock();
     DataTrace trace;
     // trace.LoadFromFile("../data/WIDE/head1000.dat");
-    trace.LoadFromFile("/home/hzheng/workSpace/SketchLab/data/WIDE/fifteen1.dat");
+    trace.LoadFromFile(".//.//data/fifteen1.dat");
     auto& tbc_manager = Manager::getDataplane();
     measure_main(trace, tbc_manager);
     clock_t ends = clock();

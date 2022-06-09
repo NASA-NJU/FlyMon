@@ -82,6 +82,12 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_CMSketch TEST_TBC_CMSKETCH_S
 add_executable( ${TEST_TBC_CMSKETCH} ${TEST_TBC_CMSKETCH_SRC})
 target_link_libraries(${TEST_TBC_CMSKETCH} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
 
+
+set(TEST_TBC_CMSKETCH_PROB test_tbc_cmsketch_prob)
+aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_CMSketch_Prob TEST_TBC_CMSKETCH_Prob_SRC)
+add_executable( ${TEST_TBC_CMSKETCH_PROB} ${TEST_TBC_CMSKETCH_Prob_SRC})
+target_link_libraries(${TEST_TBC_CMSKETCH_PROB} ${LIB_TBC} ${LIB_BOBHASH} ${LIB_COMMON} ${LIB_HOWLOG}) 
+
 set(TEST_TBC_CUSKETCH test_tbc_cusketch)
 aux_source_directory(${PROJECT_SOURCE_DIR}/test/TBC_CUSketch TEST_TBC_CUSKETCH_SRC)
 add_executable( ${TEST_TBC_CUSKETCH} ${TEST_TBC_CUSKETCH_SRC})

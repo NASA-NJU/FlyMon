@@ -12,7 +12,7 @@
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 1;
 const uint32_t SUB_BLOCK_NUM = 1;
-const uint32_t BLOCK_SIZE = 800*1024/2;
+const uint32_t BLOCK_SIZE = 600*1024/2;
 
 
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
@@ -81,15 +81,15 @@ double measure_main(DataTrace& trace, Manager& tbc_manager){
     double entrypy_real = get_entropy(dist_groundtruth);
     double entrypy_esti = get_entropy(dist_est);
     double re = abs(entrypy_esti - entrypy_real) / entrypy_real;
-    CSVer csver("outputs_30/entropy/tbc_flow_distribution_entroy.csv");
-    csver.write(800, wmre, re);
+    CSVer csver("./results/entropy/flymon_mrac.csv");
+    csver.write(600, wmre, re);
     delete filter;
 }
 
 int main(int argc, char* argv[]){
     clock_t start = clock();
     DataTrace trace;
-    trace.LoadFromFile("/home/hzheng/workSpace/SketchLab/data/WIDE/fifteen1.dat");
+    trace.LoadFromFile(".//.//data/fifteen1.dat");
     // Load distribution.
     auto& tbc_manager = Manager::getDataplane();
     measure_main(trace, tbc_manager);

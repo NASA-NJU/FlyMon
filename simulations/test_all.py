@@ -6,66 +6,12 @@ from multiprocessing import  Process
 import datetime
 import os
 import shutil  
+import math
 
-parser = ArgumentParser()
-parser.add_argument("-d", "--dir", dest="work_dir", type=str, required=True, help="Directory of simulation codes.")
-parser.add_argument("-r", "--repeat", dest="repeat", type=int, required=True, help="How many times to repeat each experiment.")
-
-args = parser.parse_args()
-work_dir = args.work_dir
-repeat_time = args.repeat
-
-## Datas
-data15 = work_dir  +'/data/fifteen1.dat'
-data30 = work_dir  +'/data/thirty_sec_0.dat'
-data60 = work_dir  +'/data/sixty_sec_0.dat'
-
-## Our Dirs
-log_dir = work_dir + '/log/'
-test_dir_base = work_dir + 'test/'
-result_dir = work_dir + 'results/'
-result_dir_heavyhitter = result_dir + "heavyhitter/"
-result_dir_ddos = result_dir + "ddos/"
-result_dir_card = result_dir + "cardinality/"
-result_dir_entropy = result_dir + "entropy/"
-result_dir_max =result_dir + "max_interval_time/"
-result_dir_bloom = result_dir + "existence/"
-
-if repeat_time <=0 or repeat_time>15:
-    print("Invalid repeat times")
-    exit(1)
-
-# Clear
-os.makedirs(result_dir_heavyhitter, exist_ok=True)
-os.makedirs(result_dir_ddos, exist_ok=True)
-os.makedirs(result_dir_bloom, exist_ok=True)
-os.makedirs(result_dir_card, exist_ok=True)
-os.makedirs(result_dir_entropy, exist_ok=True)
-os.makedirs(result_dir_max, exist_ok=True)
-os.makedirs(log_dir, exist_ok=True)
-# remove old results.
-shutil.rmtree(log_dir) 
-shutil.rmtree(result_dir_heavyhitter) 
-shutil.rmtree(result_dir_ddos)  
-shutil.rmtree(result_dir_bloom)
-shutil.rmtree(result_dir_card)
-shutil.rmtree(result_dir_entropy)
-shutil.rmtree(result_dir_max)
-# create result dir.
-os.makedirs(result_dir_heavyhitter, exist_ok=True)
-os.makedirs(result_dir_ddos, exist_ok=True)
-os.makedirs(result_dir_bloom, exist_ok=True)
-os.makedirs(result_dir_card, exist_ok=True)
-os.makedirs(result_dir_entropy, exist_ok=True)
-os.makedirs(result_dir_max, exist_ok=True)
-os.makedirs(log_dir, exist_ok=True)
-
-
-# In KB
+# Memory Settgings.
 # HEAVY_HITTER_MEMORY = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
 HEAVY_HITTER_MEMORY = [400]
 
-# In KB
 # DDOS_VICTOM_MEMORY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
 DDOS_VICTOM_MEMORY = [1]
 
@@ -80,6 +26,66 @@ ENTROPY_MEMORY = [600]
 
 # MAX_MEMORY = [10000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100]
 MAX_MEMORY = [10000]
+
+
+parser = ArgumentParser()
+parser.add_argument("-d", "--dir", dest="work_dir", type=str, required=True, help="Directory of simulation codes.")
+parser.add_argument("-r", "--repeat", dest="repeat", type=int, required=True, help="How many times to repeat each experiment.")
+
+args = parser.parse_args()
+work_dir = args.work_dir
+repeat_time = args.repeat
+
+## Datas
+data15 = work_dir  +'/data/fifteen1.dat'
+data30 = work_dir  +'/data/thirty_sec_0.dat'
+data60 = work_dir  +'/data/sixty_sec_0.dat'
+
+
+## Our Dirs
+log_dir = work_dir + '/log/'
+test_dir_base = work_dir + 'test/'
+result_dir = work_dir + 'results/'
+result_dir_heavyhitter = result_dir + "heavyhitter/"
+result_dir_heavyhitter_prob = result_dir + "heavyhitter_prob/"
+result_dir_ddos = result_dir + "ddos/"
+result_dir_card = result_dir + "cardinality/"
+result_dir_entropy = result_dir + "entropy/"
+result_dir_max =result_dir + "max_interval_time/"
+result_dir_bloom = result_dir + "existence/"
+
+if repeat_time <=0 or repeat_time>15:
+    print("Invalid repeat times")
+    exit(1)
+
+# Clear
+os.makedirs(result_dir_heavyhitter, exist_ok=True)
+os.makedirs(result_dir_heavyhitter_prob, exist_ok=True)
+os.makedirs(result_dir_ddos, exist_ok=True)
+os.makedirs(result_dir_bloom, exist_ok=True)
+os.makedirs(result_dir_card, exist_ok=True)
+os.makedirs(result_dir_entropy, exist_ok=True)
+os.makedirs(result_dir_max, exist_ok=True)
+os.makedirs(log_dir, exist_ok=True)
+# remove old results.
+shutil.rmtree(log_dir) 
+shutil.rmtree(result_dir_heavyhitter) 
+shutil.rmtree(result_dir_heavyhitter_prob) 
+shutil.rmtree(result_dir_ddos)  
+shutil.rmtree(result_dir_bloom)
+shutil.rmtree(result_dir_card)
+shutil.rmtree(result_dir_entropy)
+shutil.rmtree(result_dir_max)
+# create result dir.
+os.makedirs(result_dir_heavyhitter, exist_ok=True)
+os.makedirs(result_dir_heavyhitter_prob, exist_ok=True)
+os.makedirs(result_dir_ddos, exist_ok=True)
+os.makedirs(result_dir_bloom, exist_ok=True)
+os.makedirs(result_dir_card, exist_ok=True)
+os.makedirs(result_dir_entropy, exist_ok=True)
+os.makedirs(result_dir_max, exist_ok=True)
+os.makedirs(log_dir, exist_ok=True)
+
 
 def logtime():
     return time.strftime("%m_%d_%H_%M", time.localtime())
@@ -136,7 +142,7 @@ def test_beaucoup_heavyhitter(table_num = 1):
         "RESULT_CSV" : ""    ## TBD
     }
     out_file = log_dir + 'test_beaucoup_heavyhitter_'+logtime()+'.log'
-    test_args['RESULT_CSV'] = result_dir_heavyhitter + 'beaucoup_%dd.csv' %(table_num)
+    test_args['RESULT_CSV'] = result_dir_heavyhitter + f'beaucoup_{table_num}d.csv'
     test_args['THRESHOLD'] = 1024
     for i in range(len(HEAVY_HITTER_MEMORY)):
         test_args['MEMORY_KB'] = HEAVY_HITTER_MEMORY[i]
@@ -222,7 +228,7 @@ def test_tbc_beaucoup_heavy_hitter(block_num):
         # "DATA_FILE" : 'data/WIDE/head1000.dat',
         "BLOCK_NUM" : block_num,
         "MEMORY_BYTES" : 0 , # TBD
-        "RESULT_CSV": result_dir_heavyhitter + 'flymon_beaucoup_{}d.csv' % (block_num)
+        "RESULT_CSV": result_dir_heavyhitter + f'flymon_beaucoup_{block_num}d.csv'
     }
     # out_file = log_dir + 'test_tbc_cuketch_'+logtime()+'.log'
     out_file = log_dir + 'original_tmu_beaucoup_'+logtime()+'.log'
@@ -299,7 +305,7 @@ def test_beaucoup_ddos_victim(table_num=1):
         "RESULT_CSV" : ""    ## TBD
     }
     out_file = log_dir + 'test_beaucoup_ddosvictim_'+logtime()+'.log'
-    test_args['RESULT_CSV'] = result_dir_ddos + 'beaucoup_%dd.csv' % (table_num)
+    test_args['RESULT_CSV'] = result_dir_ddos + f'beaucoup_d{table_num}.csv'
     test_args['TABLE_NUM'] = table_num
     for i in range(len(DDOS_VICTOM_MEMORY)):
         test_args['MEMORY_KB'] = DDOS_VICTOM_MEMORY[i]
@@ -325,7 +331,7 @@ def test_tbc_beaucoup_ddos_victim(d = 3):
         # "DATA_FILE" : 'data/WIDE/head1000.dat',
         "BLOCK_NUM" : d,
         "MEMORY_BYTES" : 0 , # TBD
-        "RESULT_CSV": result_dir_ddos + 'flymon_beaucoup_%dd.csv'%(d) 
+        "RESULT_CSV": result_dir_ddos + f'flymon_beaucoup_{d}d.csv'
     }
     # out_file = log_dir + 'test_tbc_cuketch_'+logtime()+'.log'
     out_file = log_dir + 'original_tmu_beaucoup_'+logtime()+'.log'
@@ -459,7 +465,7 @@ def test_beaucoup_flow_cardinality():
     COUPON_NUM_LIST = [32,    64,    96,     127,    254]
     COUPON_P_LIST =   [4096,  4096,  4096,   4096,  4096]
     out_file = log_dir + 'test_beaucoup_ddosvictim_'+logtime()+'.log'
-    test_args['RESULT_CSV'] = result_dir + 'beaucoup.csv'
+    test_args['RESULT_CSV'] = result_dir_card + 'beaucoup.csv'
     for i in range(len(COUPON_MAX_LIST)):
         test_args['COUPON_NUM_MAX'] = COUPON_MAX_LIST[i]
         test_args['COUPON_NUM'] = COUPON_NUM_LIST[i]
@@ -565,35 +571,59 @@ def test_tbc_maxtable_max_interval():
             p.join()
     print("Done.")
 
+
+def test_tbc_heavyhitter_prob():
+    test_dir = test_dir_base + 'TBC_CMSketch_Prob/'
+    test_file = 'test_tbc_cmsketch_prob.cpp_template'
+    test_args = {
+        "WORK_DIR" : work_dir,
+        "DATA_FILE" : data15,
+        # "DATA_FILE" : 'data/WIDE/head1000.dat',
+        "MEMORY" : 0, # TBD
+        "DEPTH" : 3,
+        "RESULT_CSV" :  result_dir_heavyhitter_prob + 'cm_sketch_prob.csv'
+    }
+    out_file = log_dir + 'test_tbc_probhh_'+logtime()+'.log'
+    test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
+    test_once.generate_codes()
+    _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
+    p = Process(target=_bound_instance_method_alias,args=(i,)) 
+    p.start()
+    p.join()
+    print("Done.")
+
 if __name__ == '__main__':
     begin = datetime.datetime.now()
     ## Heavy Hitters
-    test_univmon_heavyhitter()
-    test_beaucoup_heavyhitter(table_num=1)
-    test_tbc_beaucoup_heavy_hitter(block_num=1)
-    test_tbc_beaucoup_heavy_hitter(block_num=3)
-    test_tbc_cmsketch_heavy_hitter()
-    test_tbc_cusketch_heavy_hitter()
+    # test_univmon_heavyhitter()
+    # test_beaucoup_heavyhitter(table_num=1)
+    # test_tbc_beaucoup_heavy_hitter(block_num=1)
+    # test_tbc_beaucoup_heavy_hitter(block_num=3)
+    # test_tbc_cmsketch_heavy_hitter()
+    # test_tbc_cusketch_heavy_hitter()
 
-    ## DDoS Victims
-    test_tbc_beaucoup_ddos_victim(d=1)
-    test_tbc_beaucoup_ddos_victim(d=3)
-    test_beaucoup_ddos_victim(table_num=1)
-    test_beaucoup_ddos_victim(table_num=3)
+    # ## DDoS Victims
+    # test_tbc_beaucoup_ddos_victim(d=1)
+    # test_tbc_beaucoup_ddos_victim(d=3)
+    # test_beaucoup_ddos_victim(table_num=1)
+    # test_beaucoup_ddos_victim(table_num=3)
 
-    ## Bloomfilter
-    test_tbc_bloom_filter_wo_optm()
-    test_tbc_bloom_filter()
+    # ## Bloomfilter
+    # test_tbc_bloom_filter_wo_optm()
+    # test_tbc_bloom_filter()
 
     ## Cardinality
-    test_tbc_hll_flow_cardinality()
-    test_beaucoup_flow_cardinality()
+    # test_tbc_hll_flow_cardinality()
+    # test_beaucoup_flow_cardinality()
 
-    ## Entropy
-    test_tbc_flow_entropy()
-    test_univmon_entropy()
+    # ## Entropy
+    # test_tbc_flow_entropy()
+    # test_univmon_entropy()
 
     ## Max Table
+    # test_tbc_maxtable_max_interval()
+
+    test_tbc_heavyhitter_prob()
 
     end = datetime.datetime.now()
-    print("Simulation Costs Time: "+str((end-start).seconds)+" seconds.")
+    print("Simulation Costs Time: "+str((end-begin).seconds)+" seconds.")

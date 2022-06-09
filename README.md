@@ -605,7 +605,9 @@ There are two different ways to deploy for this task. One with a threshold-trigg
 
 ## 📏 Simulation Framework
 
-For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In addition, we built an automated testing framework for repeating the experiment. The simulation code is located in the [simulations](./simulations) directory.
+For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In this simulation, we implement various measurement algorithms based on CMU, including BeauCoup, SuMax, CM-Sketch, BloomFilter, MRAC, and HyperLogLog.
+In addition, we built an automated testing framework for repeating the experiments. The simulation codes are located in the [simulations directory](./simulations).
+
 
 ## 📖 License
 
@@ -615,5 +617,7 @@ The project is released under the [GNU Affero General Public License v3](https:/
 
 * [Open-source Tofino](https://github.com/barefootnetworks/Open-Tofino).
 * [BeauCoup](https://github.com/Princeton-Cabernet/BeauCoup).
+* [Elastic Sketch](https://github.com/BlockLiu/ElasticSketchCode)
+* [SketchLib](https://github.com/SketchLib/P4_SketchLib)
 
 

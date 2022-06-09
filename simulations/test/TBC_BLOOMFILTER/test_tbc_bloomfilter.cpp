@@ -9,7 +9,7 @@
 #define HH_THRESHOLD 1024
 
 // Dataplane config.
-const uint32_t TOTAL_MEM = 102400;
+const uint32_t TOTAL_MEM = 10240;
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM / TBC_NUM/ BLOCK_NUM / 2;  
@@ -19,7 +19,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("outputs/tbc_bloom_fp_no_optmi.csv");
+    CSVer csver("./results/existence/bloom_with_optmi.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     int task_id = tbc_manager.allocate_bloom_filter(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR);
@@ -62,7 +62,7 @@ void measure_main(DataTrace& trace, Manager& tbc_manager){
     }
     double re_fp = fp / f;
     double re_tp = tp / InsertSet.size();
-    csver.write(102400/1024, 3, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
+    csver.write(10240/1024, 3, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
     return;
 }
 
@@ -70,7 +70,7 @@ int main(){
     LOG_LEVEL = L_INFO;
     clock_t start = clock();
     DataTrace trace;
-    trace.LoadFromFile("/home/hzheng/workSpace/SketchLab/data/WIDE/fifteen1.dat");
+    trace.LoadFromFile(".//.//data/fifteen1.dat");
     HOW_LOG(L_INFO, "Dataplane Info: %d TBC, each with %d block, each block contains %d counters, TOTAL %d Bytes.", TBC_NUM, BLOCK_NUM, BLOCK_SIZE, TOTAL_MEM);
     auto& tbc_manager = Manager::getDataplane();
     measure_main(trace, tbc_manager);

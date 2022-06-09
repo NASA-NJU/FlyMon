@@ -4,6 +4,7 @@
 #include "DataTrace.h"
 #include <ctime>
 #include <fstream>
+#include "Csver.h"
 
 
 #define HH_THRESHOLD 0.0001
@@ -21,9 +22,9 @@ const uint32_t MEMORY_0_2_0_BLOCK_SIZE = 0.20 * 1024 * 1024 / 3 / 4;
 
 
 template<uint32_t TBC_NUM, uint32_t BLOCK_NUM, uint32_t BLOCK_SIZE>
-uint32_t count_min( TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>& manager,
+uint32_t count_min( TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, 1>& manager,
                     int task_id,
-                    map<uint32_t, map<uint32_t, vector<uint32_t>>>& sketch,
+                    map<uint16_t, map<uint16_t, vector<uint16_t>>>& sketch,
                     const uint8_t* key,
                     int key_len, int coff)
 {
@@ -45,11 +46,33 @@ uint32_t count_min( TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>& manager,
 }
 
 
+double coin_to_float(string coin){
+    if(coin == "***")
+        return 1;
+    if(coin == "0**")
+        return 0.5;
+    if(coin == "00*")
+        return 0.25;
+    if(coin == "000")
+        return 0.125;
+}
+
+double coin_to_level(string coin){
+    if(coin == "***")
+        return 0;
+    if(coin == "0**")
+        return 1;
+    if(coin == "00*")
+        return 2;
+    if(coin == "000")
+        return 3;
+}
+
 template<uint32_t TBC_NUM, uint32_t BLOCK_NUM, uint32_t BLOCK_SIZE>
-vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>& tbc_manager, const string& coin, int coff){
+vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, 1>& tbc_manager, const string& coin, int coff){
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
-    int task_id = tbc_manager.allocate_cmsketch(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_CONST, coin);
+    int task_id = tbc_manager.allocate_cmsketch(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_CONST, coin_to_level(coin));
     if(task_id < 0){
         return {0,0,0,0};
     }
@@ -62,8 +85,7 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
         total_size++;
     }
 
-    map<uint32_t, map<uint32_t, vector<uint32_t>>> sketch; //tbc, block, array.
-    map<uint32_t, map<uint32_t, BOBHash32*>>  key_hashes;   //tbc, block, array.
+    map<uint16_t, map<uint16_t, vector<uint16_t>>> sketch; //tbc, block, array.
     tbc_manager.query(task_id, sketch);
     vector< pair<string, int> > Esti_HH;
     vector< pair<string, int> > Real_HH;
@@ -113,30 +135,32 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
     //                 temp_relation_error_sum/Real_Freq.size());
 }
 
+
 int main(){
 
+    CSVer csver("{{RESULT_CSV}}");
     clock_t start = clock();
     DataTrace trace;
     // trace.LoadFromFile("../data/WIDE/one_sec_15.dat");
     // trace.LoadFromFile("../data/WIDE/head1000.dat");
     // trace.LoadFromFile("../data/WIDE/test.dat");
     // trace.LoadFromFile("../data/WIDE/ten_sec_1.dat");
-    trace.LoadFromFile("../data/WIDE/fifteen0.dat");
-    auto& tbc_manager_0_1 = TBC_Manager<1, 3, MEMORY_0_0_2_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_2 = TBC_Manager<1, 3, MEMORY_0_0_4_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_3 = TBC_Manager<1, 3, MEMORY_0_0_6_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_4 = TBC_Manager<1, 3, MEMORY_0_0_8_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_5 = TBC_Manager<1, 3, MEMORY_0_1_0_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_6 = TBC_Manager<1, 3, MEMORY_0_1_2_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_7 = TBC_Manager<1, 3, MEMORY_0_1_4_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_8 = TBC_Manager<1, 3, MEMORY_0_1_6_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_0_9 = TBC_Manager<1, 3, MEMORY_0_1_8_BLOCK_SIZE>::getDataplane();
-    auto& tbc_manager_1_0 = TBC_Manager<1, 3, MEMORY_0_2_0_BLOCK_SIZE>::getDataplane();
+    trace.LoadFromFile("{{WORK_DIR}}/{{DATA_FILE}}");
+    auto& tbc_manager_0_1 = TBC_Manager<1, 3, MEMORY_0_0_2_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_2 = TBC_Manager<1, 3, MEMORY_0_0_4_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_3 = TBC_Manager<1, 3, MEMORY_0_0_6_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_4 = TBC_Manager<1, 3, MEMORY_0_0_8_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_5 = TBC_Manager<1, 3, MEMORY_0_1_0_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_6 = TBC_Manager<1, 3, MEMORY_0_1_2_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_7 = TBC_Manager<1, 3, MEMORY_0_1_4_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_8 = TBC_Manager<1, 3, MEMORY_0_1_6_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_0_9 = TBC_Manager<1, 3, MEMORY_0_1_8_BLOCK_SIZE, 1>::getDataplane();
+    auto& tbc_manager_1_0 = TBC_Manager<1, 3, MEMORY_0_2_0_BLOCK_SIZE, 1>::getDataplane();
 
     vector<string> coins = {"***", "0**", "00*", "000"};
     vector<int>    coffs = {1, 2, 4, 8};
     vector<map<string, vector<double>>> results(10);
-    map<uint32_t, double> memory_map = {{0, 0.02}, {1, 0.04}, {2, 0.06}, {3, 0.08}, {4, 0.10}, {5, 0.12}, {6, 0.14}, {7, 0.16}, {8, 0.18}, {9, 0.2}};
+    map<uint32_t, double> memory_map = { {0, 0.02}, {1, 0.04}, {2, 0.06}, {3, 0.08}, {4, 0.10}, {5, 0.12}, {6, 0.14}, {7, 0.16}, {8, 0.18}, {9, 0.2} };
 
     for(int t=0; t<4; ++t){
         const string& coin = coins[t];
@@ -179,6 +203,7 @@ int main(){
             const vector<double>& result = coin_result.second;
             HOW_LOG(L_INFO, "Coin %s, ARE(all)=%.2f, WARE(all)=%.2f, HH Precision=%.2f, HH Recall=%.2f, F1 Score=%.2f, ARE(hh)%.2f.", 
                                                     coin.c_str(), result[0], result[1], result[2], result[3], result[4], result[5]);
+            csver.write(memory_map[i], coin_to_float(coin), result[4]);
         }
     }
     clock_t ends = clock();

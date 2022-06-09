@@ -19,7 +19,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("outputs/tbc_maxtable_max_interval.csv");
+    CSVer csver("./results/max_interval_time/tbc_maxtable_max_interval.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     vector<int> task_ids;
@@ -63,7 +63,7 @@ int main(){
     LOG_LEVEL = L_INFO;
     clock_t start = clock();
     DataTrace trace;
-    trace.LoadFromFile("/home/hzheng/workSpace/SketchLab/data/WIDE/fifteen1.dat");
+    trace.LoadFromFile(".//.//data/fifteen1.dat");
     HOW_LOG(L_INFO, "Dataplane Info: %d TBC, each with %d block, each block contains %d counters, TOTAL %d Bytes.", TBC_NUM, BLOCK_NUM, BLOCK_SIZE, TOTAL_MEM);
     auto& tbc_manager = Manager::getDataplane();
     measure_main(trace, tbc_manager);

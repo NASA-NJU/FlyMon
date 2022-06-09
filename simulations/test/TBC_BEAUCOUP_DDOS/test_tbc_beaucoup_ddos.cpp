@@ -7,7 +7,7 @@
 #include "Csver.h"
 
 // Dataplane config.
-const uint32_t TOTAL_MEM = 1024000;
+const uint32_t TOTAL_MEM = 1024;
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM / BLOCK_NUM / 2;  
@@ -17,7 +17,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("outputs_30/ddosvictims_new/ddosvictim_tmu_beaucoup_3d.csv");
+    CSVer csver("./results/ddos/flymon_beaucoup_3d.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     // int task_id = tbc_manager.allocate_beaucoup_128(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPDST, ACTION_SET_VAL_IPSRC_HASH, ACTION_SET_PARAM_IPSRC);
@@ -61,7 +61,7 @@ int main(){
     LOG_LEVEL = L_INFO;
     clock_t start = clock();
     DataTrace trace;
-    trace.LoadFromFile("/home/hzheng/workSpace/SketchLab/data/WIDE/sixty_sec_0.dat");
+    trace.LoadFromFile(".//.//data/thirty_sec_0.dat");
     HOW_LOG(L_INFO, "Dataplane Info: %d TBC, each with %d block, each block contains %d counters, TOTAL %d Bytes.", TBC_NUM, BLOCK_NUM, BLOCK_SIZE, TOTAL_MEM);
     auto& tbc_manager = Manager::getDataplane();
     measure_main(trace, tbc_manager);

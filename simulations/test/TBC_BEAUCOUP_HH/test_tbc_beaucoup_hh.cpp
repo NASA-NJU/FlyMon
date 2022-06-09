@@ -9,7 +9,7 @@
 #define HH_THRESHOLD 1024
 
 // Dataplane config.
-const uint32_t TOTAL_MEM = 61440;
+const uint32_t TOTAL_MEM = 409600;
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM / BLOCK_NUM / 2;  
@@ -19,7 +19,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("outputs_30/heavyhitters_new/heavyhitter_tmu_beaucoup_3d.csv");
+    CSVer csver("./results/heavyhitter/flymon_beaucoup_3d.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     int task_id = tbc_manager.allocate_beaucoup_1024(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_TIMESTAMP, ACTION_SET_PARAM_TIMESTAMP);
@@ -58,7 +58,7 @@ int main(){
     LOG_LEVEL = L_INFO;
     clock_t start = clock();
     DataTrace trace;
-    trace.LoadFromFile("/home/hzheng/workSpace/SketchLab/data/WIDE/fifteen1.dat");
+    trace.LoadFromFile(".//.//data/fifteen1.dat");
     HOW_LOG(L_INFO, "Dataplane Info: %d TBC, each with %d block, each block contains %d counters, TOTAL %d Bytes.", TBC_NUM, BLOCK_NUM, BLOCK_SIZE, TOTAL_MEM);
     auto& tbc_manager = Manager::getDataplane();
     measure_main(trace, tbc_manager);
