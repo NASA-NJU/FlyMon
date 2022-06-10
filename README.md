@@ -505,7 +505,7 @@ We do this by measuring the maximum packet size for each flow. We can deploy suc
 
 ```
 flymon> reset_all
-flymon> add_task -f *,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 32
+flymon> add_task -f *,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 48
 ```
 
 > 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
@@ -578,7 +578,7 @@ Distinct counting for multiple keys means that measurement are performed for a s
 
 ```
 flymon> reset_all   # optional 
-flymon> add_task -f *,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 32
+flymon> add_task -f *,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 48
 ```
 
 The above command deploys a measurement task that counts different DstIPs for each SrcIP (i.e., super spreader detection). The processing of flows that meet the threshold needs to be combined with other network components depending on user's scenarios (e.g., combined with a reporting module like [SketchLib](https://github.com/SketchLib/P4_SketchLib)). Here we only demonstrate how the measurement is performed.
