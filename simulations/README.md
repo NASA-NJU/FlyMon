@@ -30,13 +30,13 @@ mkdir -p ./build
 cd build; cmake ..; make -j; cd ..
 ```
 
-After the project has been compiled, we can prepare it for testing. We give a simple parallelized test framework for repeating the experiments.
+After the project has been compiled, we can prepare it for testing. We give a simple test framework for repeating the experiments.
 
 ```bash
 python test_all.py -d ./ -r 3
 ```
 
-The above script automatically parallelizes the execution of all the accuracy test code.
+The above script automatically executes all the accuracy test code.
 The `-r` parameter means how many times each set of parameters is repeated.
 
 It took about 3~5 hours to complete the above tests. When all tests are completed, you can view the results in the [results](./results/) directory. 
@@ -59,3 +59,4 @@ We explain the meaning of the output in the first line of the csv files in the r
     * `TBC_MRAC` tests FlyMon-based MRAC.
     * `BeauCoup` tests original BeauCoup algorithm.
 * `scripts/test_xxx.py` are scripts to automate test measurement algorithms.
+

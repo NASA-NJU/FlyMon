@@ -621,7 +621,7 @@ The project is released under the [GNU Affero General Public License v3](https:/
 ## 🔗 Links
 
 * [Open-source Tofino](https://github.com/barefootnetworks/Open-Tofino).
-* [Intel Tofino]([tofino](https://www.intel.com/content/www/us/en/products/network-io/programmable-ethernet-switch.html))
+* [Intel Tofino](https://www.intel.com/content/www/us/en/products/network-io/programmable-ethernet-switch.html)
 * [BeauCoup](https://github.com/Princeton-Cabernet/BeauCoup).
 * [Elastic Sketch](https://github.com/BlockLiu/ElasticSketchCode)
 * [SketchLib](https://github.com/SketchLib/P4_SketchLib)
