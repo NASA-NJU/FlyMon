@@ -6,5 +6,4 @@ pcap_output
 simulations/bin/test*
 simulations/build
 simulations/data/*
-simulations/results/*
 .vscode
