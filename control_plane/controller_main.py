@@ -447,7 +447,7 @@ class FlyMonController(cmd.Cmd):
         try:
             # the dict of the commands: {"name of algorithm": [commands]}
             command_dict = {
-                "CM Sketch" :    ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48"],
+                "CM Sketch" :    ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 96"],
                 "BeauCoup" :     ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 48"],
                 "Bloom Filter" : ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a existence() -m 32"],
                 "SuMax(Max)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 48"],
@@ -477,13 +477,59 @@ class FlyMonController(cmd.Cmd):
             tb.field_names = ["Algorithm on CMU", "Deployment Delay (ms)"]
             for alg, lats in delay_dict.items():
                 # print(alg, f"'s average delay is:\t{sum(lats)/len(lats)*1e3}ms")
-                tb.add_row([alg, sum(lats)/len(lats)*1e3])
+                tb.add_row([alg, '%.2f'%(sum(lats)/len(lats)*1e3)])
             print(tb)
                     
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when reset.")
             exit(1)
+
+    # def do_delay_test_test(self, arg):
+    #     """
+    #     Perform the delay test corresponding to the experiments in the paper.
+    #     """
+    #     try:
+    #         # the dict of the commands: {"name of algorithm": [commands]}
+    #         command_dict = {
+    #             "CM Sketch" :    ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 24"],
+    #             "BeauCoup" :     ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 12"],
+    #             "Bloom Filter" : ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a existence() -m 4"],
+    #             "SuMax(Max)" :   ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 12"],
+    #             "HyperLogLog" :  ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct() -m 4"],
+    #             "SuMax(Sum)" :   ["-f %d.0.0.0/16,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 16",
+    #                               "-f %d.1.0.0/16,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 16",
+    #                               "-f %d.2.0.0/16,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 16"],
+    #             "MRAC" :         ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 4"]
+    #         }
+    #         # the dict of the delay: {"name of algorithm": [delay]} 
+    #         delay_dict = {k:[] for k,_ in command_dict.items()}
+
+    #         # the delay experiment is performed five time, and the avg. value is used
+    #         for i in range(5):
+    #             for alg, cmds in command_dict.items():
+    #                 start_time = time.time()
+    #                 for cmd in cmds:
+    #                     # print(cmd)
+    #                     self.do_add_task(cmd % (i+1))
+    #                 end_time = time.time()
+    #                 delay_dict[alg].append(end_time - start_time)
+    #                 # self.do_reset_all("")
+            
+    #         # print the result
+    #         print("The results of the delay experiments are shown below:")
+    #         tb = pt.PrettyTable()
+    #         tb.field_names = ["Algorithm on CMU", "Deployment Delay (ms)"]
+    #         for alg, lats in delay_dict.items():
+    #             # print(alg, f"'s average delay is:\t{sum(lats)/len(lats)*1e3}ms")
+    #             tb.add_row([alg, '%.2f'%(sum(lats)/len(lats)*1e3)])
+    #         print(tb)
+                    
+        except Exception as e:
+            print(traceback.format_exc())
+            print(f"{e} when reset.")
+            exit(1)
+
 
     def emptyline(self):
         pass
