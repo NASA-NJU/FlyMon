@@ -608,6 +608,34 @@ There are two different ways to deploy for this task. One with a threshold-trigg
 
 </details>
 
+<details><summary><b>Deployment Delay of Built-in Algorithms</b></summary>
+
+We also provide a command to measure the deployment latencies of task deployment in FlyMon. 
+
+```
+flymon> delay_test
+```
+
+This command repeats the deployment delay for multiple measurements and calculates the average of the delays. Finally it will print the results.
+
+```
+The results of the delay experiments are shown below:
++------------------+-----------------------+
+| Algorithm on CMU | Deployment Delay (ms) |
++------------------+-----------------------+
+|    CM Sketch     |         16.93         |
+|     BeauCoup     |         40.18         |
+|   Bloom Filter   |         13.67         |
+|    SuMax(Max)    |         19.68         |
+|   HyperLogLog    |          5.98         |
+|    SuMax(Sum)    |         19.47         |
+|       MRAC       |          6.51         |
++------------------+-----------------------+
+```
+Note that this delay includes processing time of the software stack.
+
+</details>
+
 ## 📏 Simulation Framework
 
 For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In this simulation, we implement various measurement algorithms based on CMU, including BeauCoup, SuMax, CM-Sketch, BloomFilter, MRAC, and HyperLogLog.
