@@ -1,3 +1,4 @@
 jinja2==2.11.3
 bitstring==3.1.9
 scapy==2.4.5
+prettytable==3.3.0
