@@ -8,6 +8,7 @@ import cmd
 import argparse
 from scapy.all import Ether, IP, UDP, sendp
 import ipaddress
+import prettytable as pt
 
 import bfrt_grpc.client as gc
 from task_manager import TaskManager
@@ -439,9 +440,9 @@ class FlyMonController(cmd.Cmd):
             print(f"{e} when reset.")
             exit(1)
 
-    def do_latency_test(self, arg):
+    def do_delay_test(self, arg):
         """
-        Perform the latency test corresponding to the experiments in the paper.
+        Perform the delay test corresponding to the experiments in the paper.
         """
         try:
             # the dict of the commands: {"name of algorithm": [commands]}
@@ -456,10 +457,10 @@ class FlyMonController(cmd.Cmd):
                                   "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"],
                 "MRAC" :         ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"]
             }
-            # the dict of the latency: {"name of algorithm": [latency]} 
-            latency_dict = {k:[] for k,_ in command_dict.items()}
+            # the dict of the delay: {"name of algorithm": [delay]} 
+            delay_dict = {k:[] for k,_ in command_dict.items()}
 
-            # the latency experiment is performed five time, and the avg. value is used
+            # the delay experiment is performed five time, and the avg. value is used
             for _ in range(5):
                 for alg, cmds in command_dict.items():
                     start_time = time.time()
@@ -467,13 +468,17 @@ class FlyMonController(cmd.Cmd):
                         print(cmd)
                         self.do_add_task(cmd)
                     end_time = time.time()
-                    latency_dict[alg].append(end_time - start_time)
+                    delay_dict[alg].append(end_time - start_time)
                     self.do_reset_all("")
             
             # print the result
-            print("The results of the latency experiments are shown below:")
-            for alg, lats in latency_dict.items():
-                print(alg, f"'s average latency is:\t{sum(lats)/len(lats)*1e3}ms")
+            print("The results of the delay experiments are shown below:")
+            tb = pt.PrettyTable()
+            tb.field_names = ["Algorithm on CMU", "Deployment Delay (ms)"]
+            for alg, lats in delay_dict.items():
+                # print(alg, f"'s average delay is:\t{sum(lats)/len(lats)*1e3}ms")
+                tb.add_row([alg, sum(lats)/len(lats)*1e3])
+            print(tb)
                     
         except Exception as e:
             print(traceback.format_exc())
