@@ -40,7 +40,7 @@ data60 = work_dir  +'/data/sixty_sec_0.dat'
 ## Our Dirs
 log_dir = work_dir + '/log/'
 test_dir_base = work_dir + 'test/'
-result_dir = work_dir + 'results/'
+result_dir = work_dir + 'result/'
 result_dir_heavyhitter = result_dir + "heavyhitter/"
 result_dir_heavyhitter_prob = result_dir + "heavyhitter_prob/"
 result_dir_ddos = result_dir + "ddos/"
@@ -588,8 +588,7 @@ def test_tbc_heavyhitter_prob():
     print("Done.")
 
 if __name__ == '__main__':
-    begin = datetime.datetime.now()
-
+ 
     # Heavy Hitters
     test_univmon_heavyhitter()
     test_beaucoup_heavyhitter(table_num=1)
@@ -623,5 +622,3 @@ if __name__ == '__main__':
     test_tbc_maxtable_max_interval(depth=2)
     test_tbc_maxtable_max_interval(depth=3)
 
-    end = datetime.datetime.now()
-    print("Simulation Costs Time: "+str((end-begin).seconds)+" seconds.")

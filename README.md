@@ -297,7 +297,7 @@ With the dynamic feature of Tofino's hash computation unit, FlyMon can support s
 
 ```
 flymon> reset_all
-add_task -f *,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+flymon> add_task -f *,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
 ```
 
 > 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.

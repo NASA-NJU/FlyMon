@@ -12,7 +12,7 @@
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 1;
 const uint32_t SUB_BLOCK_NUM = 1;
-const uint32_t BLOCK_SIZE = 600*1024/2;
+const uint32_t BLOCK_SIZE = 1000*1024/2;
 
 
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
@@ -82,8 +82,8 @@ double measure_main(DataTrace& trace, Manager& tbc_manager){
     double entrypy_esti = get_entropy(dist_est);
     double re = abs(entrypy_esti - entrypy_real) / entrypy_real;
     CSVer csver("./results/entropy/flymon_mrac.csv");
-    // csver.write(600, wmre, re);
-    csver.write(600, re);
+    // csver.write(1000, wmre, re);
+    csver.write(1000, re);
     delete filter;
 }
 

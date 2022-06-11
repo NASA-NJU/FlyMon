@@ -14,7 +14,7 @@
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 5;
 const uint32_t SUB_BLOCK_NUM = 1;
-const uint32_t MEMORY = 4; 
+const uint32_t MEMORY = 8192; 
 const uint32_t BLOCK_SIZE = MEMORY / 2;
 
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;

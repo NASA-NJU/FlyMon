@@ -9,7 +9,7 @@
 #define HH_THRESHOLD 1024
 
 // Dataplane config.
-const uint32_t TOTAL_MEM = 10240000;
+const uint32_t TOTAL_MEM = 102400;
 const uint32_t TBC_NUM =   3;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM /  3 / BLOCK_NUM;  
@@ -19,7 +19,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("./results/max_interval_time/tbc_maxtable_max_interval_d3.csv");
+    CSVer csver("./results/max_interval_time/sumax_d3.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     vector<int> task_ids;

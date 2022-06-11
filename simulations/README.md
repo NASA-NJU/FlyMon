@@ -39,10 +39,7 @@ python test_all.py -d ./ -r 3
 The above script automatically executes all the accuracy test code.
 The `-r` parameter means how many times each set of parameters is repeated.
 
-It took about 3~5 hours to complete the above tests. When all tests are completed, you can view the results in the [results](./results/) directory. 
-We prepared a snapshot of the results from our early experiments in the [result_snapshot](./result_snapshot) directory. 
-The output results are saved in CSV format. 
-We explain the meaning of the output in the first line of the csv files in the result snapshot.
+It took about **25 hours** to complete the above tests. When all tests are completed, you can view the results in the [result](./result/) directory. 
 
 ## File Description
 
