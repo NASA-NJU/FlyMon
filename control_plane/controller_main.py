@@ -466,7 +466,7 @@ class FlyMonController(cmd.Cmd):
                     start_time = time.time()
                     for cmd in cmds:
                         print(cmd)
-                        self.do_add_task(cmd)
+                        _ = self.do_add_task(cmd)
                     end_time = time.time()
                     delay_dict[alg].append(end_time - start_time)
                     self.do_reset_all("")
