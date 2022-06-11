@@ -7,30 +7,49 @@ import datetime
 import os
 import shutil  
 import math
+import argparse
 
-# Memory Settings (In KB or Bytes).
-HEAVY_HITTER_MEMORY = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
-DDOS_VICTOM_MEMORY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
-BLOOM_MEMORY = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000]
-CARD_MEMORY = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 8192]  
-ENTROPY_MEMORY = [600, 700, 800, 900, 1000]
-MAX_MEMORY = [10000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100]
-
-### Debug
-# MAX_MEMORY = [10000]
-# ENTROPY_MEMORY = [600]
-# CARD_MEMORY = [4]  
-# BLOOM_MEMORY = [10]
-# DDOS_VICTOM_MEMORY = [1]
-# HEAVY_HITTER_MEMORY = [400]
-
-parser = ArgumentParser()
+parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--dir", dest="work_dir", type=str, required=True, help="Directory of simulation codes.")
 parser.add_argument("-r", "--repeat", dest="repeat", type=int, required=True, help="How many times to repeat each experiment.")
+parser.add_argument("-m", "--mode", dest="mode", type=str, required=True, default="sample", help="e.g., Mode of testing? sample or all.")
 
 args = parser.parse_args()
 work_dir = args.work_dir
 repeat_time = args.repeat
+
+
+mode = args.mode
+if mode not in ["sample", "all"]:
+    print("Mode needs in [sample, all]")
+    exit(1)
+
+HEAVY_HITTER_MEMORY1 = None
+HEAVY_HITTER_MEMORY2 = None
+DDOS_VICTOM_MEMORY = None
+BLOOM_MEMORY = None
+CARD_MEMORY = None
+ENTROPY_MEMORY = None
+MAX_MEMORY = None
+
+if mode == "all":
+## Full Memory Settings (In KB or Bytes).
+    HEAVY_HITTER_MEMORY1 = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    HEAVY_HITTER_MEMORY2 = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    DDOS_VICTOM_MEMORY = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    BLOOM_MEMORY = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000]
+    CARD_MEMORY = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 8192]  
+    ENTROPY_MEMORY = [200, 300, 400, 500]
+    MAX_MEMORY = [10000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100]
+else:
+## Sample Memory Settings for Debug or Test
+    HEAVY_HITTER_MEMORY1 = [10, 50, 100, 200]
+    HEAVY_HITTER_MEMORY2 = [200, 500, 5000]
+    DDOS_VICTOM_MEMORY = [10, 50, 100, 500]
+    BLOOM_MEMORY = [10, 50, 100]
+    CARD_MEMORY = [4, 128, 1024, 8192]  
+    ENTROPY_MEMORY = [200, 500]
+    MAX_MEMORY = [10000, 5000, 500]
 
 ## Datas
 data15 = work_dir  +'/data/fifteen1.dat'
@@ -108,8 +127,8 @@ def test_univmon_heavyhitter():
     out_file = log_dir + 'test_univmon_flow_heavyhitter_'+logtime()+'.log'
     test_args['RESULT_CSV'] = result_dir_heavyhitter + 'univmon.csv'
     D_LIST = [ 14,  14,  14,  14,  14,  14,  14,  14,   14,   14,   14,   14,   14,   14,   14,   14,   14,    14]
-    for i in range(len(HEAVY_HITTER_MEMORY)):
-        test_args['TOTAL_MEMORY_KB'] = HEAVY_HITTER_MEMORY[i]
+    for i in range(len(HEAVY_HITTER_MEMORY2)):
+        test_args['TOTAL_MEMORY_KB'] = HEAVY_HITTER_MEMORY2[i]
         test_args['UNIV_DEP'] = D_LIST[i]
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
@@ -139,8 +158,8 @@ def test_beaucoup_heavyhitter(table_num = 1):
     out_file = log_dir + 'test_beaucoup_heavyhitter_'+logtime()+'.log'
     test_args['RESULT_CSV'] = result_dir_heavyhitter + f'beaucoup_{table_num}d.csv'
     test_args['THRESHOLD'] = 1024
-    for i in range(len(HEAVY_HITTER_MEMORY)):
-        test_args['MEMORY_KB'] = HEAVY_HITTER_MEMORY[i]
+    for i in range(len(HEAVY_HITTER_MEMORY1)):
+        test_args['MEMORY_KB'] = HEAVY_HITTER_MEMORY1[i]
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes("test_beaucoup")
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -167,8 +186,8 @@ def test_tbc_cmsketch_heavy_hitter():
         "RESULT_CSV_HEAVY_HITTER": result_dir_heavyhitter + 'flymon_cmsketch3d.csv' 
     }
     out_file = log_dir + 'test_tbc_cketch_'+logtime()+'.log'
-    for i in range(len(HEAVY_HITTER_MEMORY)):
-        test_args['MEMORY'] = HEAVY_HITTER_MEMORY[i] * 1024 # it use Bytes in the code.
+    for i in range(len(HEAVY_HITTER_MEMORY1)):
+        test_args['MEMORY'] = HEAVY_HITTER_MEMORY1[i] * 1024 # it use Bytes in the code.
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -199,8 +218,8 @@ def test_tbc_cusketch_heavy_hitter():
     }
     # out_file = log_dir + 'test_tbc_cuketch_'+logtime()+'.log'
     out_file = log_dir + 'original_cuketch_'+logtime()+'.log'
-    for i in range(len(HEAVY_HITTER_MEMORY)):
-        test_args['MEMORY'] = HEAVY_HITTER_MEMORY[i] * 1024 # it use Bytes in the code.
+    for i in range(len(HEAVY_HITTER_MEMORY1)):
+        test_args['MEMORY'] = HEAVY_HITTER_MEMORY1[i] * 1024 # it use Bytes in the code.
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -228,8 +247,8 @@ def test_tbc_beaucoup_heavy_hitter(block_num):
     # out_file = log_dir + 'test_tbc_cuketch_'+logtime()+'.log'
     out_file = log_dir + 'original_tmu_beaucoup_'+logtime()+'.log'
     # M_LIST = [1000]
-    for i in range(len(HEAVY_HITTER_MEMORY)):
-        test_args['MEMORY_BYTES'] = HEAVY_HITTER_MEMORY[i] * 1024  # it use Bytes in the code.
+    for i in range(len(HEAVY_HITTER_MEMORY1)):
+        test_args['MEMORY_BYTES'] = HEAVY_HITTER_MEMORY1[i] * 1024  # it use Bytes in the code.
         test_once = bin.tester.Tester(test_dir, test_file, test_args, out_file)
         test_once.generate_codes()
         _bound_instance_method_alias = functools.partial(_instance_method_alias, test_once)
@@ -485,7 +504,7 @@ def test_tbc_flow_entropy():
     test_args = {
         "WORK_DIR" : work_dir,
         "DATA_FILE" : data15,
-        # "DATA_FILE" : 'data/WIDE/head1000.dat',
+        # "DATA_FILE" : 'data/head1000.dat',
         "MEMORY" : 0, # TBD
         "RESULT_CSV" :  result_dir_entropy + 'flymon_mrac.csv'
     }
@@ -614,7 +633,7 @@ if __name__ == '__main__':
     test_tbc_hll_flow_cardinality()
     test_beaucoup_flow_cardinality()
 
-    ## Entropy
+    # Entropy
     test_univmon_entropy()
     test_tbc_flow_entropy()
 

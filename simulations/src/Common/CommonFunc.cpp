@@ -73,8 +73,14 @@ uint32_t CalcDistribution(vector<uint16_t>& blocks, vector<double>& dist){
     EMFSD * em_fsd_algo = new EMFSD();
 	// em_fsd_algo->set_counters(blocks.size(), blocks.data());
 	em_fsd_algo->set_counters(blocks.size(), blocks.data());
+	double last_card = 0.0;
 	for(int i=0; i<10; ++i){
 		em_fsd_algo->next_epoch();
+		double curr_card = em_fsd_algo->n_sum;
+		if (abs(curr_card-last_card)/last_card <= 0.01){
+			break;
+		}
+		last_card = curr_card;
 		printf("[EM] %d th epoch...with cardinality : %8.2f\n", i, em_fsd_algo->n_sum);
 	}
 	dist = em_fsd_algo->ns; // vector<double> dist

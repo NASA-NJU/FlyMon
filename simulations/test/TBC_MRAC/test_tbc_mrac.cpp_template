@@ -7,11 +7,12 @@
 #include <ctime>
 #include <bitset>
 #include "Csver.h"
+#include  "MRAC.h"
 
 // #define FILE_MRAC_DSITRIBUTION "flow_distribution0.02.txt"  //1MB
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 1;
-const uint32_t SUB_BLOCK_NUM = 1;
+const uint32_t SUB_BLOCK_NUM = 16;
 const uint32_t BLOCK_SIZE = {{MEMORY}}*1024/2;
 
 
@@ -56,38 +57,31 @@ double calc_wmre(const vector<double>& gt_dist, const vector<double>& est_dist){
 }
 
 double measure_main(DataTrace& trace, Manager& tbc_manager){
-    FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
-    int task_id = tbc_manager.allocate_cmsketch(1, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_CONST);
-    if(task_id < 0){
-        return -1;
-    }
+    MRAC mrac({{MEMORY}}*1024, 10);
     unordered_map<string, int> Real_Freq;
     for (auto it=trace.begin(); it!=trace.end(); ++it){
-        tbc_manager.apply(*it);
+        mrac.insert((const uint8_t*)((*it)->getFlowKey_IPPair()), 8);
         string str((const char*)((*it)->getFlowKey_IPPair()), 8);
         Real_Freq[str]++;
     }
-    map<uint16_t, map<uint16_t, vector<uint16_t>>> sketch; //tbc, block, array.
-    tbc_manager.query(task_id, sketch);
     vector<double> dist_groundtruth;
-    // get ground truth distribution.
     dist_groundtruth.resize(get_max(Real_Freq)+1, 0);
     for(auto& flow : Real_Freq){
         dist_groundtruth[flow.second] += 1;
     }
     vector<double> dist_est;
-    CalcDistribution(sketch[0][0], dist_est);
+    mrac.get_distribution(dist_est);
     double wmre = calc_wmre(dist_groundtruth, dist_est);
     double entrypy_real = get_entropy(dist_groundtruth);
     double entrypy_esti = get_entropy(dist_est);
     double re = abs(entrypy_esti - entrypy_real) / entrypy_real;
     CSVer csver("{{RESULT_CSV}}");
-    // csver.write({{MEMORY}}, wmre, re);
-    csver.write({{MEMORY}}, re);
-    delete filter;
+    csver.write({{MEMORY}}, wmre, re);
+    // csver.write({{MEMORY}}, re);
 }
 
 int main(int argc, char* argv[]){
+    LOG_LEVEL = L_DEBUG;
     clock_t start = clock();
     DataTrace trace;
     trace.LoadFromFile("{{WORK_DIR}}/{{DATA_FILE}}");

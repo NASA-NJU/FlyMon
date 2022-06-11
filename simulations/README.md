@@ -33,13 +33,22 @@ cd build; cmake ..; make -j; cd ..
 After the project has been compiled, we can prepare it for testing. We give a simple test framework for repeating the experiments.
 
 ```bash
-python test_all.py -d ./ -r 3
+python test_all.py -d ./ -r 3 -m sample
 ```
 
 The above script automatically executes all the accuracy test code.
+The `-d` parameter means the work directory of the simulations.
 The `-r` parameter means how many times each set of parameters is repeated.
+The `-m` parameter indicates which sets of memory configurations to measure (i.e., mode).
 
-It took about **25 hours** to complete the above tests. When all tests are completed, you can view the results in the [result](./result/) directory. 
+This script provides two mode for testing : 
+
+* The `all` mode tests the accuracy of the algorithms under all the memory configurations in the paper. It will cost about **25 hours** to complete. 
+* The `sample` mode tests the accuracy under a sample of memory configurations. 
+
+Look at the `test_all.py` to see the difference between their memory configurations.
+ 
+When all tests are completed, you can view the results in the [result](./result/) directory. We also provide [a snapshot of the test results](./result_snapshot/) under all memory configurations (i.e., the `all` mode), which also contains the explanation of the CSV files' columns.
 
 ## File Description
 
