@@ -1,4 +1,4 @@
-Memory,Precision,Recall,F1_Score,
+Memory,Depth,Precision,Recall,F1_Score,
 10,1,0.0531588,0.987109,0.100885,
 10,1,0.0527091,0.98895,0.100084,
 10,1,0.0536089,0.98895,0.101705,
