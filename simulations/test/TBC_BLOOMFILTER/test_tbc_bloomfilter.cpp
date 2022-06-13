@@ -19,7 +19,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("./results/existence/bloom_with_optmi.csv");
+    CSVer csver("./result/existence/bloom_with_optmi.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     int task_id = tbc_manager.allocate_bloom_filter(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR);

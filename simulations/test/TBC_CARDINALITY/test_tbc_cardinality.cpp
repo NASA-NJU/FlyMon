@@ -19,7 +19,7 @@ const uint32_t BLOCK_SIZE = MEMORY / 2;
 
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 double measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("./results/cardinality/hyperloglog.csv");
+    CSVer csver("./result/cardinality/hyperloglog.csv");
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     int hll_task_id = tbc_manager.allocate_hyperloglog_new(BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_IPPAIR_HASH, 0);
     if(hll_task_id < 0) {

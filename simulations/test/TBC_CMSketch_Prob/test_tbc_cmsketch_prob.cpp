@@ -138,7 +138,7 @@ vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BL
 
 int main(){
 
-    CSVer csver("./results/heavyhitter_prob/cm_sketch_prob.csv");
+    CSVer csver("./result/heavyhitter_prob/cm_sketch_prob.csv");
     clock_t start = clock();
     DataTrace trace;
     // trace.LoadFromFile("../data/WIDE/one_sec_15.dat");

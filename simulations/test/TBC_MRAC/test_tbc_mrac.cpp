@@ -13,7 +13,7 @@
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 1;
 const uint32_t SUB_BLOCK_NUM = 16;
-const uint32_t BLOCK_SIZE = 300*1024/2;
+const uint32_t BLOCK_SIZE = 500*1024/2;
 
 
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
@@ -57,7 +57,7 @@ double calc_wmre(const vector<double>& gt_dist, const vector<double>& est_dist){
 }
 
 double measure_main(DataTrace& trace, Manager& tbc_manager){
-    MRAC mrac(300*1024, 10);
+    MRAC mrac(500*1024, 10);
     unordered_map<string, int> Real_Freq;
     for (auto it=trace.begin(); it!=trace.end(); ++it){
         mrac.insert((const uint8_t*)((*it)->getFlowKey_IPPair()), 8);
@@ -76,8 +76,8 @@ double measure_main(DataTrace& trace, Manager& tbc_manager){
     double entrypy_esti = get_entropy(dist_est);
     double re = abs(entrypy_esti - entrypy_real) / entrypy_real;
     CSVer csver("./result/entropy/flymon_mrac.csv");
-    // csver.write(300, wmre, re);
-    csver.write(300, re);
+    csver.write(500, wmre, re);
+    // csver.write(500, re);
 }
 
 int main(int argc, char* argv[]){

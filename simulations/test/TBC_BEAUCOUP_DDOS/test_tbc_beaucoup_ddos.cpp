@@ -17,7 +17,7 @@ const uint32_t coff = 1;
 using Manager = TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE, SUB_BLOCK_NUM>;
 
 void measure_main(DataTrace& trace, Manager& tbc_manager){
-    CSVer csver("./results/ddos/flymon_beaucoup_3d.csv");
+    CSVer csver("./result/ddos/flymon_beaucoup_3d.csv");
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     // int task_id = tbc_manager.allocate_beaucoup_128(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPDST, ACTION_SET_VAL_IPSRC_HASH, ACTION_SET_PARAM_IPSRC);

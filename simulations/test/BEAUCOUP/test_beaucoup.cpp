@@ -42,7 +42,7 @@ int main(){
     }
 	unordered_map<string, uint32_t> ground_truth;
     vector<string> heavy_esti;
-    CSVer csver("./results/cardinality/beaucoup.csv");
+    CSVer csver("./result/cardinality/beaucoup.csv");
     for (auto it = trace.begin(); it!= trace.end(); ++it){
         string str((const char*)((*it)->getFlowKey_IPPair()), 8);
         ground_truth[str]++;

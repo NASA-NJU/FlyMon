@@ -45,7 +45,7 @@ vector<double> measure_main(DataTrace& trace, Manager& tbc_manager){
     // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
     FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
     //CSVer csver_fs("");
-    CSVer csver_hv("./results/heavyhitter/flymon_sumax3d.csv");
+    CSVer csver_hv("./result/heavyhitter/flymon_sumax3d.csv");
     int task_id = tbc_manager.allocate_cusketch(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_CONST);
     if(task_id < 0){
         return {0,0,0,0};
