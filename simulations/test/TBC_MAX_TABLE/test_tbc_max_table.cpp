@@ -9,7 +9,7 @@
 #define HH_THRESHOLD 1024
 
 // Dataplane config.
-const uint32_t TOTAL_MEM = 102400;
+const uint32_t TOTAL_MEM = 512000;
 const uint32_t TBC_NUM =   3;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM /  3 / BLOCK_NUM;  

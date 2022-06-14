@@ -7,7 +7,7 @@
 #include "Csver.h"
 
 // Dataplane config.
-const uint32_t TOTAL_MEM = 1024000;
+const uint32_t TOTAL_MEM = 512000;
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM / BLOCK_NUM / 2;  

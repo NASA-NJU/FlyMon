@@ -9,7 +9,7 @@
 #define HH_THRESHOLD 1024
 
 // Dataplane config.
-const uint32_t TOTAL_MEM = 1024000;
+const uint32_t TOTAL_MEM = 102400;
 const uint32_t TBC_NUM = 1;
 const uint32_t BLOCK_NUM = 3;
 const uint32_t BLOCK_SIZE = TOTAL_MEM / TBC_NUM/ BLOCK_NUM / 2;  
@@ -62,8 +62,8 @@ void measure_main(DataTrace& trace, Manager& tbc_manager){
     }
     double re_fp = fp / f;
     double re_tp = tp / InsertSet.size();
-    // csver.write(1024000/1024, 3, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
-    csver.write(1024000/1024, re_fp);
+    // csver.write(102400/1024, 3, Real.size(), InsertSet.size(), f, fp, re_fp, tp, re_tp);
+    csver.write(102400/1024, re_fp);
     return;
 }
 
