@@ -44,7 +44,9 @@ tcprewrite --mtu=100 --mtu-trunc -i one_sec_more/one_sec_1.pcap -o one_sec_ready
 
 sudo tcpreplay -i enp130s0f1 -tK --loop 1  --pktlen one_sec_1_ready.pcap
 
-add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 24576
+add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 49152
+
+add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 196608
 
 
 evaluate_are -t 1 -f trace_info/traceinfo1.json

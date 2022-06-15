@@ -587,14 +587,14 @@ class FlyMonController(cmd.Cmd):
                 ),
                 # Batch 3, T = 90
                 ("del" , "-t 3"),
+                ("add" , "-f 40.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 32 -q"),
+                ("del" , "-t 2"),
                 ("realoc" , 
                     [
                         ("del" , "-t 4"),
                         ("add" , "-f 40.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 16 -q"),
                     ]
                 ),
-                ("del" , "-t 2"),
-                ("add" , "-f 40.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 32 -q"),
             ]
             self.do_reset_all("")
             sec = 1
