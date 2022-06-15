@@ -48,13 +48,13 @@ class Hasher:
 
 HASHES_16 = [
     # reference: https://crccalc.com/
-    Hasher(0x04C11DB7, 32,    0xFFFFFFFF,     True,      0xFFFFFFFF),
     Hasher(0x1021,     16,        0xFFFF,    False,      0x0000),
+    Hasher(0x04C11DB7, 32,    0xFFFFFFFF,     True,      0xFFFFFFFF),
     Hasher(0x1EDC6F41, 32,    0xFFFFFFFF,    False,      0xFFFFFFFF),
 
     Hasher(0x1EDC6F41, 32,    0xFFFFFFFF,   False,      0xFFFFFFFF),
-    Hasher(0xA833982B, 32,    0xFFFFFFFF,   False,      0xFFFFFFFF),
     Hasher(0x3D65,     16,        0x0000,   True,       0xFFFF),
+    Hasher(0xA833982B, 32,    0xFFFFFFFF,   False,      0xFFFFFFFF),
 
     Hasher(0xA833982B, 32,    0xFFFFFFFF,   False,      0xFFFFFFFF),
     Hasher(0x04C11DB7, 32,    0x00000000,    True,      0xFFFFFFFF),

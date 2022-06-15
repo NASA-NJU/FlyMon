@@ -186,7 +186,7 @@ control CMU_Group1 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -226,17 +226,17 @@ control CMU_Group1 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group1.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+        meta.cmu_group1.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group1.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+        meta.cmu_group1.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group1.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group1.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+        meta.cmu_group1.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group1.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group1.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+    //    meta.cmu_group1.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group1.cmu1.key[10:0]);
     //}
 
     @pragma stage 3
@@ -382,7 +382,7 @@ control CMU_Group1 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -422,17 +422,17 @@ control CMU_Group1 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group1.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+        meta.cmu_group1.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group1.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+        meta.cmu_group1.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group1.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group1.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+        meta.cmu_group1.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group1.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group1.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+    //    meta.cmu_group1.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group1.cmu2.key[10:0]);
     //}
 
     @pragma stage 3
@@ -578,7 +578,7 @@ control CMU_Group1 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -618,17 +618,17 @@ control CMU_Group1 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group1.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+        meta.cmu_group1.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group1.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+        meta.cmu_group1.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group1.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group1.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+        meta.cmu_group1.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group1.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group1.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+    //    meta.cmu_group1.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group1.cmu3.key[10:0]);
     //}
 
     @pragma stage 3
@@ -839,7 +839,7 @@ control CMU_Group2 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -879,17 +879,17 @@ control CMU_Group2 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group2.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+        meta.cmu_group2.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group2.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+        meta.cmu_group2.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group2.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group2.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+        meta.cmu_group2.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group2.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group2.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+    //    meta.cmu_group2.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group2.cmu1.key[10:0]);
     //}
 
     @pragma stage 4
@@ -1028,7 +1028,7 @@ control CMU_Group2 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -1068,17 +1068,17 @@ control CMU_Group2 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group2.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+        meta.cmu_group2.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group2.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+        meta.cmu_group2.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group2.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group2.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+        meta.cmu_group2.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group2.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group2.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+    //    meta.cmu_group2.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group2.cmu2.key[10:0]);
     //}
 
     @pragma stage 4
@@ -1217,7 +1217,7 @@ control CMU_Group2 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -1257,17 +1257,17 @@ control CMU_Group2 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group2.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+        meta.cmu_group2.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group2.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+        meta.cmu_group2.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group2.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group2.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+        meta.cmu_group2.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group2.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group2.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+    //    meta.cmu_group2.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group2.cmu3.key[10:0]);
     //}
 
     @pragma stage 4
@@ -1478,7 +1478,7 @@ control CMU_Group3 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -1518,17 +1518,17 @@ control CMU_Group3 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group3.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+        meta.cmu_group3.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group3.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+        meta.cmu_group3.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group3.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group3.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+        meta.cmu_group3.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group3.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group3.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+    //    meta.cmu_group3.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group3.cmu1.key[10:0]);
     //}
 
     @pragma stage 5
@@ -1667,7 +1667,7 @@ control CMU_Group3 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -1707,17 +1707,17 @@ control CMU_Group3 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group3.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+        meta.cmu_group3.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group3.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+        meta.cmu_group3.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group3.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group3.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+        meta.cmu_group3.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group3.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group3.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+    //    meta.cmu_group3.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group3.cmu2.key[10:0]);
     //}
 
     @pragma stage 5
@@ -1856,7 +1856,7 @@ control CMU_Group3 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -1896,17 +1896,17 @@ control CMU_Group3 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group3.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+        meta.cmu_group3.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group3.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+        meta.cmu_group3.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group3.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group3.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+        meta.cmu_group3.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group3.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group3.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+    //    meta.cmu_group3.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group3.cmu3.key[10:0]);
     //}
 
     @pragma stage 5
@@ -2117,7 +2117,7 @@ control CMU_Group4 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -2157,17 +2157,17 @@ control CMU_Group4 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group4.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+        meta.cmu_group4.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group4.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+        meta.cmu_group4.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group4.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group4.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+        meta.cmu_group4.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group4.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group4.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+    //    meta.cmu_group4.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group4.cmu1.key[10:0]);
     //}
 
     @pragma stage 6
@@ -2306,7 +2306,7 @@ control CMU_Group4 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -2346,17 +2346,17 @@ control CMU_Group4 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group4.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+        meta.cmu_group4.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group4.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+        meta.cmu_group4.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group4.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group4.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+        meta.cmu_group4.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group4.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group4.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+    //    meta.cmu_group4.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group4.cmu2.key[10:0]);
     //}
 
     @pragma stage 6
@@ -2495,7 +2495,7 @@ control CMU_Group4 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -2535,17 +2535,17 @@ control CMU_Group4 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group4.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+        meta.cmu_group4.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group4.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+        meta.cmu_group4.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group4.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group4.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+        meta.cmu_group4.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group4.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group4.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+    //    meta.cmu_group4.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group4.cmu3.key[10:0]);
     //}
 
     @pragma stage 6
@@ -2737,7 +2737,7 @@ control CMU_Group5 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -2777,17 +2777,17 @@ control CMU_Group5 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group5.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group5.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group5.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group5.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group5.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group5.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group5.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group5.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group5.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+    //    meta.cmu_group5.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group5.cmu1.key[10:0]);
     //}
 
     @pragma stage 7
@@ -2919,7 +2919,7 @@ control CMU_Group5 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -2959,17 +2959,17 @@ control CMU_Group5 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group5.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group5.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group5.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group5.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group5.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group5.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group5.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group5.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group5.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+    //    meta.cmu_group5.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group5.cmu2.key[10:0]);
     //}
 
     @pragma stage 7
@@ -3101,7 +3101,7 @@ control CMU_Group5 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -3141,17 +3141,17 @@ control CMU_Group5 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group5.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group5.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group5.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group5.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group5.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group5.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group5.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group5.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group5.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+    //    meta.cmu_group5.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group5.cmu3.key[10:0]);
     //}
 
     @pragma stage 7
@@ -3321,7 +3321,7 @@ control CMU_Group6 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -3361,17 +3361,17 @@ control CMU_Group6 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group6.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+        meta.cmu_group6.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group6.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+        meta.cmu_group6.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group6.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group6.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+        meta.cmu_group6.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group6.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group6.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+    //    meta.cmu_group6.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group6.cmu1.key[10:0]);
     //}
 
     @pragma stage 8
@@ -3482,7 +3482,7 @@ control CMU_Group6 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -3522,17 +3522,17 @@ control CMU_Group6 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group6.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+        meta.cmu_group6.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group6.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+        meta.cmu_group6.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group6.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group6.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+        meta.cmu_group6.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group6.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group6.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+    //    meta.cmu_group6.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group6.cmu2.key[10:0]);
     //}
 
     @pragma stage 8
@@ -3643,7 +3643,7 @@ control CMU_Group6 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -3683,17 +3683,17 @@ control CMU_Group6 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group6.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+        meta.cmu_group6.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group6.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+        meta.cmu_group6.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group6.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group6.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+        meta.cmu_group6.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group6.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group6.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+    //    meta.cmu_group6.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group6.cmu3.key[10:0]);
     //}
 
     @pragma stage 8
@@ -3863,7 +3863,7 @@ control CMU_Group7 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -3903,17 +3903,17 @@ control CMU_Group7 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group7.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+        meta.cmu_group7.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group7.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+        meta.cmu_group7.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group7.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group7.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+        meta.cmu_group7.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group7.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group7.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+    //    meta.cmu_group7.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group7.cmu1.key[10:0]);
     //}
 
     @pragma stage 9
@@ -4024,7 +4024,7 @@ control CMU_Group7 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -4064,17 +4064,17 @@ control CMU_Group7 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group7.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+        meta.cmu_group7.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group7.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+        meta.cmu_group7.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group7.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group7.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+        meta.cmu_group7.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group7.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group7.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+    //    meta.cmu_group7.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group7.cmu2.key[10:0]);
     //}
 
     @pragma stage 9
@@ -4185,7 +4185,7 @@ control CMU_Group7 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -4225,17 +4225,17 @@ control CMU_Group7 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group7.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+        meta.cmu_group7.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group7.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+        meta.cmu_group7.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group7.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group7.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+        meta.cmu_group7.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group7.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group7.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+    //    meta.cmu_group7.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group7.cmu3.key[10:0]);
     //}
 
     @pragma stage 9
@@ -4405,7 +4405,7 @@ control CMU_Group8 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -4445,17 +4445,17 @@ control CMU_Group8 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group8.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+        meta.cmu_group8.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group8.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+        meta.cmu_group8.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group8.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group8.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+        meta.cmu_group8.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group8.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group8.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+    //    meta.cmu_group8.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group8.cmu1.key[10:0]);
     //}
 
     @pragma stage 10
@@ -4566,7 +4566,7 @@ control CMU_Group8 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -4606,17 +4606,17 @@ control CMU_Group8 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group8.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+        meta.cmu_group8.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group8.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+        meta.cmu_group8.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group8.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group8.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+        meta.cmu_group8.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group8.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group8.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+    //    meta.cmu_group8.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group8.cmu2.key[10:0]);
     //}
 
     @pragma stage 10
@@ -4727,7 +4727,7 @@ control CMU_Group8 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -4767,17 +4767,17 @@ control CMU_Group8 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group8.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+        meta.cmu_group8.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group8.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+        meta.cmu_group8.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group8.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group8.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+        meta.cmu_group8.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group8.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group8.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+    //    meta.cmu_group8.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group8.cmu3.key[10:0]);
     //}
 
     @pragma stage 10
@@ -4947,7 +4947,7 @@ control CMU_Group9 ( in header_t hdr,
     }
 
     // Operation stage of CMU0.
-    Register<bit<16>, bit<16>>(32, 0) cmu1_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu1_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -4987,17 +4987,17 @@ control CMU_Group9 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group9.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu1.key[10:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group9.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group9.cmu1.key[10:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group9.cmu1.param2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param2 = cmu1_op_max.execute((bit<16>)meta.cmu_group9.cmu1.key[10:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group9.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
+    //    meta.cmu_group9.cmu1.param2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group9.cmu1.key[10:0]);
     //}
 
     @pragma stage 11
@@ -5108,7 +5108,7 @@ control CMU_Group9 ( in header_t hdr,
     }
 
     // Operation stage of CMU1.
-    Register<bit<16>, bit<16>>(32, 0) cmu2_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu2_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -5148,17 +5148,17 @@ control CMU_Group9 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group9.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu2.key[10:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group9.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group9.cmu2.key[10:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group9.cmu2.param2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param2 = cmu2_op_max.execute((bit<16>)meta.cmu_group9.cmu2.key[10:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group9.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
+    //    meta.cmu_group9.cmu2.param2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group9.cmu2.key[10:0]);
     //}
 
     @pragma stage 11
@@ -5269,7 +5269,7 @@ control CMU_Group9 ( in header_t hdr,
     }
 
     // Operation stage of CMU2.
-    Register<bit<16>, bit<16>>(32, 0) cmu3_buckets; 
+    Register<bit<16>, bit<16>>(2048, 0) cmu3_buckets; 
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
@@ -5309,17 +5309,17 @@ control CMU_Group9 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group9.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu3.key[10:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group9.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group9.cmu3.key[10:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group9.cmu3.param2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param2 = cmu3_op_max.execute((bit<16>)meta.cmu_group9.cmu3.key[10:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group9.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
+    //    meta.cmu_group9.cmu3.param2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group9.cmu3.key[10:0]);
     //}
 
     @pragma stage 11

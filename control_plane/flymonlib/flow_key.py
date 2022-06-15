@@ -116,7 +116,7 @@ def parse_key(key_str):
                 if re is False:
                     raise RuntimeError(f"Set mask faild for the key {k}")
             else:
-                flow_key.set_mask(key, 32)
+                flow_key.set_mask(key, key_template[key])
     except Exception as e:
         raise e
     return flow_key

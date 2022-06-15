@@ -145,22 +145,25 @@ class FlyMonController(cmd.Cmd):
         parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32")
         parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
         parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="e.g., 32768")
+        parser.add_argument("-q", "--quiet", "--flag", action="store_true", required=False, help="do not need the log?")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
                 print(parser.error_message)
                 return
             task_instance = self.task_manager.register_task(args.filter, args.key, args.attribute, args.mem_size)
-            print("Required resources:")
-            for re in task_instance.resource_list():
-                print(str(re))
+            if not args.quiet:
+                print("Required resources:")
+                for re in task_instance.resource_list():
+                    print(str(re))
             locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
             if locations is not None:
                 task_instance.locations = locations
                 re = self.task_manager.install_task(task_instance.id)
                 if re is True:
-                    self.task_manager.show_task(task_instance.id)
-                    print(f"[Success] Allocate TaskID: {task_instance.id} \n")
+                    if not args.quiet:
+                        self.task_manager.show_task(task_instance.id)
+                        print(f"[Success] Allocate TaskID: {task_instance.id} \n")
                 else:
                     print(f"[Failed] when install rules for task {task_instance.id}\n")
                     self.resource_manager.release_task(task_instance)
@@ -298,6 +301,7 @@ class FlyMonController(cmd.Cmd):
             print(e)
             return
 
+
     def do_add_forward(self, arg):
         '''
         Add a forward rule in simple_fwd
@@ -328,6 +332,30 @@ class FlyMonController(cmd.Cmd):
             print("OK, the forwarding rules already exist.")
             return
 
+    def do_del_forward(self, arg):
+        '''
+        Add a forward rule in simple_fwd
+        Args list:
+            "-s", "--source" type=int, required=True
+            "-d", "--destination" type=int, required=True
+        Return:
+            Added rule or -1.
+        '''
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-s", "--source", dest="source", type=int, required=True, help="Source port of the forwarding, int from 0 to 259")
+        try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return
+            if args.source not in VPORT_DICT.keys() or args.dest not in VPORT_DICT.keys():
+                print(f"Invalid port number {args.source} and {args.dest}")
+                return
+            
+        except Exception as e:
+            print("OK, the forwarding rules already exist.")
+            return
+
     def do_default_setup(self, arg):
         """Default configs in our testbd.
             self.do_add_port("-p 16 -s 40G")
@@ -335,10 +363,22 @@ class FlyMonController(cmd.Cmd):
             self.do_add_forward("-s 16 -d 24")
             self.do_add_forward("-s 24 -d 16")
         """
-        self.do_add_port("-p 16 -s 40G")
-        self.do_add_port("-p 24 -s 40G")
-        self.do_add_forward("-s 16 -d 24")
-        self.do_add_forward("-s 24 -d 16")
+        self.do_add_port("-p 16 -s 100G")
+        self.do_add_port("-p 8 -s 100G")
+        self.do_add_forward("-s 16 -d 8")
+        self.do_add_forward("-s 8 -d 16")
+
+    def do_teardown(self, arg):
+        """Default configs in our testbd.
+            self.do_add_port("-p 16 -s 40G")
+            self.do_add_port("-p 24 -s 40G")
+            self.do_add_forward("-s 16 -d 24")
+            self.do_add_forward("-s 24 -d 16")
+        """
+        self.port_table = self.bfrt_info.table_get("$PORT")
+        self.port_table.entry_del(self.target)
+        self.forward_table = self.bfrt_info.table_get("FlyMonIngress.simple_fwd")
+        self.forward_table.entry_del(self.target)
 
     def do_send_packets(self, arg):
         """Send several packets to model's virtual ports.
@@ -434,7 +474,7 @@ class FlyMonController(cmd.Cmd):
             self.task_manager = TaskManager(self.runtime, self.cmug_configs)
             self.resource_manager = ResourceManager(self.runtime, self.cmug_configs)
             self.data_collector = DataCollector(self.runtime, self.cmug_configs)
-            print("Done.")
+            print("Reset Done.")
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when reset.")
@@ -485,50 +525,61 @@ class FlyMonController(cmd.Cmd):
             print(f"{e} when reset.")
             exit(1)
 
-    # def do_delay_test_test(self, arg):
-    #     """
-    #     Perform the delay test corresponding to the experiments in the paper.
-    #     """
-    #     try:
-    #         # the dict of the commands: {"name of algorithm": [commands]}
-    #         command_dict = {
-    #             "CM Sketch" :    ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 24"],
-    #             "BeauCoup" :     ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 12"],
-    #             "Bloom Filter" : ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a existence() -m 4"],
-    #             "SuMax(Max)" :   ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 12"],
-    #             "HyperLogLog" :  ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct() -m 4"],
-    #             "SuMax(Sum)" :   ["-f %d.0.0.0/16,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 16",
-    #                               "-f %d.1.0.0/16,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 16",
-    #                               "-f %d.2.0.0/16,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 16"],
-    #             "MRAC" :         ["-f %d.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 4"]
-    #         }
-    #         # the dict of the delay: {"name of algorithm": [delay]} 
-    #         delay_dict = {k:[] for k,_ in command_dict.items()}
 
-    #         # the delay experiment is performed five time, and the avg. value is used
-    #         for i in range(5):
-    #             for alg, cmds in command_dict.items():
-    #                 start_time = time.time()
-    #                 for cmd in cmds:
-    #                     # print(cmd)
-    #                     self.do_add_task(cmd % (i+1))
-    #                 end_time = time.time()
-    #                 delay_dict[alg].append(end_time - start_time)
-    #                 # self.do_reset_all("")
-            
-    #         # print the result
-    #         print("The results of the delay experiments are shown below:")
-    #         tb = pt.PrettyTable()
-    #         tb.field_names = ["Algorithm on CMU", "Deployment Delay (ms)"]
-    #         for alg, lats in delay_dict.items():
-    #             # print(alg, f"'s average delay is:\t{sum(lats)/len(lats)*1e3}ms")
-    #             tb.add_row([alg, '%.2f'%(sum(lats)/len(lats)*1e3)])
-    #         print(tb)
-                    
+    def do_reconfigure_test(self, arg):
+        """
+        We initiate 8 reconfiguration events to evaluate 
+        the forwarding performance of the network during reconfiguration.
+        """
+        try:
+            event_list = [
+                # Batch 1, T = 20
+                ("add" , "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ports.src_port -a max(queue_size) -m 24 -q"),
+                ("add" , "-f 20.0.0.0/8,* -k hdr.ipv4.dst_addr -a frequency(1) -m 12 -q"),
+                # Batch 2, T = 50
+                ("del" , "-t 1"),
+                ("add" , "-f 30.0.0.0/8,* -k hdr.ipv4.src_addr -a existence() -m 12 -q"),
+                ("realoc" , 
+                    [
+                        ("del" , "-t 2"),
+                        ("add" , "-f 20.0.0.0/8,* -k hdr.ipv4.dst_addr -a frequency(1) -m 24 -q")
+                    ]
+                ),
+                # Batch 3, T = 90
+                ("del" , "-t 3"),
+                ("realoc" , 
+                    [
+                        ("del" , "-t 4"),
+                        ("add" , "-f 40.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 16 -q"),
+                    ]
+                ),
+                ("del" , "-t 2"),
+                ("add" , "-f 40.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 32 -q"),
+            ]
+            self.do_reset_all("")
+            sec = 1
+            while len(event_list) != 0:
+                time.sleep(10)
+                tp, cmd = event_list.pop(0)
+                print(f"Time {sec*10} event type: {tp}.")
+                sec = sec + 1
+                if tp == "add":
+                    _ = self.do_add_task(cmd)
+                elif tp == "del":
+                    _ = self.do_del_task(cmd)
+                else:
+                    for tb2, cmd2 in cmd:
+                        if tb2 == "add":
+                            _ = self.do_add_task(cmd2)
+                        elif tb2 == "del":
+                            _ = self.do_del_task(cmd2)
+                
+            self.do_reset_all("")
         except Exception as e:
             print(traceback.format_exc())
             print(f"{e} when reset.")
             exit(1)
+
 
 
     def emptyline(self):
