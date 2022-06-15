@@ -29,3 +29,22 @@ echo 'net.ipv4.tcp_no_metrics_save = 1' >> /etc/sysctl.conf
 echo 'net.core.netdev_max_backlog = 5000' >> /etc/sysctl.conf
 sysctl -p
 
+
+### For edit packets
+
+
+tcprewrite --mtu=100 --mtu-trunc -i one_sec_more/one_sec_1.pcap -o one_sec_ready/one_sec_1_ready.pcap
+
+### For analyze
+
+ ./analyze_pcap.py -i ../pkts/one_sec_ready/one_sec_1_ready.pcap -d ready_info -o traceinfo1
+
+
+### For send packets
+
+sudo tcpreplay -i enp130s0f1 -tK --loop 1  --pktlen one_sec_1_ready.pcap
+
+add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 24576
+
+
+evaluate_are -t 1 -f trace_info/traceinfo1.json

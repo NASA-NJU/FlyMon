@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 import re
 import math
+import json
 
 class Node(object):
     def __init__(self, data):
@@ -216,3 +217,34 @@ def parse_filter(filter_str):
     except Exception as e:
         raise RuntimeError("Invalid filter format, example: 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,*")
     return results
+
+def s2d(d, count = 1000):
+    #convert string key to tuple.
+    limit = count
+    new_d = {}
+    for key in list(d.keys()):
+        try:
+            new_d[eval(key)] = d[key]
+            limit -= 1
+            if limit == 0:
+                return new_d
+        except Exception:
+            continue
+    return new_d
+
+
+def tuplize_keys(d):
+    # s2d(d['flow_set_ip_pair'])
+    # s2d(d['flow_set_5_tuple'])
+    d['ip_pair_pkt_cnt_table'] = s2d(d['ip_pair_pkt_cnt_table'])
+    # s2d(d['5_tuple_pkt_cnt_table'])
+    # s2d(d['ip_pair_flow_size_table'])
+    # s2d(d['5_tuple_flow_size_table'])
+    return d
+
+def loadJsonToDict(js_file):
+    js_dict = dict()
+    with open(js_file) as js:
+        js_dict = json.load(js)
+    return tuplize_keys(js_dict)
+    # return js_dict

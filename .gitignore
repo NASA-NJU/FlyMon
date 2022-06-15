@@ -7,3 +7,4 @@ simulations/bin/test*
 simulations/build
 simulations/data/*
 .vscode
+control_plane/trace_info

@@ -15,6 +15,7 @@ from task_manager import TaskManager
 from resource_manager import ResourceManager
 from data_collector import DataCollector
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
+from flymonlib.utils import loadJsonToDict
 
 logger = logging.getLogger('FlyMon')
 if not len(logger.handlers):
@@ -205,6 +206,45 @@ class FlyMonController(cmd.Cmd):
             print(e)
             return
 
+    def do_evaluate_are(self, arg):
+        """
+        Evaluation ARE.
+        Args list:
+            "-t" "--task_id" the ID of a task, e.g., 1
+            "-f" :--groud_true_file
+        Return:
+            The ARE of the frequency task.
+        Exception:
+            Parse error?
+        """
+        parser = FlyMonArgumentParser()
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-f", "--gd_file", dest="gd_file", type=str, required=True, help="e.g., xxxx.json")
+        try:
+            args = parser.parse_args(arg.split())
+            if parser.error_message or args is None:
+                print(parser.error_message)
+                return          
+            task_instance = self.task_manager.get_instance(args.task_id)
+            if task_instance is None:
+                print(f"Invalid task id {args.task_id}")
+                return
+            # data = self.data_collector.read_task(task_instance)
+            pcap_statistics = loadJsonToDict( args.gd_file )
+            RE_SUM = 0.0
+            for ip_pair in pcap_statistics['ip_pair_pkt_cnt_table']:
+                key_str = ip_pair[1] + "," + ip_pair[0] + ",*,*,*"
+                key_bytes = task_instance.generate_key_bytes(key_str)
+                real = pcap_statistics['ip_pair_pkt_cnt_table'][ip_pair]
+                estimate = self.data_collector.query_task2(task_instance, key_bytes)
+                print(f"key={key_str}, real={real}, estimate={estimate}")
+                RE_SUM += abs(estimate - real) / real
+            print(f"ARE = {RE_SUM/len(pcap_statistics['ip_pair_pkt_cnt_table'])}")
+            print("")
+        except Exception as e:
+            print(traceback.format_exc())
+            print(e)
+            return
 
     def do_read_cmug(self, arg):
         """
@@ -446,7 +486,7 @@ class FlyMonController(cmd.Cmd):
         parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
         parser.add_argument("-k", "--key", dest="key", type=str, required=False, default= None,
                                      help="e.g., 10.0.0.0/24,*,*,*,*, \
-                                           need to follow the seq of : src_ip/prefix1,src_ip/prefix1,src_ip/prefix1,src_ip/prefix1,src_ip/prefix1")
+                                           need to follow the seq of : src_ip/prefix1,dst_ip/prefix2,src_port/prefix3,dst_port/prefix4,protocol/prefix5")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
