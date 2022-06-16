@@ -645,7 +645,7 @@ In addition, we built an automated testing framework for repeating the experimen
 
 ## 📖 License
 
-The project is released under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
+T.B.D.
 
 ## 🔗 Links
 
