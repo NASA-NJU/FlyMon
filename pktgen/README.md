@@ -48,5 +48,4 @@ add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 49152
 
 add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 196608
 
-
 evaluate_are -t 1 -f trace_info/traceinfo1.json
