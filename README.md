@@ -181,7 +181,7 @@ We demonstrate the dynamic features of FlyMon through several typical use cases.
 <details><summary><b>Frequency Estimation</b></summary>
 
 Suppose we want to measure the frequency (i.e., number of packets) of each SrcIP for the traffic with SrcIP in 10.0.0.0/8.
-We can define the key as SrcIP/24 and attribute as frequency(1). We can deploy this measurement task with the `add_task` command.
+We can define the key as `hdr.ipv4.src_addr` and attribute as frequency(1). We can deploy this measurement task with the `add_task` command.
 
 ```
 flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
