@@ -269,7 +269,7 @@ Send a packet with src_ip=10.0.0.3, dst_ip=30.60.90.1, pktlen=64.
 ...
 ```
 
-The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port-0 to Port-1 (i.e., DP Port). The `send_packets` command sends 5 packets with length 64 and SrcIP in network range 10.0.0.0/8.
+The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port-0 to Port-1 (i.e., DP Port). The `send_packets` command sends 20 packets with length 64 and SrcIP in network range 10.0.0.0/8.
 
 After generating the traffic, we can check the memory of the task again.
 
