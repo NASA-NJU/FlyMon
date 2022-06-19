@@ -325,7 +325,7 @@ The experimental result is consistent with our expectation.
 We use following command to deploy this task. The controller will assign this task as Task 2.
 
 ```
-add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 48
+flymon> add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 48
 ...
 ...
 [Success] Allocate TaskID: 2
@@ -452,7 +452,7 @@ Finally, we find that all the data of task 1 is cleared. This use case demonstra
 
 <details><summary><b>Single-key Distinct Counting (Flow Cardinality)</b></summary>
 
-FlyMon uses the HyperLogLog algorithm to implement single-key distinct Count statistics. If we want to count the different number of IP-Pair in the network, we can deploy this task with the following command.
+FlyMon uses the HyperLogLog algorithm to implement single-key distinct Count statistics. If we want to count the different number of SrcIP in the network, we can deploy this task with the following command.
 
 ```
 flymon> reset_all
@@ -483,14 +483,15 @@ After inserting the traffic, we can query the measurement data of the single-key
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[0, 49151, 57113, 0, 34029, 49119, 57145, 0, 42159, 40861, 65403, 0, 0, 40893, 65371, 0, 57113, 58411, 38092, 49151, 57145, 0, 0, 49119, 65403, 0, 0, 40861, 65371, 0, 46222, 40893]
+[38620, 47870, 56328, 58939, 34029, 48862, 55336, 62474, 42159, 40604, 63594, 54344, 46750, 39612, 64586, 50809, 56856, 58411, 38092, 47342, 55864, 63002, 37100, 48334, 64122, 54872, 45230, 40076, 65114, 50281, 46222, 39084]
+
 
 ```
 As you can see, the output of the original measurement data is not intuitive. We implement the HLL algorithm data parsing in the `query_test` command.
 
 ```
 flymon> query_task -t 1
-133
+132
 ```
 
 The results seem not accurate enough because we used a minimal number of packets and a tiny amount of memory. HyperLogLog usually yields more reliable measurements (i.e., more minor variance) in more significant traffic scenarios. More importantly, adjusting the data plane hash function parameters is also a technical task. We will further optimize the configuration of the FlyMon data plane's hash functions in the future.
