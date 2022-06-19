@@ -25,7 +25,7 @@ You can use cmake to build our project easily.
 > ⚠️ It needs to support C++17 on your system. Our gcc version is 8.4.0. You also need to check your CMAKE version.
 
 ```bash
-cd /path/to/simuations
+cd ~/FlyMon/simulations
 mkdir -p ./build
 cd build; cmake ..; make -j; cd ..
 ```
