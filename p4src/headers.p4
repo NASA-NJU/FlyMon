@@ -33,18 +33,10 @@ struct cmu_group_metadata_b_t{
 }
 
 struct ingress_metadata_t {
-    cmu_group_metadata_a_t cmu_group1;
-    cmu_group_metadata_a_t cmu_group2;
-    cmu_group_metadata_a_t cmu_group3;
-    cmu_group_metadata_a_t cmu_group4;
 }
 
 struct egress_metadata_t {
-    cmu_group_metadata_b_t cmu_group5;
-    cmu_group_metadata_b_t cmu_group6;
-    cmu_group_metadata_b_t cmu_group7;
-    cmu_group_metadata_b_t cmu_group8;
-    cmu_group_metadata_b_t cmu_group9;
+    cmu_group_metadata_b_t cmu_group1;
 }
 
 // ---------------------------------------------------------------------------
