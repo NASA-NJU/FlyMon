@@ -113,6 +113,18 @@ control FlyMonIngressDeparser(
         in ingress_metadata_t ig_md,
         in ingress_intrinsic_metadata_for_deparser_t ig_intr_dprsr_md) {
     apply {
+        pkt.emit(ig_md.cmu_group1.cmu1);
+        pkt.emit(ig_md.cmu_group1.cmu2);
+        pkt.emit(ig_md.cmu_group1.cmu3);
+        pkt.emit(ig_md.cmu_group2.cmu1);
+        pkt.emit(ig_md.cmu_group2.cmu2);
+        pkt.emit(ig_md.cmu_group2.cmu3);
+        pkt.emit(ig_md.cmu_group3.cmu1);
+        pkt.emit(ig_md.cmu_group3.cmu2);
+        pkt.emit(ig_md.cmu_group3.cmu3);
+        pkt.emit(ig_md.cmu_group4.cmu1);
+        pkt.emit(ig_md.cmu_group4.cmu2);
+        pkt.emit(ig_md.cmu_group4.cmu3);
         pkt.emit(hdr);
     }
 }
@@ -126,8 +138,26 @@ parser FlyMonEgressParser(
         out header_t hdr,
         out egress_metadata_t eg_md,
         out egress_intrinsic_metadata_t eg_intr_md) {
+
     state start {
+        // Init intrinsic metadata.
         pkt.extract(eg_intr_md);
+        transition parse_flymeta;
+    }
+
+    state parse_flymeta{
+        pkt.extract(eg_md.cmu_group5.cmu1);
+        pkt.extract(eg_md.cmu_group5.cmu2);
+        pkt.extract(eg_md.cmu_group5.cmu3);
+        pkt.extract(eg_md.cmu_group6.cmu1);
+        pkt.extract(eg_md.cmu_group6.cmu2);
+        pkt.extract(eg_md.cmu_group6.cmu3);
+        pkt.extract(eg_md.cmu_group7.cmu1);
+        pkt.extract(eg_md.cmu_group7.cmu2);
+        pkt.extract(eg_md.cmu_group7.cmu3);
+        pkt.extract(eg_md.cmu_group8.cmu1);
+        pkt.extract(eg_md.cmu_group8.cmu2);
+        pkt.extract(eg_md.cmu_group8.cmu3);
         transition parse_ethernet;
     }
 

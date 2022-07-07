@@ -115,6 +115,13 @@ control FlyMonIngressDeparser(
         in ingress_metadata_t ig_md,
         in ingress_intrinsic_metadata_for_deparser_t ig_intr_dprsr_md) {
     apply {
+        {%for CMUG in CMUG_GROUP_CONFIGS %}
+        {%if CMUG.type == 1 %}
+        {%for id in range(CMUG_GROUP_CONFIGS[0].cmu_num) %}
+        pkt.emit(ig_md.cmu_group{{CMUG.id}}.cmu{{id+1}});
+        {% endfor %}
+        {% endif %}
+        {%endfor%}
         pkt.emit(hdr);
     }
 }
@@ -128,8 +135,23 @@ parser FlyMonEgressParser(
         out header_t hdr,
         out egress_metadata_t eg_md,
         out egress_intrinsic_metadata_t eg_intr_md) {
+
     state start {
+        // Init intrinsic metadata.
         pkt.extract(eg_intr_md);
+        transition parse_flymeta;
+    }
+
+    state parse_flymeta{
+        {% set ns = namespace(count=0) %}
+        {%for CMUG in CMUG_GROUP_CONFIGS %}
+        {%if CMUG.type == 2 and ns.count <= (CMUG_GROUP_CONFIGS|length)/2 - 1 %}
+        {%for id in range(CMUG_GROUP_CONFIGS[0].cmu_num) %}
+        pkt.extract(eg_md.cmu_group{{CMUG.id}}.cmu{{id+1}});
+        {% endfor %}
+        {% set ns.count = ns.count + 1 %}
+        {% endif %}
+        {%endfor%}
         transition parse_ethernet;
     }
 

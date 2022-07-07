@@ -95,6 +95,7 @@ CMUG_GROUP_CONFIGS += ([
     for id in range(EGRESS_CMU_GROUP_NUM) 
 ])
 
+# Add std params configs.
 for CMUG in CMUG_GROUP_CONFIGS:
     if CMUG["type"] == 1  and CMUG["id"] == 1:
         CMUG["std_params"] = INGRESS_STDMETA_PARAM_SET
