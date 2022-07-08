@@ -82,18 +82,17 @@ CMUG_GROUP_CONFIGS += ([
     }
     for id in range(INGRESS_CMU_GROUP_NUM) 
 ])
-CMUG_GROUP_CONFIGS += ([
-    {
-        "id" : id + INGRESS_CMU_GROUP_NUM + 1,
-        "type" : 2,
-        "mau_start" : id + INGRESS_CMU_GROUP_NUM,
-        "cmu_num" : CMU_PER_GROUP,
-        "cmu_size" : MEMORY_PER_CMU["size"],
-        "key_bitw" : MEMORY_PER_CMU["bit_width"],
-        "candidate_key_list" : CANDIDATE_KEY_LIST
-    }
-    for id in range(EGRESS_CMU_GROUP_NUM) 
-])
+CMUG_GROUP_CONFIGS += (
+    [{
+            "id" : id + INGRESS_CMU_GROUP_NUM + 1,
+            "type" : 2,
+            "mau_start" : id + INGRESS_CMU_GROUP_NUM,
+            "cmu_num" : CMU_PER_GROUP,
+            "cmu_size" : MEMORY_PER_CMU["size"],
+            "key_bitw" : MEMORY_PER_CMU["bit_width"],
+            "candidate_key_list" : CANDIDATE_KEY_LIST
+    }for id in range(EGRESS_CMU_GROUP_NUM)]
+)
 
 # Add std params configs.
 for CMUG in CMUG_GROUP_CONFIGS:

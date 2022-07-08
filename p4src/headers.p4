@@ -7,11 +7,15 @@
 
 
 @flexible
-header cmu_metadata_t {
-    bit<8>     task_id;
-    bit<16>    key;
-    bit<16>    param1;
-    bit<16>    param2;  // also used as the output of SALU.
+header cmu_param_t {
+    bit<16>    p1;  // flexible header may pass from ingress to egress.
+    bit<16>    p2;  // also used as the output of SALU.
+}
+
+struct cmu_metadata_t {
+    bit<8>       task_id;
+    bit<16>      key;
+    cmu_param_t  param;
 }
 
 struct cmu_group_metadata_a_t {
