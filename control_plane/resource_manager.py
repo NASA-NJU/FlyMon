@@ -1,3 +1,5 @@
+from __future__ import annotations
+from FlyMon.control_plane.flymonlib.param import ParamType
 from flymonlib.hash import HASHES_16, HASHES_32
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 from flymonlib.location import Location
@@ -59,6 +61,94 @@ class ResourceManager():
             return
         self.cmu_groups[group_id-1].show_status()
     
+    def check_cmug(self, cmu_group, annotation, resource_node):
+        """Judge if there is a cmu meets the resource_list requirements.
+        Args:
+            @cmu_group: CMU Group object.
+            @annotation: The task already used Resources.
+                            [
+                                [DHASH IDs], [CMU IDs]
+                            ]
+            @resource_list: Resource List.
+        Return:
+            Valid Location or None.
+        """
+        # We get avalible keys here. But the task may already use the keys.
+        # We should note that 32-bit keys can be reused by different CMU of a CMU Group.
+        # According to the annnotation, we can efficiently allocate the CMUs.
+        location = Location(cmu_group.id, cmu_group.type, None, None, None, None, None, resource_node, None)
+        if resource_node.param1.type == ParamType.StdParam:
+            has_param = cmu_group.check_parameters(resource_node.param1.content)
+            if has_param is False:
+                return None
+        if resource_node.param1.type == ParamType.CompressedKey:
+            avalible_hparams = cmu_group.check_compressed_keys(resource_node.param1.content)
+            if len(avalible_hparams) <= 0:
+                return None
+            for used_key in annotation[0]:
+                if used_key in avalible_hparams.keys():
+                    location.dhash_param = used_key
+                    break
+            if location.dhash_param is None:
+                # need to occupy a new avalible hparams
+                selected_key = avalible_hparams.keys[0]
+                annotation[0].append(selected_key)
+                location.dhash_param = selected_key
+
+        avalible_hkeys = cmu_group.check_compressed_keys(resource_node.key)
+        for used_key in annotation[0]:
+            if used_key in avalible_hkeys.keys():
+                if avalible_hkeys[used_key] == 32:
+                    # can be reused.
+                    location.dhash_key = used_key
+                    break
+        if location.dhash_key is None:
+            # need to occupy a new avalible hparams
+            for selected_key in avalible_hkeys.keys():
+                if selected_key not in annotation[0]:    
+                    annotation[0].append(selected_key)
+                    location.dhash_key = selected_key
+                    break
+        if location.dhash_key is None:
+            return None 
+
+        avalible_cmus = cmu_group.check_memory()
+
+
+    def allocate_resources(self, task_id, resource_graph, mode=1):
+        """Dynamic allocate resources for a task.
+        Args:
+            @task_id.
+            @resource graph. Each node represents resources of a CMU.
+                each edge between two nodes represents the connection demand of two CMUs.
+                e.g., [ [ [resource_list1], [resource_list2] ], [ [resource_list3] ] ] require 3 CMU,
+                    CMU1 and CMU2 needs to be adjacent, while CMU3 does not.
+            @mode. TODO. Memory Allocation Mode.
+        Return:
+            A set of Locations whicn can directly used to install rules in the data plane.
+        """
+        priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type)
+        # Used to help CMU Group's mark which Groups are used for this task to facilitate better use of resources.
+        # It records which CMUs of each Group were used for this task.
+        annotations = [[] for _ in range(len(priority_cmug_list))]
+        locations = []
+        for nodes in resource_graph:
+            chain_len = len(nodes)
+            for i in range(len(priority_cmug_list) - (chain_len - 1)):
+                all_ok = True
+                ###
+                for j in range(chain_len):
+                    if check_cmug(priority_cmug_list[i+j], annotations[i+j], nodes[j]) is None:
+                        all_ok = False
+                        break
+                ###
+                if all_ok:
+                    ###
+
+                    ###
+                    break
+        return locations
+
     def allocate_resources(self, task_id, resource_list, mode=1):
         """
         Dynamic allocate resources for a task.
@@ -66,7 +156,7 @@ class ResourceManager():
          - A list of resource object.
          - task_id : used for mark the memory.
         Returns:
-         - [locations] : a list of Location(group_id, group_type, (hkey1, ...), cmu_id, memory_type, memory_idx)
+         - [locations] : a list of Location
          - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF)
          - the mem_idx should be 1 or 2.
          - (hkey1, ...) denotes the hash_ids that will be used by key and param1, respectively. 
@@ -126,8 +216,16 @@ class ResourceManager():
                                 memory_idx = re[1]
                                 hkeys_for_this_location = [hkeys[0]] + hkeys[len(required_memorys):]
                                 flow_key = hkeys.pop(0) # use this hkey as flow key
-                                locations.append(Location(                                
-                                                           [cmug.group_id, cmug.group_type, hkeys_for_this_location, cmu_id, memory_type, memory_idx], 
+                                locations.append(Location( group_id=cmug.groupid,                         
+                                                           group_type=cmug.group_type,
+                                                           cmu_id=cmu_id,
+                                                           memory_type=memory_type,
+                                                           memory_idx=memory_idx,
+                                                           hkeys=hkeys_for_this_location,
+                                                           param1=None,
+                                                           param2=None,
+                                                           param_mapping=None,
+                                                           operation=None,
                                                            hasher=self.dhashes[(cmug.group_id, flow_key)] 
                                                          )
                                                 )

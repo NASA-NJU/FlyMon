@@ -172,18 +172,32 @@ class CMU_Group():
             # cmu.show_memory()
         print('-'*LINE_LEN)
     
-    def check_parameters(self, required_param_list):
+
+    def check_compressed_key(self, required_key):
+        """
+        Check if the hkeys are avliable in this CMU Group.
+        Return:
+            hkey_dict: {DHASH ID : bit width}
+        """
+        # mirror the 32-bit keys because it can be used multiple times.
+        hkey_dict = {}
+        for idx in range(len(self.compressed_keys)):
+            task_list = self._compressed_keys[idx][2]
+            if len(task_list) != 0:
+                # The key as already be allocated.
+                if self._compressed_keys[idx][0] == required_key:
+                    hkey_dict[idx+1] = self._compressed_keys[idx][1]
+            else:
+                hkey_dict[idx+1] = self._compressed_keys[idx][1]
+        return hkey_dict
+
+    def check_parameter(self, required_param):
         """
         Check if the params are avaliable in this CMU-Group. 
         """
-        for required_param in required_param_list:
-            ok = False
-            for p in self._std_params:
-                if required_param == p:
-                    ok = True
-            if not ok:
-                return False
-        return True
+        if required_param in self._std_params:
+            return True
+        return False
 
     def allocate_compressed_keys(self, task_id, required_key_list):
         """
@@ -287,3 +301,4 @@ class CMU_Group():
             self._compressed_keys[idx][2].remove(task_id)
             if len(self._compressed_keys[idx][2]) == 0:
                 self._compressed_keys[idx][0].content.reset()
+    

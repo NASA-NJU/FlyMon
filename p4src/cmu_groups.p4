@@ -72,31 +72,39 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu1.param.p2 =  param2;
     }
 
-    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group1.cmu1.task_id = task_id;
-            meta.cmu_group1.cmu1.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  param1;
-            meta.cmu_group1.cmu1.param.p2 =  param2;
-    }
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu1.param.p1 =  param1;
             meta.cmu_group1.cmu1.param.p2 =  param2;
     }
-
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
-            meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
+            meta.cmu_group1.cmu1.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
+            meta.cmu_group1.cmu1.param.p1 =  param1;
             meta.cmu_group1.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group1.cmu1.task_id = task_id;
+            meta.cmu_group1.cmu1.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key3)[15:0];
+            meta.cmu_group1.cmu1.param.p1 =  param1;
+            meta.cmu_group1.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group1.cmu1.task_id = task_id;
+            meta.cmu_group1.cmu1.key[15:0] = (meta.cmu_group1.compressed_key2 ^ meta.cmu_group1.compressed_key3)[15:0];
+            meta.cmu_group1.cmu1.param.p1 =  param1;
+            meta.cmu_group1.cmu1.param.p2 =  param2;
+    }
+
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu1.param.p2 =  param2;
     }
+
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
@@ -110,27 +118,29 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group1.cmu1.task_id = task_id;
-            meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group1.cmu1.task_id = task_id;
+            meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
+            meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
+            meta.cmu_group1.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group1.cmu1.task_id = task_id;
+            meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
+            meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
+            meta.cmu_group1.cmu1.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
-    action set_cmu1_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group1.cmu1.task_id = task_id;
-            meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  intr_md.ingress_mac_tstamp[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
-    }
     
     @pragma stage 1
     table tbl_cmu1_initialization {
@@ -145,20 +155,21 @@ control CMU_Group1 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
+            set_cmu1_hkey3_cparam;
+            set_cmu1_hkey12_cparam;
+            set_cmu1_hkey13_cparam;
+            set_cmu1_hkey23_cparam;
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
+            set_cmu1_hkey1_hparam3;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
-
-            set_cmu1_hkey12_cparam;
-            set_cmu1_hkey3_cparam;
-            set_cmu1_hkey1_hparam3;
             set_cmu1_hkey2_hparam3;
 
-            set_cmu1_hkey1_timestamp;
+
+            set_cmu1_hkey3_hparam1;
+            set_cmu1_hkey3_hparam2;
+
         }
         size = 32;
     }
@@ -268,31 +279,39 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu2.param.p2 =  param2;
     }
 
-    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group1.cmu2.task_id = task_id;
-            meta.cmu_group1.cmu2.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  param1;
-            meta.cmu_group1.cmu2.param.p2 =  param2;
-    }
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu2.param.p1 =  param1;
             meta.cmu_group1.cmu2.param.p2 =  param2;
     }
-
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
-            meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
+            meta.cmu_group1.cmu2.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
+            meta.cmu_group1.cmu2.param.p1 =  param1;
             meta.cmu_group1.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group1.cmu2.task_id = task_id;
+            meta.cmu_group1.cmu2.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key3)[15:0];
+            meta.cmu_group1.cmu2.param.p1 =  param1;
+            meta.cmu_group1.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group1.cmu2.task_id = task_id;
+            meta.cmu_group1.cmu2.key[15:0] = (meta.cmu_group1.compressed_key2 ^ meta.cmu_group1.compressed_key3)[15:0];
+            meta.cmu_group1.cmu2.param.p1 =  param1;
+            meta.cmu_group1.cmu2.param.p2 =  param2;
+    }
+
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu2.param.p2 =  param2;
     }
+
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
@@ -306,27 +325,29 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group1.cmu2.task_id = task_id;
-            meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group1.cmu2.task_id = task_id;
+            meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
+            meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
+            meta.cmu_group1.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group1.cmu2.task_id = task_id;
+            meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
+            meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
+            meta.cmu_group1.cmu2.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
-    action set_cmu2_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group1.cmu2.task_id = task_id;
-            meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  intr_md.ingress_mac_tstamp[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
-    }
     
     @pragma stage 1
     table tbl_cmu2_initialization {
@@ -341,20 +362,21 @@ control CMU_Group1 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
+            set_cmu2_hkey3_cparam;
+            set_cmu2_hkey12_cparam;
+            set_cmu2_hkey13_cparam;
+            set_cmu2_hkey23_cparam;
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
+            set_cmu2_hkey1_hparam3;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
-
-            set_cmu2_hkey12_cparam;
-            set_cmu2_hkey3_cparam;
-            set_cmu2_hkey1_hparam3;
             set_cmu2_hkey2_hparam3;
 
-            set_cmu2_hkey1_timestamp;
+
+            set_cmu2_hkey3_hparam1;
+            set_cmu2_hkey3_hparam2;
+
         }
         size = 32;
     }
@@ -464,31 +486,39 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu3.param.p2 =  param2;
     }
 
-    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group1.cmu3.task_id = task_id;
-            meta.cmu_group1.cmu3.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  param1;
-            meta.cmu_group1.cmu3.param.p2 =  param2;
-    }
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu3.param.p1 =  param1;
             meta.cmu_group1.cmu3.param.p2 =  param2;
     }
-
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
-            meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
+            meta.cmu_group1.cmu3.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
+            meta.cmu_group1.cmu3.param.p1 =  param1;
             meta.cmu_group1.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group1.cmu3.task_id = task_id;
+            meta.cmu_group1.cmu3.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key3)[15:0];
+            meta.cmu_group1.cmu3.param.p1 =  param1;
+            meta.cmu_group1.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group1.cmu3.task_id = task_id;
+            meta.cmu_group1.cmu3.key[15:0] = (meta.cmu_group1.compressed_key2 ^ meta.cmu_group1.compressed_key3)[15:0];
+            meta.cmu_group1.cmu3.param.p1 =  param1;
+            meta.cmu_group1.cmu3.param.p2 =  param2;
+    }
+
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu3.param.p2 =  param2;
     }
+
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
@@ -502,27 +532,29 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group1.cmu3.task_id = task_id;
-            meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group1.cmu3.task_id = task_id;
+            meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
+            meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
+            meta.cmu_group1.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group1.cmu3.task_id = task_id;
+            meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
+            meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
+            meta.cmu_group1.cmu3.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
-    action set_cmu3_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group1.cmu3.task_id = task_id;
-            meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  intr_md.ingress_mac_tstamp[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
-    }
     
     @pragma stage 1
     table tbl_cmu3_initialization {
@@ -537,20 +569,21 @@ control CMU_Group1 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
+            set_cmu3_hkey3_cparam;
+            set_cmu3_hkey12_cparam;
+            set_cmu3_hkey13_cparam;
+            set_cmu3_hkey23_cparam;
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
+            set_cmu3_hkey1_hparam3;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
-
-            set_cmu3_hkey12_cparam;
-            set_cmu3_hkey3_cparam;
-            set_cmu3_hkey1_hparam3;
             set_cmu3_hkey2_hparam3;
 
-            set_cmu3_hkey1_timestamp;
+
+            set_cmu3_hkey3_hparam1;
+            set_cmu3_hkey3_hparam2;
+
         }
         size = 32;
     }
@@ -734,31 +767,39 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu1.param.p2 =  param2;
     }
 
-    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group2.cmu1.task_id = task_id;
-            meta.cmu_group2.cmu1.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  param1;
-            meta.cmu_group2.cmu1.param.p2 =  param2;
-    }
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu1.param.p1 =  param1;
             meta.cmu_group2.cmu1.param.p2 =  param2;
     }
-
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
-            meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
+            meta.cmu_group2.cmu1.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
+            meta.cmu_group2.cmu1.param.p1 =  param1;
             meta.cmu_group2.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group2.cmu1.task_id = task_id;
+            meta.cmu_group2.cmu1.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key3)[15:0];
+            meta.cmu_group2.cmu1.param.p1 =  param1;
+            meta.cmu_group2.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group2.cmu1.task_id = task_id;
+            meta.cmu_group2.cmu1.key[15:0] = (meta.cmu_group2.compressed_key2 ^ meta.cmu_group2.compressed_key3)[15:0];
+            meta.cmu_group2.cmu1.param.p1 =  param1;
+            meta.cmu_group2.cmu1.param.p2 =  param2;
+    }
+
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu1.param.p2 =  param2;
     }
+
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
@@ -772,18 +813,26 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group2.cmu1.task_id = task_id;
-            meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group2.cmu1.task_id = task_id;
+            meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
+            meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
+            meta.cmu_group2.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group2.cmu1.task_id = task_id;
+            meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
+            meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
+            meta.cmu_group2.cmu1.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -801,18 +850,20 @@ control CMU_Group2 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
+            set_cmu1_hkey3_cparam;
+            set_cmu1_hkey12_cparam;
+            set_cmu1_hkey13_cparam;
+            set_cmu1_hkey23_cparam;
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
+            set_cmu1_hkey1_hparam3;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
-
-            set_cmu1_hkey12_cparam;
-            set_cmu1_hkey3_cparam;
-            set_cmu1_hkey1_hparam3;
             set_cmu1_hkey2_hparam3;
+
+
+            set_cmu1_hkey3_hparam1;
+            set_cmu1_hkey3_hparam2;
 
         }
         size = 32;
@@ -923,31 +974,39 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu2.param.p2 =  param2;
     }
 
-    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group2.cmu2.task_id = task_id;
-            meta.cmu_group2.cmu2.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  param1;
-            meta.cmu_group2.cmu2.param.p2 =  param2;
-    }
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu2.param.p1 =  param1;
             meta.cmu_group2.cmu2.param.p2 =  param2;
     }
-
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
-            meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
+            meta.cmu_group2.cmu2.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
+            meta.cmu_group2.cmu2.param.p1 =  param1;
             meta.cmu_group2.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group2.cmu2.task_id = task_id;
+            meta.cmu_group2.cmu2.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key3)[15:0];
+            meta.cmu_group2.cmu2.param.p1 =  param1;
+            meta.cmu_group2.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group2.cmu2.task_id = task_id;
+            meta.cmu_group2.cmu2.key[15:0] = (meta.cmu_group2.compressed_key2 ^ meta.cmu_group2.compressed_key3)[15:0];
+            meta.cmu_group2.cmu2.param.p1 =  param1;
+            meta.cmu_group2.cmu2.param.p2 =  param2;
+    }
+
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu2.param.p2 =  param2;
     }
+
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
@@ -961,18 +1020,26 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group2.cmu2.task_id = task_id;
-            meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group2.cmu2.task_id = task_id;
+            meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
+            meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
+            meta.cmu_group2.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group2.cmu2.task_id = task_id;
+            meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
+            meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
+            meta.cmu_group2.cmu2.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -990,18 +1057,20 @@ control CMU_Group2 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
+            set_cmu2_hkey3_cparam;
+            set_cmu2_hkey12_cparam;
+            set_cmu2_hkey13_cparam;
+            set_cmu2_hkey23_cparam;
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
+            set_cmu2_hkey1_hparam3;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
-
-            set_cmu2_hkey12_cparam;
-            set_cmu2_hkey3_cparam;
-            set_cmu2_hkey1_hparam3;
             set_cmu2_hkey2_hparam3;
+
+
+            set_cmu2_hkey3_hparam1;
+            set_cmu2_hkey3_hparam2;
 
         }
         size = 32;
@@ -1112,31 +1181,39 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu3.param.p2 =  param2;
     }
 
-    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group2.cmu3.task_id = task_id;
-            meta.cmu_group2.cmu3.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  param1;
-            meta.cmu_group2.cmu3.param.p2 =  param2;
-    }
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu3.param.p1 =  param1;
             meta.cmu_group2.cmu3.param.p2 =  param2;
     }
-
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
-            meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
+            meta.cmu_group2.cmu3.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
+            meta.cmu_group2.cmu3.param.p1 =  param1;
             meta.cmu_group2.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group2.cmu3.task_id = task_id;
+            meta.cmu_group2.cmu3.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key3)[15:0];
+            meta.cmu_group2.cmu3.param.p1 =  param1;
+            meta.cmu_group2.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group2.cmu3.task_id = task_id;
+            meta.cmu_group2.cmu3.key[15:0] = (meta.cmu_group2.compressed_key2 ^ meta.cmu_group2.compressed_key3)[15:0];
+            meta.cmu_group2.cmu3.param.p1 =  param1;
+            meta.cmu_group2.cmu3.param.p2 =  param2;
+    }
+
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu3.param.p2 =  param2;
     }
+
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
@@ -1150,18 +1227,26 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group2.cmu3.task_id = task_id;
-            meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group2.cmu3.task_id = task_id;
+            meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
+            meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
+            meta.cmu_group2.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group2.cmu3.task_id = task_id;
+            meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
+            meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
+            meta.cmu_group2.cmu3.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -1179,18 +1264,20 @@ control CMU_Group2 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
+            set_cmu3_hkey3_cparam;
+            set_cmu3_hkey12_cparam;
+            set_cmu3_hkey13_cparam;
+            set_cmu3_hkey23_cparam;
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
+            set_cmu3_hkey1_hparam3;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
-
-            set_cmu3_hkey12_cparam;
-            set_cmu3_hkey3_cparam;
-            set_cmu3_hkey1_hparam3;
             set_cmu3_hkey2_hparam3;
+
+
+            set_cmu3_hkey3_hparam1;
+            set_cmu3_hkey3_hparam2;
 
         }
         size = 32;
@@ -1375,31 +1462,39 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu1.param.p2 =  param2;
     }
 
-    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group3.cmu1.task_id = task_id;
-            meta.cmu_group3.cmu1.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  param1;
-            meta.cmu_group3.cmu1.param.p2 =  param2;
-    }
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu1.param.p1 =  param1;
             meta.cmu_group3.cmu1.param.p2 =  param2;
     }
-
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
-            meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
+            meta.cmu_group3.cmu1.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
+            meta.cmu_group3.cmu1.param.p1 =  param1;
             meta.cmu_group3.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group3.cmu1.task_id = task_id;
+            meta.cmu_group3.cmu1.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key3)[15:0];
+            meta.cmu_group3.cmu1.param.p1 =  param1;
+            meta.cmu_group3.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group3.cmu1.task_id = task_id;
+            meta.cmu_group3.cmu1.key[15:0] = (meta.cmu_group3.compressed_key2 ^ meta.cmu_group3.compressed_key3)[15:0];
+            meta.cmu_group3.cmu1.param.p1 =  param1;
+            meta.cmu_group3.cmu1.param.p2 =  param2;
+    }
+
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu1.param.p2 =  param2;
     }
+
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
@@ -1413,18 +1508,26 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group3.cmu1.task_id = task_id;
-            meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group3.cmu1.task_id = task_id;
+            meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
+            meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
+            meta.cmu_group3.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group3.cmu1.task_id = task_id;
+            meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
+            meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
+            meta.cmu_group3.cmu1.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -1442,18 +1545,20 @@ control CMU_Group3 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
+            set_cmu1_hkey3_cparam;
+            set_cmu1_hkey12_cparam;
+            set_cmu1_hkey13_cparam;
+            set_cmu1_hkey23_cparam;
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
+            set_cmu1_hkey1_hparam3;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
-
-            set_cmu1_hkey12_cparam;
-            set_cmu1_hkey3_cparam;
-            set_cmu1_hkey1_hparam3;
             set_cmu1_hkey2_hparam3;
+
+
+            set_cmu1_hkey3_hparam1;
+            set_cmu1_hkey3_hparam2;
 
         }
         size = 32;
@@ -1564,31 +1669,39 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu2.param.p2 =  param2;
     }
 
-    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group3.cmu2.task_id = task_id;
-            meta.cmu_group3.cmu2.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  param1;
-            meta.cmu_group3.cmu2.param.p2 =  param2;
-    }
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu2.param.p1 =  param1;
             meta.cmu_group3.cmu2.param.p2 =  param2;
     }
-
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
-            meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
+            meta.cmu_group3.cmu2.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
+            meta.cmu_group3.cmu2.param.p1 =  param1;
             meta.cmu_group3.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group3.cmu2.task_id = task_id;
+            meta.cmu_group3.cmu2.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key3)[15:0];
+            meta.cmu_group3.cmu2.param.p1 =  param1;
+            meta.cmu_group3.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group3.cmu2.task_id = task_id;
+            meta.cmu_group3.cmu2.key[15:0] = (meta.cmu_group3.compressed_key2 ^ meta.cmu_group3.compressed_key3)[15:0];
+            meta.cmu_group3.cmu2.param.p1 =  param1;
+            meta.cmu_group3.cmu2.param.p2 =  param2;
+    }
+
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu2.param.p2 =  param2;
     }
+
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
@@ -1602,18 +1715,26 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group3.cmu2.task_id = task_id;
-            meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group3.cmu2.task_id = task_id;
+            meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
+            meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
+            meta.cmu_group3.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group3.cmu2.task_id = task_id;
+            meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
+            meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
+            meta.cmu_group3.cmu2.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -1631,18 +1752,20 @@ control CMU_Group3 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
+            set_cmu2_hkey3_cparam;
+            set_cmu2_hkey12_cparam;
+            set_cmu2_hkey13_cparam;
+            set_cmu2_hkey23_cparam;
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
+            set_cmu2_hkey1_hparam3;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
-
-            set_cmu2_hkey12_cparam;
-            set_cmu2_hkey3_cparam;
-            set_cmu2_hkey1_hparam3;
             set_cmu2_hkey2_hparam3;
+
+
+            set_cmu2_hkey3_hparam1;
+            set_cmu2_hkey3_hparam2;
 
         }
         size = 32;
@@ -1753,31 +1876,39 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu3.param.p2 =  param2;
     }
 
-    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group3.cmu3.task_id = task_id;
-            meta.cmu_group3.cmu3.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  param1;
-            meta.cmu_group3.cmu3.param.p2 =  param2;
-    }
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu3.param.p1 =  param1;
             meta.cmu_group3.cmu3.param.p2 =  param2;
     }
-
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
-            meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
+            meta.cmu_group3.cmu3.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
+            meta.cmu_group3.cmu3.param.p1 =  param1;
             meta.cmu_group3.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group3.cmu3.task_id = task_id;
+            meta.cmu_group3.cmu3.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key3)[15:0];
+            meta.cmu_group3.cmu3.param.p1 =  param1;
+            meta.cmu_group3.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group3.cmu3.task_id = task_id;
+            meta.cmu_group3.cmu3.key[15:0] = (meta.cmu_group3.compressed_key2 ^ meta.cmu_group3.compressed_key3)[15:0];
+            meta.cmu_group3.cmu3.param.p1 =  param1;
+            meta.cmu_group3.cmu3.param.p2 =  param2;
+    }
+
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu3.param.p2 =  param2;
     }
+
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
@@ -1791,18 +1922,26 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group3.cmu3.task_id = task_id;
-            meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group3.cmu3.task_id = task_id;
+            meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
+            meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
+            meta.cmu_group3.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group3.cmu3.task_id = task_id;
+            meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
+            meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
+            meta.cmu_group3.cmu3.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -1820,18 +1959,20 @@ control CMU_Group3 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
+            set_cmu3_hkey3_cparam;
+            set_cmu3_hkey12_cparam;
+            set_cmu3_hkey13_cparam;
+            set_cmu3_hkey23_cparam;
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
+            set_cmu3_hkey1_hparam3;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
-
-            set_cmu3_hkey12_cparam;
-            set_cmu3_hkey3_cparam;
-            set_cmu3_hkey1_hparam3;
             set_cmu3_hkey2_hparam3;
+
+
+            set_cmu3_hkey3_hparam1;
+            set_cmu3_hkey3_hparam2;
 
         }
         size = 32;
@@ -2016,31 +2157,39 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu1.param.p2 =  param2;
     }
 
-    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group4.cmu1.task_id = task_id;
-            meta.cmu_group4.cmu1.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  param1;
-            meta.cmu_group4.cmu1.param.p2 =  param2;
-    }
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu1.param.p1 =  param1;
             meta.cmu_group4.cmu1.param.p2 =  param2;
     }
-
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
-            meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
+            meta.cmu_group4.cmu1.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
+            meta.cmu_group4.cmu1.param.p1 =  param1;
             meta.cmu_group4.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group4.cmu1.task_id = task_id;
+            meta.cmu_group4.cmu1.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key3)[15:0];
+            meta.cmu_group4.cmu1.param.p1 =  param1;
+            meta.cmu_group4.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group4.cmu1.task_id = task_id;
+            meta.cmu_group4.cmu1.key[15:0] = (meta.cmu_group4.compressed_key2 ^ meta.cmu_group4.compressed_key3)[15:0];
+            meta.cmu_group4.cmu1.param.p1 =  param1;
+            meta.cmu_group4.cmu1.param.p2 =  param2;
+    }
+
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu1.param.p2 =  param2;
     }
+
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
@@ -2054,18 +2203,26 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group4.cmu1.task_id = task_id;
-            meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group4.cmu1.task_id = task_id;
+            meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
+            meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
+            meta.cmu_group4.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group4.cmu1.task_id = task_id;
+            meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
+            meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
+            meta.cmu_group4.cmu1.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -2083,18 +2240,20 @@ control CMU_Group4 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
+            set_cmu1_hkey3_cparam;
+            set_cmu1_hkey12_cparam;
+            set_cmu1_hkey13_cparam;
+            set_cmu1_hkey23_cparam;
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
+            set_cmu1_hkey1_hparam3;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
-
-            set_cmu1_hkey12_cparam;
-            set_cmu1_hkey3_cparam;
-            set_cmu1_hkey1_hparam3;
             set_cmu1_hkey2_hparam3;
+
+
+            set_cmu1_hkey3_hparam1;
+            set_cmu1_hkey3_hparam2;
 
         }
         size = 32;
@@ -2205,31 +2364,39 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu2.param.p2 =  param2;
     }
 
-    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group4.cmu2.task_id = task_id;
-            meta.cmu_group4.cmu2.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  param1;
-            meta.cmu_group4.cmu2.param.p2 =  param2;
-    }
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu2.param.p1 =  param1;
             meta.cmu_group4.cmu2.param.p2 =  param2;
     }
-
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
-            meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
+            meta.cmu_group4.cmu2.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
+            meta.cmu_group4.cmu2.param.p1 =  param1;
             meta.cmu_group4.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group4.cmu2.task_id = task_id;
+            meta.cmu_group4.cmu2.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key3)[15:0];
+            meta.cmu_group4.cmu2.param.p1 =  param1;
+            meta.cmu_group4.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group4.cmu2.task_id = task_id;
+            meta.cmu_group4.cmu2.key[15:0] = (meta.cmu_group4.compressed_key2 ^ meta.cmu_group4.compressed_key3)[15:0];
+            meta.cmu_group4.cmu2.param.p1 =  param1;
+            meta.cmu_group4.cmu2.param.p2 =  param2;
+    }
+
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu2.param.p2 =  param2;
     }
+
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
@@ -2243,18 +2410,26 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group4.cmu2.task_id = task_id;
-            meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group4.cmu2.task_id = task_id;
+            meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
+            meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
+            meta.cmu_group4.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group4.cmu2.task_id = task_id;
+            meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
+            meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
+            meta.cmu_group4.cmu2.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -2272,18 +2447,20 @@ control CMU_Group4 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
+            set_cmu2_hkey3_cparam;
+            set_cmu2_hkey12_cparam;
+            set_cmu2_hkey13_cparam;
+            set_cmu2_hkey23_cparam;
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
+            set_cmu2_hkey1_hparam3;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
-
-            set_cmu2_hkey12_cparam;
-            set_cmu2_hkey3_cparam;
-            set_cmu2_hkey1_hparam3;
             set_cmu2_hkey2_hparam3;
+
+
+            set_cmu2_hkey3_hparam1;
+            set_cmu2_hkey3_hparam2;
 
         }
         size = 32;
@@ -2394,31 +2571,39 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu3.param.p2 =  param2;
     }
 
-    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group4.cmu3.task_id = task_id;
-            meta.cmu_group4.cmu3.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  param1;
-            meta.cmu_group4.cmu3.param.p2 =  param2;
-    }
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu3.param.p1 =  param1;
             meta.cmu_group4.cmu3.param.p2 =  param2;
     }
-
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
-            meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
+            meta.cmu_group4.cmu3.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
+            meta.cmu_group4.cmu3.param.p1 =  param1;
             meta.cmu_group4.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group4.cmu3.task_id = task_id;
+            meta.cmu_group4.cmu3.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key3)[15:0];
+            meta.cmu_group4.cmu3.param.p1 =  param1;
+            meta.cmu_group4.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group4.cmu3.task_id = task_id;
+            meta.cmu_group4.cmu3.key[15:0] = (meta.cmu_group4.compressed_key2 ^ meta.cmu_group4.compressed_key3)[15:0];
+            meta.cmu_group4.cmu3.param.p1 =  param1;
+            meta.cmu_group4.cmu3.param.p2 =  param2;
+    }
+
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu3.param.p2 =  param2;
     }
+
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
@@ -2432,18 +2617,26 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group4.cmu3.task_id = task_id;
-            meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group4.cmu3.task_id = task_id;
+            meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
+            meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
+            meta.cmu_group4.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group4.cmu3.task_id = task_id;
+            meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
+            meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
+            meta.cmu_group4.cmu3.param.p2 =  param2;
+    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -2461,18 +2654,20 @@ control CMU_Group4 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
+            set_cmu3_hkey3_cparam;
+            set_cmu3_hkey12_cparam;
+            set_cmu3_hkey13_cparam;
+            set_cmu3_hkey23_cparam;
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
+            set_cmu3_hkey1_hparam3;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
-
-            set_cmu3_hkey12_cparam;
-            set_cmu3_hkey3_cparam;
-            set_cmu3_hkey1_hparam3;
             set_cmu3_hkey2_hparam3;
+
+
+            set_cmu3_hkey3_hparam1;
+            set_cmu3_hkey3_hparam2;
 
         }
         size = 32;
@@ -2646,12 +2841,7 @@ control CMU_Group5 ( in header_t hdr,
     }
 
 
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
@@ -2659,18 +2849,14 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu1.param.p2 =  param2;
     }
 
+
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -2680,15 +2866,33 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu1.param.p1 =  (bit<16>) intr_md.pkt_length;
             meta.cmu_group5.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey2_pkt_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu1.task_id = task_id;
+            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
+            meta.cmu_group5.cmu1.param.p1 =  (bit<16>) intr_md.pkt_length;
+            meta.cmu_group5.cmu1.param.p2 =  param2;
+    }
     action set_cmu1_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_qdepth[15:0];
             meta.cmu_group5.cmu1.param.p2 =  param2;
     }
+    action set_cmu1_hkey2_queue_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu1.task_id = task_id;
+            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
+            meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_qdepth[15:0];
+            meta.cmu_group5.cmu1.param.p2 =  param2;
+    }
     action set_cmu1_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
+            meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_tstamp[15:0];;
+            meta.cmu_group5.cmu1.param.p2 =  param2;
+    }
+    action set_cmu1_hkey2_timestamp(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu1.task_id = task_id;
+            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_tstamp[15:0];;
             meta.cmu_group5.cmu1.param.p2 =  param2;
     }
@@ -2706,13 +2910,11 @@ control CMU_Group5 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
+
 
 
             set_cmu1_hkey1_pkt_size;
@@ -2828,12 +3030,7 @@ control CMU_Group5 ( in header_t hdr,
     }
 
 
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
-            meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
@@ -2841,18 +3038,14 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu2.param.p2 =  param2;
     }
 
+
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -2862,15 +3055,33 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu2.param.p1 =  (bit<16>) intr_md.pkt_length;
             meta.cmu_group5.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey2_pkt_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu2.task_id = task_id;
+            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
+            meta.cmu_group5.cmu2.param.p1 =  (bit<16>) intr_md.pkt_length;
+            meta.cmu_group5.cmu2.param.p2 =  param2;
+    }
     action set_cmu2_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
             meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_qdepth[15:0];
             meta.cmu_group5.cmu2.param.p2 =  param2;
     }
+    action set_cmu2_hkey2_queue_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu2.task_id = task_id;
+            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
+            meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_qdepth[15:0];
+            meta.cmu_group5.cmu2.param.p2 =  param2;
+    }
     action set_cmu2_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
+            meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_tstamp[15:0];;
+            meta.cmu_group5.cmu2.param.p2 =  param2;
+    }
+    action set_cmu2_hkey2_timestamp(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu2.task_id = task_id;
+            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_tstamp[15:0];;
             meta.cmu_group5.cmu2.param.p2 =  param2;
     }
@@ -2888,13 +3099,11 @@ control CMU_Group5 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
+
 
 
             set_cmu2_hkey1_pkt_size;
@@ -3010,12 +3219,7 @@ control CMU_Group5 ( in header_t hdr,
     }
 
 
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
-            meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
@@ -3023,18 +3227,14 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu3.param.p2 =  param2;
     }
 
+
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -3044,15 +3244,33 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu3.param.p1 =  (bit<16>) intr_md.pkt_length;
             meta.cmu_group5.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey2_pkt_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu3.task_id = task_id;
+            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
+            meta.cmu_group5.cmu3.param.p1 =  (bit<16>) intr_md.pkt_length;
+            meta.cmu_group5.cmu3.param.p2 =  param2;
+    }
     action set_cmu3_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
             meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_qdepth[15:0];
             meta.cmu_group5.cmu3.param.p2 =  param2;
     }
+    action set_cmu3_hkey2_queue_size(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu3.task_id = task_id;
+            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
+            meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_qdepth[15:0];
+            meta.cmu_group5.cmu3.param.p2 =  param2;
+    }
     action set_cmu3_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
+            meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_tstamp[15:0];;
+            meta.cmu_group5.cmu3.param.p2 =  param2;
+    }
+    action set_cmu3_hkey2_timestamp(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group5.cmu3.task_id = task_id;
+            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_tstamp[15:0];;
             meta.cmu_group5.cmu3.param.p2 =  param2;
     }
@@ -3070,13 +3288,11 @@ control CMU_Group5 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
+
 
 
             set_cmu3_hkey1_pkt_size;
@@ -3253,12 +3469,7 @@ control CMU_Group6 ( in header_t hdr,
     }
 
 
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group6.cmu1.task_id = task_id;
-            meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu1.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group6.cmu1.task_id = task_id;
             meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key1[15:0];
@@ -3266,18 +3477,14 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu1.param.p2 =  param2;
     }
 
+
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group6.cmu1.task_id = task_id;
             meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
             meta.cmu_group6.cmu1.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
             meta.cmu_group6.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group6.cmu1.task_id = task_id;
-            meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu1.param.p1 =  meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu1.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -3295,13 +3502,11 @@ control CMU_Group6 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
+
 
 
         }
@@ -3414,12 +3619,7 @@ control CMU_Group6 ( in header_t hdr,
     }
 
 
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group6.cmu2.task_id = task_id;
-            meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key1[23:8];
-            meta.cmu_group6.cmu2.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group6.cmu2.task_id = task_id;
             meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key1[23:8];
@@ -3427,18 +3627,14 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu2.param.p2 =  param2;
     }
 
+
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group6.cmu2.task_id = task_id;
             meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
             meta.cmu_group6.cmu2.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
             meta.cmu_group6.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group6.cmu2.task_id = task_id;
-            meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu2.param.p1 =  meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu2.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -3456,13 +3652,11 @@ control CMU_Group6 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
+
 
 
         }
@@ -3575,12 +3769,7 @@ control CMU_Group6 ( in header_t hdr,
     }
 
 
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group6.cmu3.task_id = task_id;
-            meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key1[31:16];
-            meta.cmu_group6.cmu3.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group6.cmu3.task_id = task_id;
             meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key1[31:16];
@@ -3588,18 +3777,14 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu3.param.p2 =  param2;
     }
 
+
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group6.cmu3.task_id = task_id;
             meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
             meta.cmu_group6.cmu3.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
             meta.cmu_group6.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group6.cmu3.task_id = task_id;
-            meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu3.param.p1 =  meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu3.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -3617,13 +3802,11 @@ control CMU_Group6 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
+
 
 
         }
@@ -3797,12 +3980,7 @@ control CMU_Group7 ( in header_t hdr,
     }
 
 
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group7.cmu1.task_id = task_id;
-            meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu1.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group7.cmu1.task_id = task_id;
             meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key1[15:0];
@@ -3810,18 +3988,14 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu1.param.p2 =  param2;
     }
 
+
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group7.cmu1.task_id = task_id;
             meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
             meta.cmu_group7.cmu1.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
             meta.cmu_group7.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group7.cmu1.task_id = task_id;
-            meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu1.param.p1 =  meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu1.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -3839,13 +4013,11 @@ control CMU_Group7 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
+
 
 
         }
@@ -3958,12 +4130,7 @@ control CMU_Group7 ( in header_t hdr,
     }
 
 
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group7.cmu2.task_id = task_id;
-            meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key1[23:8];
-            meta.cmu_group7.cmu2.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group7.cmu2.task_id = task_id;
             meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key1[23:8];
@@ -3971,18 +4138,14 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu2.param.p2 =  param2;
     }
 
+
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group7.cmu2.task_id = task_id;
             meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
             meta.cmu_group7.cmu2.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
             meta.cmu_group7.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group7.cmu2.task_id = task_id;
-            meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu2.param.p1 =  meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu2.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -4000,13 +4163,11 @@ control CMU_Group7 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
+
 
 
         }
@@ -4119,12 +4280,7 @@ control CMU_Group7 ( in header_t hdr,
     }
 
 
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group7.cmu3.task_id = task_id;
-            meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key1[31:16];
-            meta.cmu_group7.cmu3.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group7.cmu3.task_id = task_id;
             meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key1[31:16];
@@ -4132,18 +4288,14 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu3.param.p2 =  param2;
     }
 
+
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group7.cmu3.task_id = task_id;
             meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
             meta.cmu_group7.cmu3.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
             meta.cmu_group7.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group7.cmu3.task_id = task_id;
-            meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu3.param.p1 =  meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu3.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -4161,13 +4313,11 @@ control CMU_Group7 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
+
 
 
         }
@@ -4341,12 +4491,7 @@ control CMU_Group8 ( in header_t hdr,
     }
 
 
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group8.cmu1.task_id = task_id;
-            meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu1.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group8.cmu1.task_id = task_id;
             meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key1[15:0];
@@ -4354,18 +4499,14 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu1.param.p2 =  param2;
     }
 
+
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group8.cmu1.task_id = task_id;
             meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
             meta.cmu_group8.cmu1.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
             meta.cmu_group8.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group8.cmu1.task_id = task_id;
-            meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu1.param.p1 =  meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu1.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -4383,13 +4524,11 @@ control CMU_Group8 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
+
 
 
         }
@@ -4502,12 +4641,7 @@ control CMU_Group8 ( in header_t hdr,
     }
 
 
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group8.cmu2.task_id = task_id;
-            meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key1[23:8];
-            meta.cmu_group8.cmu2.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group8.cmu2.task_id = task_id;
             meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key1[23:8];
@@ -4515,18 +4649,14 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu2.param.p2 =  param2;
     }
 
+
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group8.cmu2.task_id = task_id;
             meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
             meta.cmu_group8.cmu2.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
             meta.cmu_group8.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group8.cmu2.task_id = task_id;
-            meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu2.param.p1 =  meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu2.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -4544,13 +4674,11 @@ control CMU_Group8 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
+
 
 
         }
@@ -4663,12 +4791,7 @@ control CMU_Group8 ( in header_t hdr,
     }
 
 
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group8.cmu3.task_id = task_id;
-            meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key1[31:16];
-            meta.cmu_group8.cmu3.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group8.cmu3.task_id = task_id;
             meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key1[31:16];
@@ -4676,18 +4799,14 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu3.param.p2 =  param2;
     }
 
+
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group8.cmu3.task_id = task_id;
             meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
             meta.cmu_group8.cmu3.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
             meta.cmu_group8.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group8.cmu3.task_id = task_id;
-            meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu3.param.p1 =  meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu3.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -4705,13 +4824,11 @@ control CMU_Group8 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
+
 
 
         }
@@ -4888,12 +5005,7 @@ control CMU_Group9 ( in header_t hdr,
     }
 
 
-    action set_cmu1_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
-    }
+
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
@@ -4901,18 +5013,14 @@ control CMU_Group9 ( in header_t hdr,
             meta.cmu_group5.cmu1.param.p2 =  param2;
     }
 
+
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param.p2 =  param2;
     }
-    action set_cmu1_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -4930,13 +5038,11 @@ control CMU_Group9 ( in header_t hdr,
         actions = {
             set_cmu1_hkey1_cparam;
             set_cmu1_hkey2_cparam;
-            
 
-            set_cmu1_hkey1_hparam1;
             set_cmu1_hkey1_hparam2;
 
             set_cmu1_hkey2_hparam1;
-            set_cmu1_hkey2_hparam2;
+
 
 
         }
@@ -5049,12 +5155,7 @@ control CMU_Group9 ( in header_t hdr,
     }
 
 
-    action set_cmu2_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
-            meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
-    }
+
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
@@ -5062,18 +5163,14 @@ control CMU_Group9 ( in header_t hdr,
             meta.cmu_group5.cmu2.param.p2 =  param2;
     }
 
+
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu2.param.p2 =  param2;
     }
-    action set_cmu2_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -5091,13 +5188,11 @@ control CMU_Group9 ( in header_t hdr,
         actions = {
             set_cmu2_hkey1_cparam;
             set_cmu2_hkey2_cparam;
-            
 
-            set_cmu2_hkey1_hparam1;
             set_cmu2_hkey1_hparam2;
 
             set_cmu2_hkey2_hparam1;
-            set_cmu2_hkey2_hparam2;
+
 
 
         }
@@ -5210,12 +5305,7 @@ control CMU_Group9 ( in header_t hdr,
     }
 
 
-    action set_cmu3_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
-            meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
-    }
+
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
@@ -5223,18 +5313,14 @@ control CMU_Group9 ( in header_t hdr,
             meta.cmu_group5.cmu3.param.p2 =  param2;
     }
 
+
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu3.param.p2 =  param2;
     }
-    action set_cmu3_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
-    }
+
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
@@ -5252,13 +5338,11 @@ control CMU_Group9 ( in header_t hdr,
         actions = {
             set_cmu3_hkey1_cparam;
             set_cmu3_hkey2_cparam;
-            
 
-            set_cmu3_hkey1_hparam1;
             set_cmu3_hkey1_hparam2;
 
             set_cmu3_hkey2_hparam1;
-            set_cmu3_hkey2_hparam2;
+
 
 
         }

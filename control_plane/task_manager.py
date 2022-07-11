@@ -100,7 +100,7 @@ class TaskManager:
                                                         task_instance.attribute.param_mapping) # Param1 mappings.
                 # # Install the operation stage.
                 location.oper_rules = self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                       task_instance.id, task_instance.attribute.operation)
+                                                       task_instance.id, location.operation)
                 # pass
             self.tasks[task_instance.id][0] = True
         except Exception as e:

@@ -109,30 +109,33 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     }
 
     {%if CMUG.type == 1 %}
-    action set_cmu{{id+1}}_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = (meta.cmu_group{{ns.gid}}.compressed_key1 ^ meta.cmu_group{{ns.gid}}.compressed_key2)[15:0];
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  param1;
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
-    }
     action set_cmu{{id+1}}_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key3[15:0];
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  param1;
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
     }
-    {%endif%}
-
-    action set_cmu{{id+1}}_hkey1_hparam1(bit<8> task_id, bit<16> param2) {
+    action set_cmu{{id+1}}_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
-            {%if CMUG.type == 1 %}
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key1[15:0];
-            {% else %}
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key1[{{id*8+15}}:{{id*8}}];
-            {% endif %}
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  meta.cmu_group{{ns.gid}}.compressed_key1[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = (meta.cmu_group{{ns.gid}}.compressed_key1 ^ meta.cmu_group{{ns.gid}}.compressed_key2)[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  param1;
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
     }
+    action set_cmu{{id+1}}_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = (meta.cmu_group{{ns.gid}}.compressed_key1 ^ meta.cmu_group{{ns.gid}}.compressed_key3)[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  param1;
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
+    }
+    action set_cmu{{id+1}}_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = (meta.cmu_group{{ns.gid}}.compressed_key2 ^ meta.cmu_group{{ns.gid}}.compressed_key3)[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  param1;
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
+    }
+    {%endif%}
+
+
     action set_cmu{{id+1}}_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
             {%if CMUG.type == 1 %}
@@ -143,6 +146,7 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  meta.cmu_group{{ns.gid}}.compressed_key2[15:0];
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
     }
+
     {%if CMUG.type == 1 %}
     action set_cmu{{id+1}}_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
@@ -158,12 +162,7 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  meta.cmu_group{{ns.gid}}.compressed_key1[15:0];
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
     }
-    action set_cmu{{id+1}}_hkey2_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key2[15:0];
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  meta.cmu_group{{ns.gid}}.compressed_key2[15:0];
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
-    }
+
     {%if CMUG.type == 1 %}
     action set_cmu{{id+1}}_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
@@ -171,22 +170,39 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  meta.cmu_group{{ns.gid}}.compressed_key3[15:0];
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
     }
+    action set_cmu{{id+1}}_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key3[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  meta.cmu_group{{ns.gid}}.compressed_key1[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
+    }
+    action set_cmu{{id+1}}_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key3[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  meta.cmu_group{{ns.gid}}.compressed_key2[15:0];
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
+    }
+
     {%endif%}
 
     // There are some special (i.e., from standard metadata) params here.
     // We support them fragmentary among CMU-Groups to save PHV resources.
+    {%if CMUG.type == 2 %}
     {% for pram_name, param_val in CMUG.std_params.items() %}
     action set_cmu{{id+1}}_hkey1_{{pram_name}}(bit<8> task_id, bit<16> param2) {
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
-            {%if CMUG.type == 1 %}
-            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key1[15:0];
-            {% else %}
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key1[{{id*8+15}}:{{id*8}}];
-            {% endif %}
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  {{param_val}};
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
+    }
+    action set_cmu{{id+1}}_hkey2_{{pram_name}}(bit<8> task_id, bit<16> param2) {
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.task_id = task_id;
+            meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[15:0] = meta.cmu_group{{ns.gid}}.compressed_key2[15:0];
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 =  {{param_val}};
             meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 =  param2;
     }
     {% endfor %}
+    {%endif%}
     
     {%if CMUG.mau_start >= 0%}
     @pragma stage {{CMUG.mau_start+1}}
@@ -203,24 +219,34 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
         actions = {
             set_cmu{{id+1}}_hkey1_cparam;
             set_cmu{{id+1}}_hkey2_cparam;
-            
+            {%if CMUG.type == 1 %}
+            set_cmu{{id+1}}_hkey3_cparam;
+            set_cmu{{id+1}}_hkey12_cparam;
+            set_cmu{{id+1}}_hkey13_cparam;
+            set_cmu{{id+1}}_hkey23_cparam;
+            {%endif%}
 
-            set_cmu{{id+1}}_hkey1_hparam1;
             set_cmu{{id+1}}_hkey1_hparam2;
+            {%if CMUG.type == 1 %}
+            set_cmu{{id+1}}_hkey1_hparam3;
+            {%endif%}
 
             set_cmu{{id+1}}_hkey2_hparam1;
-            set_cmu{{id+1}}_hkey2_hparam2;
-
             {%if CMUG.type == 1 %}
-            set_cmu{{id+1}}_hkey12_cparam;
-            set_cmu{{id+1}}_hkey3_cparam;
-            set_cmu{{id+1}}_hkey1_hparam3;
             set_cmu{{id+1}}_hkey2_hparam3;
             {%endif%}
 
+
+            {%if CMUG.type == 1 %}
+            set_cmu{{id+1}}_hkey3_hparam1;
+            set_cmu{{id+1}}_hkey3_hparam2;
+            {%endif%}
+
+            {%if CMUG.type == 2 %}
             {% for pram_name, param_val in CMUG.std_params.items() %}
             set_cmu{{id+1}}_hkey1_{{pram_name}};
             {% endfor %}
+            {%endif%}
         }
         size = 32;
     }

@@ -59,15 +59,6 @@ CANDIDATE_KEY_LIST = {
 }
 CANDIDATE_KEY_SET = ",".join(CANDIDATE_KEY_LIST.keys())
 
-INGRESS_STDMETA_PARAM_SET = { 
-    "timestamp" :  "intr_md.ingress_mac_tstamp[15:0]"
-}
-
-EGRESS_STDMETA_PARAM_SET  = { 
-    "pkt_size" : "(bit<16>) intr_md.pkt_length",
-    "queue_size" : "intr_md.enq_qdepth[15:0]",
-    "timestamp" : "intr_md.enq_tstamp[15:0];"
-}
                              
 CMUG_GROUP_CONFIGS = []
 CMUG_GROUP_CONFIGS += ([
@@ -96,10 +87,12 @@ CMUG_GROUP_CONFIGS += (
 
 # Add std params configs.
 for CMUG in CMUG_GROUP_CONFIGS:
-    if CMUG["type"] == 1  and CMUG["id"] == 1:
-        CMUG["std_params"] = INGRESS_STDMETA_PARAM_SET
-    elif CMUG["type"] == 2 and CMUG["id"] == int(len(CMUG_GROUP_CONFIGS)/2) + 1:
-        CMUG["std_params"] = EGRESS_STDMETA_PARAM_SET
+    if CMUG["type"] == 2 and CMUG["id"] == int(len(CMUG_GROUP_CONFIGS)/2) + 1:
+        CMUG["std_params"] = { 
+                                "pkt_size" : "(bit<16>) intr_md.pkt_length",
+                                "queue_size" : "intr_md.enq_qdepth[15:0]",
+                                "timestamp" : "intr_md.enq_tstamp[15:0];"
+                            }
     else:
         CMUG["std_params"] = {}
 

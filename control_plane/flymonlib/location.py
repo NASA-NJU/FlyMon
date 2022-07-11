@@ -5,23 +5,32 @@ from flymonlib.flow_key import FlowKey
 
 class Location:
     '''
-    A read-only Class store the location information of a deployed task
+    A read-only Class store the location information of a deployed task.
+    A task may contain multiple locations (in different CMUs)
+    A location represents a CMU info about the task.
     '''
-    def __init__(self, location_list, hasher):
-        # parse the location list
-        self._group_id = location_list[0]
-        self._group_type = location_list[1]
-        self._hkeys = location_list[2]
-        self._cmu_id = location_list[3]
-        self._memory_type = location_list[4]
-        self._memory_idx = location_list[5]
+    def __init__(self, 
+                 group_id, group_type, key_dhash, param_dhash,
+                 cmu_id, memory_type, memory_idx, 
+                 resource_node, hasher):
+
+        # location info, used to specify table.
+        self._group_id = group_id
+        self._group_type = group_type
+        self._dhash_key = key_dhash
+        self._dhash_param = param_dhash
+        self._cmu_id = cmu_id
+        self._memory_type = memory_type
+        self._memory_idx = memory_idx
+
+        # resource info, used to install rules.
+        self._resource_node = resource_node
 
         # Maintain stateful rules.
         self._init_rules = []
         self._prep_rules = []
         self._oper_rules = []
     
-
         # Maintain hash handle
         self._hash = hasher
     
@@ -52,12 +61,20 @@ class Location:
         return self._group_type
     
     @property
-    def hkeys(self):
-        return self._hkeys
+    def dhash_key(self):
+        return self._dhash_key
     
-    @hkeys.setter
-    def hkeys(self, hkeys):
-        self._hkeys = hkeys
+    @dhash_key.setter
+    def dhash_key(self, hkey_id):
+        self._dhash_key = hkey_id
+
+    @property
+    def dhash_param(self):
+        return self._dhash_key
+    
+    @dhash_param.setter
+    def dhash_param(self, hkey_id):
+        self._dhash_param = hkey_id
     
     @property
     def cmu_id(self):
@@ -70,6 +87,10 @@ class Location:
     @property
     def memory_idx(self):
         return self._memory_idx
+
+    @property
+    def operation(self):
+        return self._operation
 
     @property
     def init_rules(self):
