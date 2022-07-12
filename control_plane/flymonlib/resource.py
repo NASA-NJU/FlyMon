@@ -88,3 +88,6 @@ class ResourceNode:
     @memory.setter
     def memory(self, memory):
         self._memsize = memory
+
+    def __str__(self):
+        return f"key={self.key}, param1={self.param1}, param2={self.param2}, operation={self.operation}"

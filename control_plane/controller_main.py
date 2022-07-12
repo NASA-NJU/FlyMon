@@ -155,9 +155,10 @@ class FlyMonController(cmd.Cmd):
             task_instance = self.task_manager.register_task(args.filter, args.key, args.attribute, args.mem_size)
             if not args.quiet:
                 print("Required resources:")
-                for re in task_instance.resource_list():
-                    print(str(re))
-            locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
+                for nodes in task_instance.resource_graph():
+                    for node in nodes:
+                        print(str(node))
+            locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_graph())
             if locations is not None:
                 task_instance.locations = locations
                 re = self.task_manager.install_task(task_instance.id)
@@ -619,8 +620,6 @@ class FlyMonController(cmd.Cmd):
             print(traceback.format_exc())
             print(f"{e} when reset.")
             exit(1)
-
-
 
     def emptyline(self):
         pass

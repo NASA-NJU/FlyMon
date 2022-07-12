@@ -35,8 +35,8 @@ class CMU:
                 #  - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF), the mem_idx should be 1 or 2.
                 #  - task_id, who uses this memory block?
                 self.mem_tree.append([i+1, j, 0]) 
-               
-    
+            
+
     def alloc_memory(self, type, task_id):
         """
         Allocate memory for task_id with memory type.
@@ -63,6 +63,26 @@ class CMU:
                 if is_ok:
                     for snode in sub_nodes:
                         snode.data[2] = task_id
+                    return node.data[1]
+        return 0
+
+    def check_memory(self, type):
+        """Only check but not allocate.
+        """
+        root = self.mem_tree.root()
+        nodes = self.mem_tree.inorderTraversal(root)
+        for node in nodes:
+            # Z the node's size suitable and the node is available
+            if node.data[0] == type and node.data[2] == 0:
+                sub_nodes = self.mem_tree.inorderTraversal(node)
+                is_ok = True
+                # Z check if all the subnode is available
+                for snode in sub_nodes:
+                    if snode.data[2] != 0:
+                        is_ok = False
+                if is_ok:
+                    # for snode in sub_nodes:
+                    #     snode.data[2] = task_id
                     return node.data[1]
         return 0
     
@@ -181,7 +201,7 @@ class CMU_Group():
         """
         # mirror the 32-bit keys because it can be used multiple times.
         hkey_dict = {}
-        for idx in range(len(self.compressed_keys)):
+        for idx in range(len(self._compressed_keys)):
             task_list = self._compressed_keys[idx][2]
             if len(task_list) != 0:
                 # The key as already be allocated.
@@ -199,47 +219,42 @@ class CMU_Group():
             return True
         return False
 
-    def allocate_compressed_keys(self, task_id, required_key_list):
+    def check_memory(self, mem_size, mode=1):
+        """Check if there are CMUs have sufficient memory.
+        Args:
+            @mem_size: required memory size.
+            @mode: efficient(1) or accurate(2) mode?
+        Return:
+            a dict of usable CMUs. Resource manager needs to consider CMU repeation by itself.
+            {
+                CMU ID : {real size, memory type, type_index}
+            }
+            Otherwise, empty dict {}
         """
-        The required_key should be a flow_key object.
-        TODO: need to consider bit size of key (for measurement accuracy reason)
-        """
-        hkey_list = []
-        for required_key in required_key_list:
-            ok = False
-            for idx in range(len(self._compressed_keys)):
-                task_list = self._compressed_keys[idx][2]
-                if len(task_list) != 0:
-                    # Priority is given to those already in use
-                    # The key as already be allocated.
-                    if self._compressed_keys[idx][1] == 32 and self._compressed_keys[idx][0] == required_key:
-                        # If the CMU-Group is located in Egress Pipeline
-                        # Then the hash bits should be reused.
-                        if task_id not in self._compressed_keys[idx][2]:
-                            self._compressed_keys[idx][2].append(task_id)
-                        hkey_list.append(idx+1)
-                        ok = True
-                        break
-                    elif self._compressed_keys[idx][1] == 16 and self._compressed_keys[idx][0] == required_key and task_id not in task_list:
-                        ok = True
-                        self._compressed_keys[idx][2].append(task_id)
-                        hkey_list.append(idx+1)
-                        break
-                    else:
-                        pass
-                else:
-                    self._compressed_keys[idx][2].append(task_id)
-                    hkey_list.append(idx+1)
-                    self._compressed_keys[idx][0].content.set(required_key.content)
-                    ok = True
-                    break
-            if not ok:
-                # TODO: support XOR in Ingress Pipeline Here
-                # # return back
-                # print("Here!!!!!!!!!!!!!!!!")
-                self.release_compressed_keys(task_id, hkey_list)
-                return None
-        return hkey_list
+        cmu_dict = {}
+        for idx in range(self._cmu_num):
+            cmu_id = idx + 1
+            if mem_size > self._memory_size: 
+                print("Invalid memory size : {}".format(mem_size))
+                return {}
+            memory_type = int(math.log2(self._memory_size / mem_size)) + 1
+            if memory_type < 1:
+                print(f"No enough memory, allocated as the max : {self._memory_size}")
+                memory_type = 1
+            if memory_type > MAX_DIV:
+                print(f"Too small memory, allocated as the min : {int(self._memory_size/MAX_DIV)}")
+                memory_type = MAX_DIV
+            if mode == 2:
+                # TODO: need to implement a simple efficient mode.
+                pass
+            cmu = self._cmus[idx][0]
+            if self._cmus[idx][1] < mem_size:
+                continue
+            memory_idx = cmu.check_memory(memory_type)
+            if memory_idx >= 0:
+                # self._cmus[idx][1] = self._cmus[id][1] - int(self._memory_size/memory_type)
+                cmu_dict[cmu_id] = (int(self._memory_size/memory_type), memory_type, memory_idx)
+        return cmu_dict
 
     def allocate_memory(self, cmu_id, task_id, mem_size, mode=1):
         """ Try to allocate memory for a specific task.

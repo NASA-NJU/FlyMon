@@ -113,13 +113,12 @@ class Frequency(FlowAttribute):
         """
         return AttributeType.Frequency
 
-    @abc.abstractmethod
+
     def __str__(self):
         """Return attribute name.
         """
         return f"Frequency(param={str(self.param1)}, algorithm={str(self.algorithm)})"
 
-    @abc.abstractmethod
     def getalg(self, alg_name):
         """Set algorithm.
         Return: If invalid, return None. If valid, return object.
