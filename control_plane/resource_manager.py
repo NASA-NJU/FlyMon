@@ -27,10 +27,12 @@ class ResourceManager():
             candidate_key_list = cmug["candidate_key_list"]
             std_params = cmug["std_params"]
             type = cmug["type"]
+            key_bitw = cmug["key_bitw"]
             id = cmug["id"]
             self.cmu_groups.append(CMU_Group(group_id=id, 
                                              group_type=type, 
                                              cmu_num=cmu_num, 
+                                             key_bitw = key_bitw
                                              memory_size=cmu_size, 
                                              stage_start=mau_start, 
                                              candidate_key_list=candidate_key_list, 
@@ -154,6 +156,10 @@ class ResourceManager():
                     if location is None:
                         all_ok = False
                         break
+                    # calc key mapping.
+                    location.resource_node.key_mapping = calc_keymapping(self.cmu_groups[location.group_id-1].key_bitw, 
+                                                                         location.memory_type, 
+                                                                         location.memory_idx)
                     locations.append(location)
                 if all_ok:
                     final_locations += locations

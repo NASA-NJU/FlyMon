@@ -99,10 +99,6 @@ class Location:
         self._memory_idx = memory_idx
 
     @property
-    def operation(self):
-        return self._operation
-
-    @property
     def resource_node(self):
         return self._resource_node
 

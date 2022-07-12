@@ -117,7 +117,7 @@ class CMU:
 
 class CMU_Group():
     """Status of CMU_Group instance in control plane"""
-    def __init__(self, group_id, group_type, cmu_num, memory_size, stage_start, candidate_key_list, std_params):
+    def __init__(self, group_id, group_type, cmu_num, key_bitw, memory_size, stage_start, candidate_key_list, std_params):
         """
         There are properties and status of CMU_Group class.
         As for properties, it loads them from "cmu_groups.json" file generated from the "flymon_compiler.py".
@@ -133,6 +133,7 @@ class CMU_Group():
         self._group_id = group_id
         self._group_type = group_type
         self._cmu_num = cmu_num
+        self._key_bitw = key_bitw
         self._memory_size = memory_size
         self._stage_start = stage_start
 
@@ -164,6 +165,10 @@ class CMU_Group():
     @property
     def group_type(self):
         return self._group_type
+
+    @property
+    def key_bitw(self):
+        return self._key_bitw
 
     @property
     def memory_size(self):

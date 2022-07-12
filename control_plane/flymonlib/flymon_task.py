@@ -86,8 +86,11 @@ class FlyMonTask:
         resource_graph = self._attribute.resource_graph()
         for nodes in resource_graph:
             for node in nodes:
+                node.filter = self.filter
+                node.task_id = self.task_id
                 node.key = self.key
                 if node.param1.type == ParamType.Key: # special case
+                    node.param1.type = ParamType.CompressedKey
                     node.param1.content = self.key
                 node.memory = int(self.mem_size * node.memory)
         return resource_graph

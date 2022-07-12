@@ -4,19 +4,10 @@ from flymonlib.param import ParamType
 from flymonlib.resource import *
 from flymonlib.flymon_task import FlyMonTask
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
-from flymonlib.utils import calc_keymapping
 
 class TaskManager:
     def __init__(self, runtime : FlyMonRuntime_BfRt, cmug_configs : dict):
         self.runtime = runtime
-        self.cmug_bitw = {
-            # key : cmu_group id
-            # val : cmu_bitw (total_bits)
-        }
-        for cmug in cmug_configs:
-            id = cmug["id"]
-            cmu_bitw = cmug["key_bitw"]
-            self.cmug_bitw[id] = cmu_bitw
         self.tasks = {
             # key : task_id
             # val : [status, task_instance, [init_rules], [preprocessing_rules], [operation_rules]]
@@ -63,44 +54,33 @@ class TaskManager:
                 # Install the compression stage.
                 # TODO: if the hash is already configured, do not configure again.
                 self.runtime.compression_stage_config(location.group_id, location.group_type,
-                                                      location.hkeys[0], task_instance.key)
+                                                      location.dhash_key, location.resource_node.key)
                 # Install the initialization stage.
                 if task_instance.attribute.param1.type == ParamType.CompressedKey:
                     self.runtime.compression_stage_config(location.group_id, location.group_type,
-                                                          location.hkeys[1], task_instance.attribute.param1.content)
+                                                          location.dhash_param, location.resource_node.param1.content)
                     location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                            task_instance.filter, # Filter
-                                                            task_instance.id,
-                                                            location.hkeys[0],   # key
-                                                            (task_instance.attribute.param1, location.hkeys[1]),
-                                                            task_instance.attribute.param2)
-                elif task_instance.attribute.param1.type == ParamType.Key:
-                    self.runtime.compression_stage_config(location.group_id, location.group_type,
-                                                          location.hkeys[1], task_instance.key)
-                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                            task_instance.filter, # Filter
-                                                            task_instance.id,
-                                                            location.hkeys[0],   # key
-                                                            (task_instance.attribute.param1, location.hkeys[1]),
-                                                            task_instance.attribute.param2)
+                                                            location.resource_node.filter, # Filter
+                                                            location.resource_node.task_id,
+                                                            location.dhash_key,   # key
+                                                            (location.resource_node.param1, location.dhash_param),
+                                                            location.resource_node.param2)
                 else:
                     location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                            task_instance.filter, # Filter
-                                                            task_instance.id,
-                                                            location.hkeys[0],
-                                                            (task_instance.attribute.param1, None),
-                                                            task_instance.attribute.param2)
+                                                            location.resource_node.filter, # Filter
+                                                            location.resource_node.task_id,
+                                                            location.dhash_key,
+                                                            (location.resource_node.param1, None),
+                                                            location.resource_node.param2)
                 # # Install the pre-processing stage.
                 if location.memory_type != MemoryType.WHOLE.value or len(task_instance.attribute.param_mapping) != 0:
                     location.prep_rules = self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                        task_instance.id, 
-                                                        calc_keymapping(self.cmug_bitw[location.group_id], 
-                                                                        location.memory_type, 
-                                                                        location.memory_idx),  # Key mappings.
-                                                        task_instance.attribute.param_mapping) # Param1 mappings.
+                                                        location.resource_node.task_id,
+                                                        location.resource_node.key_mapping,   # Key mappings.
+                                                        location.resource_node.param_mapping) # Param1 mappings.
                 # # Install the operation stage.
                 location.oper_rules = self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
-                                                       task_instance.id, location.operation)
+                                                       location.resource_node.task_id, location.resource_node.operation)
                 # pass
             self.tasks[task_instance.id][0] = True
         except Exception as e:
