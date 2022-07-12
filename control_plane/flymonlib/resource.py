@@ -90,4 +90,4 @@ class ResourceNode:
         self._memsize = memory
 
     def __str__(self):
-        return f"key={self.key}, param1={self.param1}, param2={self.param2}, operation={self.operation}"
+        return f"key={self.key}, param1={self.param1}, param2={self.param2}, operation={self.operation.name}"

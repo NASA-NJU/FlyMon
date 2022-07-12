@@ -114,7 +114,7 @@ class ResourceManager():
         if location.dhash_key is None:
             return None 
 
-        avalible_cmus = cmu_group.check_memory()
+        avalible_cmus = cmu_group.check_memory(resource_node.memory)
         for cmu_id in avalible_cmus.keys():
             if cmu_id not in annotation[1]:
                 # a task can only use a CMU once.
@@ -143,8 +143,8 @@ class ResourceManager():
         priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type)
         # Used to help CMU Group's mark which Groups are used for this task to facilitate better use of resources.
         # It records which CMUs of each Group were used for this task.
-        annotations = [[] for _ in range(len(priority_cmug_list))]
-        final_locations = None
+        annotations = [[[],[]] for _ in range(len(priority_cmug_list))]
+        final_locations = []
         for nodes in resource_graph:
             locations = []
             chain_len = len(nodes)
@@ -157,8 +157,10 @@ class ResourceManager():
                         break
                     locations.append(location)
                 if all_ok:
-                    final_locations = locations
+                    final_locations += locations
                     break
+                else:
+                    locations = []
         if final_locations is not None:
             # allocate it.
             for loc in final_locations:

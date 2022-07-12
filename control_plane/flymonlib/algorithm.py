@@ -9,18 +9,21 @@ class Algorithm(metaclass=abc.ABCMeta):
     """
     Abstract class for sketching algorithm.
     """
+    @property
     @abc.abstractmethod 
     def param2(self):
         """Param2 is used as a feature of different algorithms.
         """
         pass
 
+    @property
     @abc.abstractmethod 
     def cmu_num(self):
         """How many CMU used in this algorithm.
         """
         pass
 
+    @property
     @abc.abstractmethod 
     def analyze(self, datas):
         """ Parse attribute data.
@@ -34,12 +37,14 @@ class Algorithm(metaclass=abc.ABCMeta):
         """
         pass
 
+    @property
     @abc.abstractmethod
     def param_mapping(self):
         """Some algorithm needs param mapping in the preparation stage.
         """
         pass
 
+    @property
     @abc.abstractmethod
     def operation(self):
         pass
@@ -82,6 +87,7 @@ class CountMin(Algorithm):
         """
         return "Count Min Sketch"
 
+    @property
     def param_mapping(self):
         """Some algorithm needs param mapping in the preparation stage.
         """
@@ -90,6 +96,7 @@ class CountMin(Algorithm):
             # val : code
         }
 
+    @property
     def operation(self):
         return OperationType.CondADD
 

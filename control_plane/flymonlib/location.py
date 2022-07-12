@@ -79,14 +79,26 @@ class Location:
     @property
     def cmu_id(self):
         return self._cmu_id
+
+    @cmu_id.setter
+    def cmu_id(self, cmu_id):
+        self._cmu_id = cmu_id
     
     @property
     def memory_type(self):
         return self._memory_type
+
+    @memory_type.setter
+    def memory_type(self, memory_type):
+        self._memory_type = memory_type
     
     @property
     def memory_idx(self):
         return self._memory_idx
+
+    @memory_idx.setter
+    def memory_idx(self, memory_idx):
+        self._memory_idx = memory_idx
 
     @property
     def operation(self):
@@ -126,5 +138,5 @@ class Location:
 
     def __str__(self) -> str: 
         memory_type = MemoryType(self.memory_type)
-        info = f"group_id={self._group_id}, group_type={self._group_type}, hkeys={self._hkeys}, cmu_id={self._cmu_id}, memory_type:{memory_type.name} offset:{self._memory_idx}"
+        info = f"group_id={self.group_id}, hkey={self.dhash_key}, cmu_id={self.cmu_id}, memory_type:{memory_type.name} offset:{self.memory_idx}"
         return info
