@@ -4,7 +4,6 @@ from flymonlib.hash import HASHES_16, HASHES_32
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 from flymonlib.location import Location
 from flymonlib.flymon_task import FlyMonTask
-from flymonlib.resource import ResourceType
 from flymonlib.cmu_group import CMU_Group
 
 class ResourceManager():
@@ -163,17 +162,28 @@ class ResourceManager():
                     locations = []
         if final_locations is not None:
             # allocate it.
-            for loc in final_locations:
-                print(str(loc))
+            self.allocate_locations(task_id, final_locations)
         return final_locations
+
+    def allocate_locations(self, task_id, locations):
+        """
+        Allocate a list of locations.
+        """
+        for loc in locations:
+            required_keys = [] # [(dhash_id, flowkeyobj)]
+            required_keys.append([loc.dhash_key, loc.resource_node.key])
+            if loc.resource_node.param1.type == ParamType.CompressedKey:
+                required_keys.append([loc.dhash_param, loc.resource_node.param1])
+            group_id = loc.group_id
+            self.cmu_groups[group_id-1].allocate_compressed_keys(task_id, required_keys)
+            self.cmu_groups[group_id-1].allocate_memory(task_id, loc.cmu_id, loc.memory_type, loc.memory_idx)
 
     def release_task(self, task_instance: FlyMonTask):
         """
         Dynamic release memorys and compressed keys for a task.
         """
-        for location in task_instance.locations:
-            group_id = location.group_id
-            memory_type = location.memory_type
-            self.cmu_groups[group_id-1].release_memory(task_instance.id, memory_type)
-            self.cmu_groups[group_id-1].release_compressed_keys(task_instance.id, location.hkeys)
+        for loc in task_instance.locations:
+            group_id = loc.group_id
+            self.cmu_groups[group_id-1].release_memory(task_instance.id)
+            self.cmu_groups[group_id-1].release_compressed_keys(task_instance.id)
         pass

@@ -62,7 +62,7 @@ class FlyMonTask:
     
     @property
     def mem_num(self):
-        return self._attribute.memory_num
+        return self._attribute.algorithm.memory_num
             
     @property
     def locations(self):

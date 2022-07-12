@@ -1,8 +1,6 @@
 from flymonlib.cmu_group import MemoryType
 from flymonlib.flow_key import FlowKey
 
-
-
 class Location:
     '''
     A read-only Class store the location information of a deployed task.
@@ -103,6 +101,10 @@ class Location:
     @property
     def operation(self):
         return self._operation
+
+    @property
+    def resource_node(self):
+        return self._resource_node
 
     @property
     def init_rules(self):

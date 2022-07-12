@@ -1,5 +1,4 @@
 from enum import Enum
-from flymonlib.resource import Resource, ResourceType
 from flymonlib.operation import *
 from flymonlib.param import *
 from flymonlib.utils import *

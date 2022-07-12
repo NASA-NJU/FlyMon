@@ -1,7 +1,7 @@
 import abc 
 from enum import Enum
 from flymonlib.operation import *
-from flymonlib.resource import Resource, ResourceType, ResourceNode
+from flymonlib.resource import ResourceNode
 from flymonlib.param import *
 from flymonlib.utils import *
 
@@ -103,8 +103,23 @@ class CountMin(Algorithm):
     def resource_graph(self):
         """Return resource usage with linked resource nodes.
         """
+        # Graph 1
         graph = []
         for _ in range(self._rows):
             #                         Key   Param1            KeyMap                                     Mem div
             graph.append([ResourceNode(None, None, self.param2, None, self.param_mapping, self.operation, 1/self.cmu_num)])
         return graph
+
+        # Graph 2
+        # graph = []
+        # for _ in range(self._rows):
+        #     #                         Key   Param1            KeyMap                                     Mem div
+        #     graph.append(ResourceNode(None, None, self.param2, None, self.param_mapping, self.operation, 1/self.cmu_num))
+        # return [graph]
+
+        # Graph 3
+        # graph = []
+        # for _ in range(self.cmu_num-1):
+        #     #                         Key   Param1            KeyMap                                     Mem div
+        #     graph.append(ResourceNode(None, None, self.param2, None, self.param_mapping, self.operation, 1/self.cmu_num))
+        # return [graph, [ResourceNode(None, None, Param(ParamType.CompressedKey, parse_key("hdr.ipv4.dst_addr")), None, self.param_mapping, self.operation, 1/self.cmu_num)]]
