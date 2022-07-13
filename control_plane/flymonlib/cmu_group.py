@@ -117,7 +117,7 @@ class CMU:
 
 class CMU_Group():
     """Status of CMU_Group instance in control plane"""
-    def __init__(self, group_id, group_type, cmu_num, key_bitw, memory_size, stage_start, candidate_key_list, std_params):
+    def __init__(self, group_id, group_type, cmu_num, key_bitw, memory_size, stage_start, candidate_key_list, std_params, next_group):
         """
         There are properties and status of CMU_Group class.
         As for properties, it loads them from "cmu_groups.json" file generated from the "flymon_compiler.py".
@@ -136,6 +136,7 @@ class CMU_Group():
         self._key_bitw = key_bitw
         self._memory_size = memory_size
         self._stage_start = stage_start
+        self._next_group = next_group
 
         ## Param Resources.
         self._std_params = []
@@ -173,6 +174,10 @@ class CMU_Group():
     @property
     def memory_size(self):
         return self._memory_size
+    
+    @property
+    def next_group(self):
+        return self._next_group
 
     def show_status(self):
         """
@@ -216,8 +221,9 @@ class CMU_Group():
         """
         Check if the params are avaliable in this CMU-Group. 
         """
-        if required_param in self._std_params:
-            return True
+        for param in self._std_params:
+            if required_param == param.content:
+                return True
         return False
 
     def check_memory(self, mem_size, mode=1):

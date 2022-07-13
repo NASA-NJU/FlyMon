@@ -68,7 +68,7 @@ class Location:
 
     @property
     def dhash_param(self):
-        return self._dhash_key
+        return self._dhash_param
     
     @dhash_param.setter
     def dhash_param(self, hkey_id):
@@ -132,8 +132,6 @@ class Location:
     @oper_rules.setter
     def oper_rules(self, rule_list):
         self._oper_rules = rule_list
-
-
 
     def __str__(self) -> str: 
         memory_type = MemoryType(self.memory_type)

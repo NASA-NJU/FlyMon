@@ -69,7 +69,8 @@ CMUG_GROUP_CONFIGS += ([
         "cmu_num" : CMU_PER_GROUP,
         "cmu_size" : MEMORY_PER_CMU["size"],
         "key_bitw" : MEMORY_PER_CMU["bit_width"],
-        "candidate_key_list" : CANDIDATE_KEY_LIST
+        "candidate_key_list" : CANDIDATE_KEY_LIST,
+        "next_group" : id + 1 + INGRESS_CMU_GROUP_NUM
     }
     for id in range(INGRESS_CMU_GROUP_NUM) 
 ])
@@ -81,9 +82,18 @@ CMUG_GROUP_CONFIGS += (
             "cmu_num" : CMU_PER_GROUP,
             "cmu_size" : MEMORY_PER_CMU["size"],
             "key_bitw" : MEMORY_PER_CMU["bit_width"],
-            "candidate_key_list" : CANDIDATE_KEY_LIST
-    }for id in range(EGRESS_CMU_GROUP_NUM)]
-)
+            "candidate_key_list" : CANDIDATE_KEY_LIST,
+            "next_group" : 0, # only Group 5 may have successive CMU Group.
+    }for id in range(EGRESS_CMU_GROUP_NUM)]                #             |
+)                                                          #             |
+                                                           #             |
+if EGRESS_CMU_GROUP_NUM > 4:                               #             |
+    CMUG_GROUP_CONFIGS[5-1]["next_group"] = 9    # <---------------------|
+# Chain Graph of current CMU Groups.
+# G1 -> G5 -> G9
+# G2 -> G6 
+# G3 -> G7
+# G4 -> G8
 
 # Add std params configs.
 for CMUG in CMUG_GROUP_CONFIGS:

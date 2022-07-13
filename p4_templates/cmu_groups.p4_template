@@ -318,17 +318,17 @@ control CMU_Group{{CMUG.id}} ( in header_t hdr,
     //};
 
     action op_cmu{{id+1}}_cond_add(){
-        meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 = cmu{{id+1}}_op_cond_add.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
+        meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 = cmu{{id+1}}_op_cond_add.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     }
     action op_cmu{{id+1}}_and_or(){
-        meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 = cmu{{id+1}}_op_and_or.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
+        meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 = cmu{{id+1}}_op_and_or.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     }
     action op_cmu{{id+1}}_max(){
-        meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 = cmu{{id+1}}_op_max.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
+        meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 = cmu{{id+1}}_op_max.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     }
 
     //action op_cmu{{id+1}}_reserved(){
-    //    meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p1 = cmu{{id+1}}_op_reserved.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
+    //    meta.cmu_group{{ns.gid}}.cmu{{id+1}}.param.p2 = cmu{{id+1}}_op_reserved.execute((bit<16>)meta.cmu_group{{ns.gid}}.cmu{{id+1}}.key[{{CMUG.key_bitw-1}}:0]);
     //}
 
     {%if CMUG.mau_start >= 0%}

@@ -28,6 +28,7 @@ class ResourceManager():
             candidate_key_list = cmug["candidate_key_list"]
             std_params = cmug["std_params"]
             type = cmug["type"]
+            next_group = cmug["next_group"]
             key_bitw = cmug["key_bitw"]
             id = cmug["id"]
             self.cmu_groups.append(CMU_Group(group_id=id, 
@@ -37,7 +38,8 @@ class ResourceManager():
                                              memory_size=cmu_size, 
                                              stage_start=mau_start, 
                                              candidate_key_list=candidate_key_list, 
-                                             std_params=std_params))
+                                             std_params=std_params,
+                                             next_group=next_group))
             self.runtime.clear_all(id, type, cmu_num)
             # Setup Dashes.
             dhash_num = 0
@@ -80,7 +82,7 @@ class ResourceManager():
         # According to the annnotation, we can efficiently allocate the CMUs.
         location = Location(cmu_group.group_id, cmu_group.group_type, None, None, None, None, None, resource_node, None)
         if resource_node.param1.type == ParamType.StdParam:
-            has_param = cmu_group.check_parameters(resource_node.param1.content)
+            has_param = cmu_group.check_parameter(resource_node.param1.content)
             if has_param is False:
                 return None
         if resource_node.param1.type == ParamType.CompressedKey:
@@ -92,7 +94,9 @@ class ResourceManager():
                     # key and param can not select the same dhash currently.
                     # we prefer use 32-bit key as flow key, not param.
                     annotation[0].append(hparam)
+                    # print(hparam)
                     location.dhash_param = hparam
+                    # print(location.dhash_param)
                     break
             if location.dhash_param is None:
                 return None
@@ -129,7 +133,7 @@ class ResourceManager():
             return None
         return location
 
-    def allocate_resources(self, task_id, resource_graph, mode=1):
+    def allocate_resources(self, task_id, attribute, resource_graph, mode=1):
         """Dynamic allocate resources for a task.
         Args:
             @task_id.
@@ -142,18 +146,33 @@ class ResourceManager():
             A set of Locations whicn can directly used to install rules in the data plane.
             Otherwise, None
         """
-        priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type)
-        # Used to help CMU Group's mark which Groups are used for this task to facilitate better use of resources.
+        priority_cmug_list = self.cmu_groups
+        if len(resource_graph) > 1 and attribute.cmu_num > 1:
+            priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type)
+        # Annotations is used to help CMU Group's mark which Groups are used for this task to facilitate better use of resources.
         # It records which CMUs of each Group were used for this task.
-        annotations = [[[],[]] for _ in range(len(priority_cmug_list))]
+        annotations = {}
+        for cmu_group in priority_cmug_list:
+            annotations[cmu_group.group_id] = [[], []]   
         final_locations = []
         for nodes in resource_graph:
             locations = []
             chain_len = len(nodes)
+            if chain_len > 3:
+                print("Cannot support chain length larger than 3!")
+                return None
             for i in range(len(priority_cmug_list) - (chain_len - 1)):
                 all_ok = True
+                # get a valid chain (non-overlab CMU Groups)
+                chain_of_groups = [priority_cmug_list[i]]
+                head = chain_of_groups[0]
+                while head.next_group != 0:
+                    chain_of_groups.append(self.cmu_groups[head.next_group-1])
+                    head = self.cmu_groups[head.next_group-1]
+                # done
                 for j in range(chain_len):
-                    location = self.check_cmug(priority_cmug_list[i+j], annotations[i+j], nodes[j])
+                    cmu_group = chain_of_groups[j]
+                    location = self.check_cmug(cmu_group, annotations[cmu_group.group_id], nodes[j])
                     if location is None:
                         all_ok = False
                         break
@@ -182,7 +201,7 @@ class ResourceManager():
             required_keys = [] # [(dhash_id, flowkeyobj)]
             required_keys.append([loc.dhash_key, loc.resource_node.key])
             if loc.resource_node.param1.type == ParamType.CompressedKey:
-                required_keys.append([loc.dhash_param, loc.resource_node.param1])
+                required_keys.append([loc.dhash_param, loc.resource_node.param1.content])
             group_id = loc.group_id
             self.cmu_groups[group_id-1].allocate_compressed_keys(task_id, required_keys)
             self.cmu_groups[group_id-1].allocate_memory(task_id, loc.cmu_id, loc.memory_type, loc.memory_idx)

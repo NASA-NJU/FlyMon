@@ -95,6 +95,9 @@ class FlowKey:
         return config_dict
 
 def parse_key(key_str):
+    if key_str == "None":
+        # There are some single-key tasks.
+        return None 
     key_template = {
         "hdr.ipv4.src_addr" : 32,
         "hdr.ipv4.dst_addr" : 32,
