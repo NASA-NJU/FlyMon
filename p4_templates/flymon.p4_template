@@ -14,6 +14,15 @@ parser FlyMonIngressParser(
         out ingress_intrinsic_metadata_t ig_intr_md) {
     state start {
         pkt.extract(ig_intr_md);
+        // Enable bridge CMU Groups.
+        {%for CMUG in CMUG_GROUP_CONFIGS %}
+        {%if CMUG.type == 1 %}
+        {%for id in range(CMUG_GROUP_CONFIGS[0].cmu_num) %}
+        ig_md.cmu_group{{CMUG.id}}.cmu{{id+1}}.param.setValid();
+        {% endfor %}
+        {% endif %}
+        {%endfor%}
+        // Start parsing the packet.
         transition select(ig_intr_md.resubmit_flag) {
             1 : parse_resubmit;
             0 : parse_port_metadata;

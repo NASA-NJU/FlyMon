@@ -14,6 +14,20 @@ parser FlyMonIngressParser(
         out ingress_intrinsic_metadata_t ig_intr_md) {
     state start {
         pkt.extract(ig_intr_md);
+        // Enable bridge CMU Groups.
+        ig_md.cmu_group1.cmu1.param.setValid();
+        ig_md.cmu_group1.cmu2.param.setValid();
+        ig_md.cmu_group1.cmu3.param.setValid();
+        ig_md.cmu_group2.cmu1.param.setValid();
+        ig_md.cmu_group2.cmu2.param.setValid();
+        ig_md.cmu_group2.cmu3.param.setValid();
+        ig_md.cmu_group3.cmu1.param.setValid();
+        ig_md.cmu_group3.cmu2.param.setValid();
+        ig_md.cmu_group3.cmu3.param.setValid();
+        ig_md.cmu_group4.cmu1.param.setValid();
+        ig_md.cmu_group4.cmu2.param.setValid();
+        ig_md.cmu_group4.cmu3.param.setValid();
+        // Start parsing the packet.
         transition select(ig_intr_md.resubmit_flag) {
             1 : parse_resubmit;
             0 : parse_port_metadata;
