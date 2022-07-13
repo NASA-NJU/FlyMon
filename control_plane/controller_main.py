@@ -153,7 +153,7 @@ class FlyMonController(cmd.Cmd):
             "-m", "--mem_size" : memory size in number of buckets
             **Examples** : 
                 a) [Per-flow Size]       
-                   add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1,cms) -m 48
+                   add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr    -a frequency(1,cms) -m 48
                 b) [Single-key Distinct]
                    add_task -f 10.0.0.0/8,* -k None                 -a distinct(hdr.ipv4.src_addr,hll) -m 32
                 c) [Multi-key Distinct]  

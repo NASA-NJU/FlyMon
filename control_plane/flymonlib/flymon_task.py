@@ -89,7 +89,6 @@ class FlyMonTask:
                 node.filter = self.filter
                 node.task_id = self.id
                 if self.key is None:
-                    print("here")
                     node.key = self.attribute.param1.content
                 else:
                     node.key = self.key
@@ -106,7 +105,7 @@ class FlyMonTask:
         buf = b''
         # full_name_dict = {
         #     "src_addr" : "hdr.ipv4.src_addr",
-        #     "dst_addr" : "hdr.ipv4.dst_addr",
+        #     "dst_addr" : "hdr.ipv4.dst_addr", 
         #     "src_port" : "hdr.ports.src_port",
         #     "dst_port" : "hdr.ports.dst_port",
         #     "protocol" : "hdr.ipv4.protocol"

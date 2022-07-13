@@ -12,13 +12,6 @@ class Algorithm(metaclass=abc.ABCMeta):
     """
     @property
     @abc.abstractmethod 
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        pass
-
-    @property
-    @abc.abstractmethod 
     def cmu_num(self):
         """How many CMU used in this algorithm.
         """
@@ -59,12 +52,6 @@ class CountMin(Algorithm):
         self._rows = d
 
     @property
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        return Param(ParamType.Const, 65535)
-
-    @property
     def cmu_num(self):
         """How many CMU used in this algorithm.
         """
@@ -88,15 +75,14 @@ class CountMin(Algorithm):
         return { 
             # key : param
             # val : code
-        }
+        } 
 
     def resource_graph(self):
         """Return resource usage with linked resource nodes.
         """
         graph = []
         for _ in range(self._rows):
-            #                         Filter, Tid, Key   Param1            KeyMap                                     Mem div
-            graph.append([ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, OperationType.CondADD, 1/self.cmu_num)])
+            graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 65535), None, self.param_mapping, OperationType.CondADD, 1/self.cmu_num)])
         return graph
     
     
@@ -106,12 +92,6 @@ class MRAC(Algorithm):
     """
     def __init__(self):
         pass
-
-    @property
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        return Param(ParamType.Const, 65535)
 
     @property
     def cmu_num(self):
@@ -145,8 +125,7 @@ class MRAC(Algorithm):
         """
         graph = []
         for _ in range(self._rows):
-            #                         Filter, Tid, Key   Param1            KeyMap                                     Mem div
-            graph.append([ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, OperationType.CondADD, 1/self.cmu_num)])
+            graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 65535), None, self.param_mapping, OperationType.CondADD, 1/self.cmu_num)])
         return graph
     
     
@@ -158,16 +137,10 @@ class SUMax(Algorithm):
         pass
 
     @property
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        return Param(ParamType.Const, 65535)
-
-    @property
     def cmu_num(self):
         """How many CMU used in this algorithm.
         """
-        return 3
+        return 2
 
     def analyze(self, datas):
         """ Parse attribute data.
@@ -193,11 +166,10 @@ class SUMax(Algorithm):
         """Return resource usage with linked resource nodes.
         """
         graph = []
-        graph.append(ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, OperationType.CondADD, 1/3))
+        graph.append(ResourceNode(None, None, None, None, Param(ParamType.Const, 65535), None, self.param_mapping, OperationType.CondADD, 1/3))
         # current min is output to param2 in the data plane.
-        graph.append(ResourceNode(None, None, None, None,        None, None, self.param_mapping, OperationType.CondADD, 1/3))
-        # current min is output to param2 in the data plane.
-        graph.append(ResourceNode(None, None, None, None,        None, None, self.param_mapping, OperationType.CondADD, 1/3))
+        graph.append(ResourceNode(None, None, None, None, Param(ParamType.Const, 0),     None, self.param_mapping, OperationType.CondADD, 1/3))
+        graph.append(ResourceNode(None, None, None, None, Param(ParamType.Const, 0),     None, self.param_mapping, OperationType.CondADD, 1/3))
         return [graph] # Sumax is different from CMS, it needs 3 chained CMU Groups.
     
 class HyperLogLog(Algorithm):
@@ -206,12 +178,6 @@ class HyperLogLog(Algorithm):
     """
     def __init__(self):
         pass
-
-    @property
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        return Param(ParamType.Const, 65535) # Unused.
 
     @property
     def cmu_num(self):
@@ -271,8 +237,7 @@ class HyperLogLog(Algorithm):
     def resource_graph(self):
         """Return resource usage with linked resource nodes.
         """
-        #                   Filter, Tid,  Key  Param1            KeyMap                                  Mem div
-        return [[ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, OperationType.Max, 1)]]
+        return [[ResourceNode(None, None, None, None, Param(ParamType.Const, 0), None, self.param_mapping, OperationType.Max, 1)]]
     
     
 class BeauCoup(Algorithm):
@@ -281,12 +246,6 @@ class BeauCoup(Algorithm):
     """
     def __init__(self):
         pass
-
-    @property
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        return Param(ParamType.Const, 0) # Unused.
 
     @property
     def cmu_num(self):
@@ -328,8 +287,7 @@ class BeauCoup(Algorithm):
         """
         graph = []
         for _ in range(self.cmu_num):
-            #                         Filter, Tid, Key   Param1            KeyMap                                     Mem div
-            graph.append([ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, OperationType.AndOr, 1/self.cmu_num)])
+            graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 0), None, self.param_mapping, OperationType.AndOr, 1/self.cmu_num)])
         return graph
     
 
@@ -339,12 +297,6 @@ class BloomFilter(Algorithm):
     """
     def __init__(self):
         pass
-
-    @property
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        return Param(ParamType.Const, 0) # Unused.
 
     @property
     def cmu_num(self):
@@ -385,8 +337,8 @@ class BloomFilter(Algorithm):
         """
         graph = []
         for _ in range(self.cmu_num):
-            #                         Filter, Tid, Key   Param1            KeyMap                                     Mem div
-            graph.append([ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, OperationType.AndOr, 1/self.cmu_num)])
+            #    
+            graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 0), None, self.param_mapping, OperationType.AndOr, 1/self.cmu_num)])
         return graph
     
 class suMAX(Algorithm):
@@ -395,12 +347,6 @@ class suMAX(Algorithm):
     """
     def __init__(self):
         pass
-
-    @property
-    def param2(self):
-        """Param2 is used as a feature of different algorithms.
-        """
-        return Param(ParamType.Const, 0) # Unused.
 
     @property
     def cmu_num(self):
@@ -435,6 +381,6 @@ class suMAX(Algorithm):
         """
         graph = []
         for _ in range(self.cmu_num):
-            #                         Filter, Tid, Key   Param1            KeyMap                                     Mem div
-            graph.append([ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, OperationType.Max, 1/self.cmu_num)])
+            #                      
+            graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 0), None, self.param_mapping, OperationType.Max, 1/self.cmu_num)])
         return graph

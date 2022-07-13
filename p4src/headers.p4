@@ -55,9 +55,9 @@ struct egress_metadata_t {
 // ---------------------------------------------------------------------------
 
 #define IPV4        0x0800 // ETHERTYPE_IPV4
-#define IPV6        0x86DD// ETHERTYPE_IPV4
-#define UDP         0x11  // PROTO_UDP
-#define TCP         0x06  // PROTO_TCP
+#define IPV6        0x86DD // ETHERTYPE_IPV4
+#define UDP         0x11   // PROTO_UDP
+#define TCP         0x06   // PROTO_TCP
 
 header ethernet_h {
     bit<48> dst_addr;

@@ -62,39 +62,39 @@ control CMU_Group1 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  param1;
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p1 = meta.cmu_group1.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  param1;
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p1 = meta.cmu_group1.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  param1;
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p1 = meta.cmu_group1.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  param1;
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p1 = meta.cmu_group1.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key3)[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  param1;
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p1 = meta.cmu_group1.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = (meta.cmu_group1.compressed_key2 ^ meta.cmu_group1.compressed_key3)[15:0];
-            meta.cmu_group1.cmu1.param.p1 =  param1;
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p1 = meta.cmu_group1.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -102,40 +102,40 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu1.task_id = task_id;
             meta.cmu_group1.cmu1.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu1.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu1.param.p2 =  param2;
+            meta.cmu_group1.cmu1.param.p2 = meta.cmu_group1.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -182,6 +182,12 @@ control CMU_Group1 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group1.cmu1.key = meta.cmu_group1.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group1.cmu1.param.p1;
+          // meta.cmu_group1.cmu1.param.p1 = meta.cmu_group1.cmu1.param.p2;
+          // meta.cmu_group1.cmu1.param.p2 = temp;
+    //}
     @pragma stage 2
     table tbl_cmu1_preprocessing {
         key = {
@@ -205,8 +211,8 @@ control CMU_Group1 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group1.cmu1.param.p2){
                 value = value |+| meta.cmu_group1.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -239,17 +245,17 @@ control CMU_Group1 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group1.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+        meta.cmu_group1.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group1.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+        meta.cmu_group1.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group1.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+        meta.cmu_group1.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group1.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
+    //    meta.cmu_group1.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group1.cmu1.key[4:0]);
     //}
 
     @pragma stage 3
@@ -269,39 +275,39 @@ control CMU_Group1 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  param1;
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p1 = meta.cmu_group1.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  param1;
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p1 = meta.cmu_group1.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  param1;
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p1 = meta.cmu_group1.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  param1;
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p1 = meta.cmu_group1.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key3)[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  param1;
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p1 = meta.cmu_group1.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = (meta.cmu_group1.compressed_key2 ^ meta.cmu_group1.compressed_key3)[15:0];
-            meta.cmu_group1.cmu2.param.p1 =  param1;
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p1 = meta.cmu_group1.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -309,40 +315,40 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu2.task_id = task_id;
             meta.cmu_group1.cmu2.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu2.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu2.param.p2 =  param2;
+            meta.cmu_group1.cmu2.param.p2 = meta.cmu_group1.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -389,6 +395,12 @@ control CMU_Group1 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group1.cmu2.key = meta.cmu_group1.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group1.cmu2.param.p1;
+          // meta.cmu_group1.cmu2.param.p1 = meta.cmu_group1.cmu2.param.p2;
+          // meta.cmu_group1.cmu2.param.p2 = temp;
+    //}
     @pragma stage 2
     table tbl_cmu2_preprocessing {
         key = {
@@ -412,8 +424,8 @@ control CMU_Group1 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group1.cmu2.param.p2){
                 value = value |+| meta.cmu_group1.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -446,17 +458,17 @@ control CMU_Group1 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group1.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+        meta.cmu_group1.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group1.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+        meta.cmu_group1.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group1.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+        meta.cmu_group1.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group1.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
+    //    meta.cmu_group1.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group1.cmu2.key[4:0]);
     //}
 
     @pragma stage 3
@@ -476,39 +488,39 @@ control CMU_Group1 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  param1;
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p1 = meta.cmu_group1.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  param1;
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p1 = meta.cmu_group1.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  param1;
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p1 = meta.cmu_group1.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key2)[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  param1;
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p1 = meta.cmu_group1.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = (meta.cmu_group1.compressed_key1 ^ meta.cmu_group1.compressed_key3)[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  param1;
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p1 = meta.cmu_group1.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = (meta.cmu_group1.compressed_key2 ^ meta.cmu_group1.compressed_key3)[15:0];
-            meta.cmu_group1.cmu3.param.p1 =  param1;
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p1 = meta.cmu_group1.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -516,40 +528,40 @@ control CMU_Group1 ( in header_t hdr,
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key1[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key2[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key3[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key1[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group1.cmu3.task_id = task_id;
             meta.cmu_group1.cmu3.key[15:0] = meta.cmu_group1.compressed_key3[15:0];
             meta.cmu_group1.cmu3.param.p1 =  meta.cmu_group1.compressed_key2[15:0];
-            meta.cmu_group1.cmu3.param.p2 =  param2;
+            meta.cmu_group1.cmu3.param.p2 = meta.cmu_group1.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -596,6 +608,12 @@ control CMU_Group1 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group1.cmu3.key = meta.cmu_group1.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group1.cmu3.param.p1;
+          // meta.cmu_group1.cmu3.param.p1 = meta.cmu_group1.cmu3.param.p2;
+          // meta.cmu_group1.cmu3.param.p2 = temp;
+    //}
     @pragma stage 2
     table tbl_cmu3_preprocessing {
         key = {
@@ -619,8 +637,8 @@ control CMU_Group1 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group1.cmu3.param.p2){
                 value = value |+| meta.cmu_group1.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -653,17 +671,17 @@ control CMU_Group1 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group1.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+        meta.cmu_group1.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group1.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+        meta.cmu_group1.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group1.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+        meta.cmu_group1.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group1.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
+    //    meta.cmu_group1.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group1.cmu3.key[4:0]);
     //}
 
     @pragma stage 3
@@ -757,39 +775,39 @@ control CMU_Group2 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  param1;
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p1 = meta.cmu_group2.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  param1;
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p1 = meta.cmu_group2.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  param1;
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p1 = meta.cmu_group2.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  param1;
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p1 = meta.cmu_group2.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key3)[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  param1;
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p1 = meta.cmu_group2.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = (meta.cmu_group2.compressed_key2 ^ meta.cmu_group2.compressed_key3)[15:0];
-            meta.cmu_group2.cmu1.param.p1 =  param1;
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p1 = meta.cmu_group2.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -797,40 +815,40 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu1.task_id = task_id;
             meta.cmu_group2.cmu1.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu1.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu1.param.p2 =  param2;
+            meta.cmu_group2.cmu1.param.p2 = meta.cmu_group2.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -877,6 +895,12 @@ control CMU_Group2 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group2.cmu1.key = meta.cmu_group2.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group2.cmu1.param.p1;
+          // meta.cmu_group2.cmu1.param.p1 = meta.cmu_group2.cmu1.param.p2;
+          // meta.cmu_group2.cmu1.param.p2 = temp;
+    //}
     @pragma stage 3
     table tbl_cmu1_preprocessing {
         key = {
@@ -900,8 +924,8 @@ control CMU_Group2 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group2.cmu1.param.p2){
                 value = value |+| meta.cmu_group2.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -934,17 +958,17 @@ control CMU_Group2 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group2.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+        meta.cmu_group2.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group2.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+        meta.cmu_group2.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group2.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+        meta.cmu_group2.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group2.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
+    //    meta.cmu_group2.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group2.cmu1.key[4:0]);
     //}
 
     @pragma stage 4
@@ -964,39 +988,39 @@ control CMU_Group2 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  param1;
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p1 = meta.cmu_group2.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  param1;
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p1 = meta.cmu_group2.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  param1;
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p1 = meta.cmu_group2.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  param1;
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p1 = meta.cmu_group2.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key3)[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  param1;
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p1 = meta.cmu_group2.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = (meta.cmu_group2.compressed_key2 ^ meta.cmu_group2.compressed_key3)[15:0];
-            meta.cmu_group2.cmu2.param.p1 =  param1;
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p1 = meta.cmu_group2.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -1004,40 +1028,40 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu2.task_id = task_id;
             meta.cmu_group2.cmu2.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu2.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu2.param.p2 =  param2;
+            meta.cmu_group2.cmu2.param.p2 = meta.cmu_group2.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -1084,6 +1108,12 @@ control CMU_Group2 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group2.cmu2.key = meta.cmu_group2.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group2.cmu2.param.p1;
+          // meta.cmu_group2.cmu2.param.p1 = meta.cmu_group2.cmu2.param.p2;
+          // meta.cmu_group2.cmu2.param.p2 = temp;
+    //}
     @pragma stage 3
     table tbl_cmu2_preprocessing {
         key = {
@@ -1107,8 +1137,8 @@ control CMU_Group2 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group2.cmu2.param.p2){
                 value = value |+| meta.cmu_group2.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -1141,17 +1171,17 @@ control CMU_Group2 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group2.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+        meta.cmu_group2.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group2.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+        meta.cmu_group2.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group2.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+        meta.cmu_group2.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group2.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
+    //    meta.cmu_group2.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group2.cmu2.key[4:0]);
     //}
 
     @pragma stage 4
@@ -1171,39 +1201,39 @@ control CMU_Group2 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  param1;
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p1 = meta.cmu_group2.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  param1;
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p1 = meta.cmu_group2.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  param1;
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p1 = meta.cmu_group2.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key2)[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  param1;
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p1 = meta.cmu_group2.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = (meta.cmu_group2.compressed_key1 ^ meta.cmu_group2.compressed_key3)[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  param1;
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p1 = meta.cmu_group2.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = (meta.cmu_group2.compressed_key2 ^ meta.cmu_group2.compressed_key3)[15:0];
-            meta.cmu_group2.cmu3.param.p1 =  param1;
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p1 = meta.cmu_group2.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -1211,40 +1241,40 @@ control CMU_Group2 ( in header_t hdr,
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key1[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key2[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key3[15:0];
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key1[15:0];
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group2.cmu3.task_id = task_id;
             meta.cmu_group2.cmu3.key[15:0] = meta.cmu_group2.compressed_key3[15:0];
             meta.cmu_group2.cmu3.param.p1 =  meta.cmu_group2.compressed_key2[15:0];
-            meta.cmu_group2.cmu3.param.p2 =  param2;
+            meta.cmu_group2.cmu3.param.p2 = meta.cmu_group2.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -1291,6 +1321,12 @@ control CMU_Group2 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group2.cmu3.key = meta.cmu_group2.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group2.cmu3.param.p1;
+          // meta.cmu_group2.cmu3.param.p1 = meta.cmu_group2.cmu3.param.p2;
+          // meta.cmu_group2.cmu3.param.p2 = temp;
+    //}
     @pragma stage 3
     table tbl_cmu3_preprocessing {
         key = {
@@ -1314,8 +1350,8 @@ control CMU_Group2 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group2.cmu3.param.p2){
                 value = value |+| meta.cmu_group2.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -1348,17 +1384,17 @@ control CMU_Group2 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group2.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+        meta.cmu_group2.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group2.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+        meta.cmu_group2.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group2.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+        meta.cmu_group2.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group2.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
+    //    meta.cmu_group2.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group2.cmu3.key[4:0]);
     //}
 
     @pragma stage 4
@@ -1452,39 +1488,39 @@ control CMU_Group3 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  param1;
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p1 = meta.cmu_group3.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  param1;
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p1 = meta.cmu_group3.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  param1;
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p1 = meta.cmu_group3.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  param1;
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p1 = meta.cmu_group3.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key3)[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  param1;
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p1 = meta.cmu_group3.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = (meta.cmu_group3.compressed_key2 ^ meta.cmu_group3.compressed_key3)[15:0];
-            meta.cmu_group3.cmu1.param.p1 =  param1;
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p1 = meta.cmu_group3.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -1492,40 +1528,40 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu1.task_id = task_id;
             meta.cmu_group3.cmu1.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu1.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu1.param.p2 =  param2;
+            meta.cmu_group3.cmu1.param.p2 = meta.cmu_group3.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -1572,6 +1608,12 @@ control CMU_Group3 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group3.cmu1.key = meta.cmu_group3.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group3.cmu1.param.p1;
+          // meta.cmu_group3.cmu1.param.p1 = meta.cmu_group3.cmu1.param.p2;
+          // meta.cmu_group3.cmu1.param.p2 = temp;
+    //}
     @pragma stage 4
     table tbl_cmu1_preprocessing {
         key = {
@@ -1595,8 +1637,8 @@ control CMU_Group3 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group3.cmu1.param.p2){
                 value = value |+| meta.cmu_group3.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -1629,17 +1671,17 @@ control CMU_Group3 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group3.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+        meta.cmu_group3.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group3.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+        meta.cmu_group3.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group3.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+        meta.cmu_group3.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group3.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
+    //    meta.cmu_group3.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group3.cmu1.key[4:0]);
     //}
 
     @pragma stage 5
@@ -1659,39 +1701,39 @@ control CMU_Group3 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  param1;
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p1 = meta.cmu_group3.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  param1;
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p1 = meta.cmu_group3.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  param1;
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p1 = meta.cmu_group3.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  param1;
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p1 = meta.cmu_group3.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key3)[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  param1;
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p1 = meta.cmu_group3.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = (meta.cmu_group3.compressed_key2 ^ meta.cmu_group3.compressed_key3)[15:0];
-            meta.cmu_group3.cmu2.param.p1 =  param1;
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p1 = meta.cmu_group3.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -1699,40 +1741,40 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu2.task_id = task_id;
             meta.cmu_group3.cmu2.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu2.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu2.param.p2 =  param2;
+            meta.cmu_group3.cmu2.param.p2 = meta.cmu_group3.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -1779,6 +1821,12 @@ control CMU_Group3 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group3.cmu2.key = meta.cmu_group3.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group3.cmu2.param.p1;
+          // meta.cmu_group3.cmu2.param.p1 = meta.cmu_group3.cmu2.param.p2;
+          // meta.cmu_group3.cmu2.param.p2 = temp;
+    //}
     @pragma stage 4
     table tbl_cmu2_preprocessing {
         key = {
@@ -1802,8 +1850,8 @@ control CMU_Group3 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group3.cmu2.param.p2){
                 value = value |+| meta.cmu_group3.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -1836,17 +1884,17 @@ control CMU_Group3 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group3.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+        meta.cmu_group3.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group3.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+        meta.cmu_group3.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group3.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+        meta.cmu_group3.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group3.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
+    //    meta.cmu_group3.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group3.cmu2.key[4:0]);
     //}
 
     @pragma stage 5
@@ -1866,39 +1914,39 @@ control CMU_Group3 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  param1;
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p1 = meta.cmu_group3.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  param1;
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p1 = meta.cmu_group3.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  param1;
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p1 = meta.cmu_group3.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key2)[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  param1;
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p1 = meta.cmu_group3.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = (meta.cmu_group3.compressed_key1 ^ meta.cmu_group3.compressed_key3)[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  param1;
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p1 = meta.cmu_group3.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = (meta.cmu_group3.compressed_key2 ^ meta.cmu_group3.compressed_key3)[15:0];
-            meta.cmu_group3.cmu3.param.p1 =  param1;
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p1 = meta.cmu_group3.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -1906,40 +1954,40 @@ control CMU_Group3 ( in header_t hdr,
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key1[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key2[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key3[15:0];
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key1[15:0];
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group3.cmu3.task_id = task_id;
             meta.cmu_group3.cmu3.key[15:0] = meta.cmu_group3.compressed_key3[15:0];
             meta.cmu_group3.cmu3.param.p1 =  meta.cmu_group3.compressed_key2[15:0];
-            meta.cmu_group3.cmu3.param.p2 =  param2;
+            meta.cmu_group3.cmu3.param.p2 = meta.cmu_group3.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -1986,6 +2034,12 @@ control CMU_Group3 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group3.cmu3.key = meta.cmu_group3.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group3.cmu3.param.p1;
+          // meta.cmu_group3.cmu3.param.p1 = meta.cmu_group3.cmu3.param.p2;
+          // meta.cmu_group3.cmu3.param.p2 = temp;
+    //}
     @pragma stage 4
     table tbl_cmu3_preprocessing {
         key = {
@@ -2009,8 +2063,8 @@ control CMU_Group3 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group3.cmu3.param.p2){
                 value = value |+| meta.cmu_group3.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -2043,17 +2097,17 @@ control CMU_Group3 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group3.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+        meta.cmu_group3.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group3.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+        meta.cmu_group3.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group3.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+        meta.cmu_group3.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group3.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
+    //    meta.cmu_group3.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group3.cmu3.key[4:0]);
     //}
 
     @pragma stage 5
@@ -2147,39 +2201,39 @@ control CMU_Group4 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  param1;
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p1 = meta.cmu_group4.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  param1;
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p1 = meta.cmu_group4.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu1_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  param1;
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p1 = meta.cmu_group4.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  param1;
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p1 = meta.cmu_group4.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key3)[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  param1;
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p1 = meta.cmu_group4.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu1_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = (meta.cmu_group4.compressed_key2 ^ meta.cmu_group4.compressed_key3)[15:0];
-            meta.cmu_group4.cmu1.param.p1 =  param1;
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p1 = meta.cmu_group4.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -2187,40 +2241,40 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu1_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu1_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu1.task_id = task_id;
             meta.cmu_group4.cmu1.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu1.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu1.param.p2 =  param2;
+            meta.cmu_group4.cmu1.param.p2 = meta.cmu_group4.cmu1.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -2267,6 +2321,12 @@ control CMU_Group4 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group4.cmu1.key = meta.cmu_group4.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group4.cmu1.param.p1;
+          // meta.cmu_group4.cmu1.param.p1 = meta.cmu_group4.cmu1.param.p2;
+          // meta.cmu_group4.cmu1.param.p2 = temp;
+    //}
     @pragma stage 5
     table tbl_cmu1_preprocessing {
         key = {
@@ -2290,8 +2350,8 @@ control CMU_Group4 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group4.cmu1.param.p2){
                 value = value |+| meta.cmu_group4.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -2324,17 +2384,17 @@ control CMU_Group4 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group4.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+        meta.cmu_group4.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group4.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+        meta.cmu_group4.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group4.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+        meta.cmu_group4.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group4.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
+    //    meta.cmu_group4.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group4.cmu1.key[4:0]);
     //}
 
     @pragma stage 6
@@ -2354,39 +2414,39 @@ control CMU_Group4 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  param1;
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p1 = meta.cmu_group4.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  param1;
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p1 = meta.cmu_group4.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu2_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  param1;
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p1 = meta.cmu_group4.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  param1;
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p1 = meta.cmu_group4.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key3)[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  param1;
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p1 = meta.cmu_group4.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu2_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = (meta.cmu_group4.compressed_key2 ^ meta.cmu_group4.compressed_key3)[15:0];
-            meta.cmu_group4.cmu2.param.p1 =  param1;
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p1 = meta.cmu_group4.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -2394,40 +2454,40 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu2_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu2_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu2.task_id = task_id;
             meta.cmu_group4.cmu2.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu2.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu2.param.p2 =  param2;
+            meta.cmu_group4.cmu2.param.p2 = meta.cmu_group4.cmu2.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -2474,6 +2534,12 @@ control CMU_Group4 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group4.cmu2.key = meta.cmu_group4.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group4.cmu2.param.p1;
+          // meta.cmu_group4.cmu2.param.p1 = meta.cmu_group4.cmu2.param.p2;
+          // meta.cmu_group4.cmu2.param.p2 = temp;
+    //}
     @pragma stage 5
     table tbl_cmu2_preprocessing {
         key = {
@@ -2497,8 +2563,8 @@ control CMU_Group4 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group4.cmu2.param.p2){
                 value = value |+| meta.cmu_group4.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -2531,17 +2597,17 @@ control CMU_Group4 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group4.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+        meta.cmu_group4.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group4.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+        meta.cmu_group4.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group4.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+        meta.cmu_group4.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group4.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
+    //    meta.cmu_group4.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group4.cmu2.key[4:0]);
     //}
 
     @pragma stage 6
@@ -2561,39 +2627,39 @@ control CMU_Group4 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  param1;
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p1 = meta.cmu_group4.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  param1;
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p1 = meta.cmu_group4.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
     action set_cmu3_hkey3_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  param1;
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p1 = meta.cmu_group4.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey12_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key2)[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  param1;
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p1 = meta.cmu_group4.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey13_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = (meta.cmu_group4.compressed_key1 ^ meta.cmu_group4.compressed_key3)[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  param1;
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p1 = meta.cmu_group4.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
     action set_cmu3_hkey23_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = (meta.cmu_group4.compressed_key2 ^ meta.cmu_group4.compressed_key3)[15:0];
-            meta.cmu_group4.cmu3.param.p1 =  param1;
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p1 = meta.cmu_group4.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -2601,40 +2667,40 @@ control CMU_Group4 ( in header_t hdr,
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey1_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key1[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
     action set_cmu3_hkey2_hparam3(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key2[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key3[15:0];
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam1(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key1[15:0];
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
     action set_cmu3_hkey3_hparam2(bit<8> task_id, bit<16> param2) {
             meta.cmu_group4.cmu3.task_id = task_id;
             meta.cmu_group4.cmu3.key[15:0] = meta.cmu_group4.compressed_key3[15:0];
             meta.cmu_group4.cmu3.param.p1 =  meta.cmu_group4.compressed_key2[15:0];
-            meta.cmu_group4.cmu3.param.p2 =  param2;
+            meta.cmu_group4.cmu3.param.p2 = meta.cmu_group4.cmu3.param.p2 + param2;   // ADD is more flexible than SET.
     }
 
 
@@ -2681,6 +2747,12 @@ control CMU_Group4 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group4.cmu3.key = meta.cmu_group4.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group4.cmu3.param.p1;
+          // meta.cmu_group4.cmu3.param.p1 = meta.cmu_group4.cmu3.param.p2;
+          // meta.cmu_group4.cmu3.param.p2 = temp;
+    //}
     @pragma stage 5
     table tbl_cmu3_preprocessing {
         key = {
@@ -2704,8 +2776,8 @@ control CMU_Group4 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group4.cmu3.param.p2){
                 value = value |+| meta.cmu_group4.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -2738,17 +2810,17 @@ control CMU_Group4 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group4.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+        meta.cmu_group4.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group4.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+        meta.cmu_group4.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group4.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+        meta.cmu_group4.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group4.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
+    //    meta.cmu_group4.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group4.cmu3.key[4:0]);
     //}
 
     @pragma stage 6
@@ -2830,14 +2902,14 @@ control CMU_Group5 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  param1;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p1 = meta.cmu_group5.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  param1;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p1 = meta.cmu_group5.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -2846,7 +2918,7 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -2854,7 +2926,7 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -2864,37 +2936,37 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param.p1 =  (bit<16>) intr_md.pkt_length;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2; 
     }
     action set_cmu1_hkey2_pkt_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu1.param.p1 =  (bit<16>) intr_md.pkt_length;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2; 
     }
     action set_cmu1_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2; 
     }
     action set_cmu1_hkey2_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2; 
     }
     action set_cmu1_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
             meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_tstamp[15:0];;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2; 
     }
     action set_cmu1_hkey2_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu1.task_id = task_id;
             meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu1.param.p1 =  intr_md.enq_tstamp[15:0];;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group5.cmu1.param.p2 = meta.cmu_group5.cmu1.param.p2 + param2; 
     }
     
     @pragma stage 5
@@ -2932,6 +3004,12 @@ control CMU_Group5 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group5.cmu1.key = meta.cmu_group5.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group5.cmu1.param.p1;
+          // meta.cmu_group5.cmu1.param.p1 = meta.cmu_group5.cmu1.param.p2;
+          // meta.cmu_group5.cmu1.param.p2 = temp;
+    //}
     @pragma stage 6
     table tbl_cmu1_preprocessing {
         key = {
@@ -2955,8 +3033,8 @@ control CMU_Group5 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group5.cmu1.param.p2){
                 value = value |+| meta.cmu_group5.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -2989,17 +3067,18 @@ control CMU_Group5 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group5.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group5.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        // chain the CMU Group 5 and CMU Group 9
+        meta.cmu_group9.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group5.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group5.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+    //    meta.cmu_group5.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
     //}
 
     @pragma stage 7
@@ -3019,14 +3098,14 @@ control CMU_Group5 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
-            meta.cmu_group5.cmu2.param.p1 =  param1;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p1 = meta.cmu_group5.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p1 =  param1;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p1 = meta.cmu_group5.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -3035,7 +3114,7 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
             meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3043,7 +3122,7 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3053,37 +3132,37 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
             meta.cmu_group5.cmu2.param.p1 =  (bit<16>) intr_md.pkt_length;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2; 
     }
     action set_cmu2_hkey2_pkt_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu2.param.p1 =  (bit<16>) intr_md.pkt_length;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2; 
     }
     action set_cmu2_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
             meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2; 
     }
     action set_cmu2_hkey2_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2; 
     }
     action set_cmu2_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
             meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_tstamp[15:0];;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2; 
     }
     action set_cmu2_hkey2_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu2.task_id = task_id;
             meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu2.param.p1 =  intr_md.enq_tstamp[15:0];;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group5.cmu2.param.p2 = meta.cmu_group5.cmu2.param.p2 + param2; 
     }
     
     @pragma stage 5
@@ -3121,6 +3200,12 @@ control CMU_Group5 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group5.cmu2.key = meta.cmu_group5.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group5.cmu2.param.p1;
+          // meta.cmu_group5.cmu2.param.p1 = meta.cmu_group5.cmu2.param.p2;
+          // meta.cmu_group5.cmu2.param.p2 = temp;
+    //}
     @pragma stage 6
     table tbl_cmu2_preprocessing {
         key = {
@@ -3144,8 +3229,8 @@ control CMU_Group5 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group5.cmu2.param.p2){
                 value = value |+| meta.cmu_group5.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -3178,17 +3263,18 @@ control CMU_Group5 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group5.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group5.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        // chain the CMU Group 5 and CMU Group 9
+        meta.cmu_group9.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group5.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group5.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+    //    meta.cmu_group5.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
     //}
 
     @pragma stage 7
@@ -3208,14 +3294,14 @@ control CMU_Group5 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
-            meta.cmu_group5.cmu3.param.p1 =  param1;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p1 = meta.cmu_group5.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p1 =  param1;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p1 = meta.cmu_group5.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -3224,7 +3310,7 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
             meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3232,7 +3318,7 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3242,37 +3328,37 @@ control CMU_Group5 ( in header_t hdr,
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
             meta.cmu_group5.cmu3.param.p1 =  (bit<16>) intr_md.pkt_length;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2; 
     }
     action set_cmu3_hkey2_pkt_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu3.param.p1 =  (bit<16>) intr_md.pkt_length;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2; 
     }
     action set_cmu3_hkey1_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
             meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2; 
     }
     action set_cmu3_hkey2_queue_size(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_qdepth[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2; 
     }
     action set_cmu3_hkey1_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
             meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_tstamp[15:0];;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2; 
     }
     action set_cmu3_hkey2_timestamp(bit<8> task_id, bit<16> param2) {
             meta.cmu_group5.cmu3.task_id = task_id;
             meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
             meta.cmu_group5.cmu3.param.p1 =  intr_md.enq_tstamp[15:0];;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group5.cmu3.param.p2 = meta.cmu_group5.cmu3.param.p2 + param2; 
     }
     
     @pragma stage 5
@@ -3310,6 +3396,12 @@ control CMU_Group5 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group5.cmu3.key = meta.cmu_group5.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group5.cmu3.param.p1;
+          // meta.cmu_group5.cmu3.param.p1 = meta.cmu_group5.cmu3.param.p2;
+          // meta.cmu_group5.cmu3.param.p2 = temp;
+    //}
     @pragma stage 6
     table tbl_cmu3_preprocessing {
         key = {
@@ -3333,8 +3425,8 @@ control CMU_Group5 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group5.cmu3.param.p2){
                 value = value |+| meta.cmu_group5.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -3367,17 +3459,18 @@ control CMU_Group5 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group5.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group5.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        // chain the CMU Group 5 and CMU Group 9
+        meta.cmu_group9.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group5.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group5.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+    //    meta.cmu_group5.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
     //}
 
     @pragma stage 7
@@ -3458,14 +3551,14 @@ control CMU_Group6 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group6.cmu1.task_id = task_id;
             meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu1.param.p1 =  param1;
-            meta.cmu_group6.cmu1.param.p2 =  param2;
+            meta.cmu_group6.cmu1.param.p1 = meta.cmu_group6.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group6.cmu1.param.p2 = meta.cmu_group6.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group6.cmu1.task_id = task_id;
             meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu1.param.p1 =  param1;
-            meta.cmu_group6.cmu1.param.p2 =  param2;
+            meta.cmu_group6.cmu1.param.p1 = meta.cmu_group6.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group6.cmu1.param.p2 = meta.cmu_group6.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -3474,7 +3567,7 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu1.task_id = task_id;
             meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key1[15:0];
             meta.cmu_group6.cmu1.param.p1 =  meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu1.param.p2 =  param2;
+            meta.cmu_group6.cmu1.param.p2 = meta.cmu_group6.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3482,7 +3575,7 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu1.task_id = task_id;
             meta.cmu_group6.cmu1.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
             meta.cmu_group6.cmu1.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu1.param.p2 =  param2;
+            meta.cmu_group6.cmu1.param.p2 = meta.cmu_group6.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3521,6 +3614,12 @@ control CMU_Group6 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group6.cmu1.key = meta.cmu_group6.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group6.cmu1.param.p1;
+          // meta.cmu_group6.cmu1.param.p1 = meta.cmu_group6.cmu1.param.p2;
+          // meta.cmu_group6.cmu1.param.p2 = temp;
+    //}
     @pragma stage 7
     table tbl_cmu1_preprocessing {
         key = {
@@ -3544,8 +3643,8 @@ control CMU_Group6 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group6.cmu1.param.p2){
                 value = value |+| meta.cmu_group6.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -3578,17 +3677,17 @@ control CMU_Group6 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group6.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+        meta.cmu_group6.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group6.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+        meta.cmu_group6.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group6.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+        meta.cmu_group6.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group6.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
+    //    meta.cmu_group6.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group6.cmu1.key[4:0]);
     //}
 
     @pragma stage 8
@@ -3608,14 +3707,14 @@ control CMU_Group6 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group6.cmu2.task_id = task_id;
             meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key1[23:8];
-            meta.cmu_group6.cmu2.param.p1 =  param1;
-            meta.cmu_group6.cmu2.param.p2 =  param2;
+            meta.cmu_group6.cmu2.param.p1 = meta.cmu_group6.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group6.cmu2.param.p2 = meta.cmu_group6.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group6.cmu2.task_id = task_id;
             meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu2.param.p1 =  param1;
-            meta.cmu_group6.cmu2.param.p2 =  param2;
+            meta.cmu_group6.cmu2.param.p1 = meta.cmu_group6.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group6.cmu2.param.p2 = meta.cmu_group6.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -3624,7 +3723,7 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu2.task_id = task_id;
             meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key1[23:8];
             meta.cmu_group6.cmu2.param.p1 =  meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu2.param.p2 =  param2;
+            meta.cmu_group6.cmu2.param.p2 = meta.cmu_group6.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3632,7 +3731,7 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu2.task_id = task_id;
             meta.cmu_group6.cmu2.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
             meta.cmu_group6.cmu2.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu2.param.p2 =  param2;
+            meta.cmu_group6.cmu2.param.p2 = meta.cmu_group6.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3671,6 +3770,12 @@ control CMU_Group6 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group6.cmu2.key = meta.cmu_group6.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group6.cmu2.param.p1;
+          // meta.cmu_group6.cmu2.param.p1 = meta.cmu_group6.cmu2.param.p2;
+          // meta.cmu_group6.cmu2.param.p2 = temp;
+    //}
     @pragma stage 7
     table tbl_cmu2_preprocessing {
         key = {
@@ -3694,8 +3799,8 @@ control CMU_Group6 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group6.cmu2.param.p2){
                 value = value |+| meta.cmu_group6.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -3728,17 +3833,17 @@ control CMU_Group6 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group6.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+        meta.cmu_group6.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group6.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+        meta.cmu_group6.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group6.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+        meta.cmu_group6.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group6.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
+    //    meta.cmu_group6.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group6.cmu2.key[4:0]);
     //}
 
     @pragma stage 8
@@ -3758,14 +3863,14 @@ control CMU_Group6 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group6.cmu3.task_id = task_id;
             meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key1[31:16];
-            meta.cmu_group6.cmu3.param.p1 =  param1;
-            meta.cmu_group6.cmu3.param.p2 =  param2;
+            meta.cmu_group6.cmu3.param.p1 = meta.cmu_group6.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group6.cmu3.param.p2 = meta.cmu_group6.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group6.cmu3.task_id = task_id;
             meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu3.param.p1 =  param1;
-            meta.cmu_group6.cmu3.param.p2 =  param2;
+            meta.cmu_group6.cmu3.param.p1 = meta.cmu_group6.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group6.cmu3.param.p2 = meta.cmu_group6.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -3774,7 +3879,7 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu3.task_id = task_id;
             meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key1[31:16];
             meta.cmu_group6.cmu3.param.p1 =  meta.cmu_group6.compressed_key2[15:0];
-            meta.cmu_group6.cmu3.param.p2 =  param2;
+            meta.cmu_group6.cmu3.param.p2 = meta.cmu_group6.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3782,7 +3887,7 @@ control CMU_Group6 ( in header_t hdr,
             meta.cmu_group6.cmu3.task_id = task_id;
             meta.cmu_group6.cmu3.key[15:0] = meta.cmu_group6.compressed_key2[15:0];
             meta.cmu_group6.cmu3.param.p1 =  meta.cmu_group6.compressed_key1[15:0];
-            meta.cmu_group6.cmu3.param.p2 =  param2;
+            meta.cmu_group6.cmu3.param.p2 = meta.cmu_group6.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3821,6 +3926,12 @@ control CMU_Group6 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group6.cmu3.key = meta.cmu_group6.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group6.cmu3.param.p1;
+          // meta.cmu_group6.cmu3.param.p1 = meta.cmu_group6.cmu3.param.p2;
+          // meta.cmu_group6.cmu3.param.p2 = temp;
+    //}
     @pragma stage 7
     table tbl_cmu3_preprocessing {
         key = {
@@ -3844,8 +3955,8 @@ control CMU_Group6 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group6.cmu3.param.p2){
                 value = value |+| meta.cmu_group6.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -3878,17 +3989,17 @@ control CMU_Group6 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group6.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+        meta.cmu_group6.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group6.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+        meta.cmu_group6.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group6.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+        meta.cmu_group6.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group6.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
+    //    meta.cmu_group6.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group6.cmu3.key[4:0]);
     //}
 
     @pragma stage 8
@@ -3969,14 +4080,14 @@ control CMU_Group7 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group7.cmu1.task_id = task_id;
             meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu1.param.p1 =  param1;
-            meta.cmu_group7.cmu1.param.p2 =  param2;
+            meta.cmu_group7.cmu1.param.p1 = meta.cmu_group7.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group7.cmu1.param.p2 = meta.cmu_group7.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group7.cmu1.task_id = task_id;
             meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu1.param.p1 =  param1;
-            meta.cmu_group7.cmu1.param.p2 =  param2;
+            meta.cmu_group7.cmu1.param.p1 = meta.cmu_group7.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group7.cmu1.param.p2 = meta.cmu_group7.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -3985,7 +4096,7 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu1.task_id = task_id;
             meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key1[15:0];
             meta.cmu_group7.cmu1.param.p1 =  meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu1.param.p2 =  param2;
+            meta.cmu_group7.cmu1.param.p2 = meta.cmu_group7.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -3993,7 +4104,7 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu1.task_id = task_id;
             meta.cmu_group7.cmu1.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
             meta.cmu_group7.cmu1.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu1.param.p2 =  param2;
+            meta.cmu_group7.cmu1.param.p2 = meta.cmu_group7.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4032,6 +4143,12 @@ control CMU_Group7 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group7.cmu1.key = meta.cmu_group7.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group7.cmu1.param.p1;
+          // meta.cmu_group7.cmu1.param.p1 = meta.cmu_group7.cmu1.param.p2;
+          // meta.cmu_group7.cmu1.param.p2 = temp;
+    //}
     @pragma stage 8
     table tbl_cmu1_preprocessing {
         key = {
@@ -4055,8 +4172,8 @@ control CMU_Group7 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group7.cmu1.param.p2){
                 value = value |+| meta.cmu_group7.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -4089,17 +4206,17 @@ control CMU_Group7 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group7.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+        meta.cmu_group7.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group7.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+        meta.cmu_group7.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group7.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+        meta.cmu_group7.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group7.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
+    //    meta.cmu_group7.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group7.cmu1.key[4:0]);
     //}
 
     @pragma stage 9
@@ -4119,14 +4236,14 @@ control CMU_Group7 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group7.cmu2.task_id = task_id;
             meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key1[23:8];
-            meta.cmu_group7.cmu2.param.p1 =  param1;
-            meta.cmu_group7.cmu2.param.p2 =  param2;
+            meta.cmu_group7.cmu2.param.p1 = meta.cmu_group7.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group7.cmu2.param.p2 = meta.cmu_group7.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group7.cmu2.task_id = task_id;
             meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu2.param.p1 =  param1;
-            meta.cmu_group7.cmu2.param.p2 =  param2;
+            meta.cmu_group7.cmu2.param.p1 = meta.cmu_group7.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group7.cmu2.param.p2 = meta.cmu_group7.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -4135,7 +4252,7 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu2.task_id = task_id;
             meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key1[23:8];
             meta.cmu_group7.cmu2.param.p1 =  meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu2.param.p2 =  param2;
+            meta.cmu_group7.cmu2.param.p2 = meta.cmu_group7.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4143,7 +4260,7 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu2.task_id = task_id;
             meta.cmu_group7.cmu2.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
             meta.cmu_group7.cmu2.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu2.param.p2 =  param2;
+            meta.cmu_group7.cmu2.param.p2 = meta.cmu_group7.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4182,6 +4299,12 @@ control CMU_Group7 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group7.cmu2.key = meta.cmu_group7.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group7.cmu2.param.p1;
+          // meta.cmu_group7.cmu2.param.p1 = meta.cmu_group7.cmu2.param.p2;
+          // meta.cmu_group7.cmu2.param.p2 = temp;
+    //}
     @pragma stage 8
     table tbl_cmu2_preprocessing {
         key = {
@@ -4205,8 +4328,8 @@ control CMU_Group7 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group7.cmu2.param.p2){
                 value = value |+| meta.cmu_group7.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -4239,17 +4362,17 @@ control CMU_Group7 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group7.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+        meta.cmu_group7.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group7.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+        meta.cmu_group7.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group7.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+        meta.cmu_group7.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group7.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
+    //    meta.cmu_group7.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group7.cmu2.key[4:0]);
     //}
 
     @pragma stage 9
@@ -4269,14 +4392,14 @@ control CMU_Group7 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group7.cmu3.task_id = task_id;
             meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key1[31:16];
-            meta.cmu_group7.cmu3.param.p1 =  param1;
-            meta.cmu_group7.cmu3.param.p2 =  param2;
+            meta.cmu_group7.cmu3.param.p1 = meta.cmu_group7.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group7.cmu3.param.p2 = meta.cmu_group7.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group7.cmu3.task_id = task_id;
             meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu3.param.p1 =  param1;
-            meta.cmu_group7.cmu3.param.p2 =  param2;
+            meta.cmu_group7.cmu3.param.p1 = meta.cmu_group7.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group7.cmu3.param.p2 = meta.cmu_group7.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -4285,7 +4408,7 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu3.task_id = task_id;
             meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key1[31:16];
             meta.cmu_group7.cmu3.param.p1 =  meta.cmu_group7.compressed_key2[15:0];
-            meta.cmu_group7.cmu3.param.p2 =  param2;
+            meta.cmu_group7.cmu3.param.p2 = meta.cmu_group7.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4293,7 +4416,7 @@ control CMU_Group7 ( in header_t hdr,
             meta.cmu_group7.cmu3.task_id = task_id;
             meta.cmu_group7.cmu3.key[15:0] = meta.cmu_group7.compressed_key2[15:0];
             meta.cmu_group7.cmu3.param.p1 =  meta.cmu_group7.compressed_key1[15:0];
-            meta.cmu_group7.cmu3.param.p2 =  param2;
+            meta.cmu_group7.cmu3.param.p2 = meta.cmu_group7.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4332,6 +4455,12 @@ control CMU_Group7 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group7.cmu3.key = meta.cmu_group7.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group7.cmu3.param.p1;
+          // meta.cmu_group7.cmu3.param.p1 = meta.cmu_group7.cmu3.param.p2;
+          // meta.cmu_group7.cmu3.param.p2 = temp;
+    //}
     @pragma stage 8
     table tbl_cmu3_preprocessing {
         key = {
@@ -4355,8 +4484,8 @@ control CMU_Group7 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group7.cmu3.param.p2){
                 value = value |+| meta.cmu_group7.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -4389,17 +4518,17 @@ control CMU_Group7 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group7.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+        meta.cmu_group7.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group7.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+        meta.cmu_group7.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group7.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+        meta.cmu_group7.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group7.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
+    //    meta.cmu_group7.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group7.cmu3.key[4:0]);
     //}
 
     @pragma stage 9
@@ -4480,14 +4609,14 @@ control CMU_Group8 ( in header_t hdr,
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group8.cmu1.task_id = task_id;
             meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu1.param.p1 =  param1;
-            meta.cmu_group8.cmu1.param.p2 =  param2;
+            meta.cmu_group8.cmu1.param.p1 = meta.cmu_group8.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group8.cmu1.param.p2 = meta.cmu_group8.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group8.cmu1.task_id = task_id;
             meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu1.param.p1 =  param1;
-            meta.cmu_group8.cmu1.param.p2 =  param2;
+            meta.cmu_group8.cmu1.param.p1 = meta.cmu_group8.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group8.cmu1.param.p2 = meta.cmu_group8.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -4496,7 +4625,7 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu1.task_id = task_id;
             meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key1[15:0];
             meta.cmu_group8.cmu1.param.p1 =  meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu1.param.p2 =  param2;
+            meta.cmu_group8.cmu1.param.p2 = meta.cmu_group8.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4504,7 +4633,7 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu1.task_id = task_id;
             meta.cmu_group8.cmu1.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
             meta.cmu_group8.cmu1.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu1.param.p2 =  param2;
+            meta.cmu_group8.cmu1.param.p2 = meta.cmu_group8.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4543,6 +4672,12 @@ control CMU_Group8 ( in header_t hdr,
     action process_cmu1_key(bit<16> offset){
         meta.cmu_group8.cmu1.key = meta.cmu_group8.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group8.cmu1.param.p1;
+          // meta.cmu_group8.cmu1.param.p1 = meta.cmu_group8.cmu1.param.p2;
+          // meta.cmu_group8.cmu1.param.p2 = temp;
+    //}
     @pragma stage 9
     table tbl_cmu1_preprocessing {
         key = {
@@ -4566,8 +4701,8 @@ control CMU_Group8 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group8.cmu1.param.p2){
                 value = value |+| meta.cmu_group8.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
@@ -4600,17 +4735,17 @@ control CMU_Group8 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group8.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+        meta.cmu_group8.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group8.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+        meta.cmu_group8.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group8.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+        meta.cmu_group8.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group8.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
+    //    meta.cmu_group8.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group8.cmu1.key[4:0]);
     //}
 
     @pragma stage 10
@@ -4630,14 +4765,14 @@ control CMU_Group8 ( in header_t hdr,
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group8.cmu2.task_id = task_id;
             meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key1[23:8];
-            meta.cmu_group8.cmu2.param.p1 =  param1;
-            meta.cmu_group8.cmu2.param.p2 =  param2;
+            meta.cmu_group8.cmu2.param.p1 = meta.cmu_group8.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group8.cmu2.param.p2 = meta.cmu_group8.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group8.cmu2.task_id = task_id;
             meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu2.param.p1 =  param1;
-            meta.cmu_group8.cmu2.param.p2 =  param2;
+            meta.cmu_group8.cmu2.param.p1 = meta.cmu_group8.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group8.cmu2.param.p2 = meta.cmu_group8.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -4646,7 +4781,7 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu2.task_id = task_id;
             meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key1[23:8];
             meta.cmu_group8.cmu2.param.p1 =  meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu2.param.p2 =  param2;
+            meta.cmu_group8.cmu2.param.p2 = meta.cmu_group8.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4654,7 +4789,7 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu2.task_id = task_id;
             meta.cmu_group8.cmu2.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
             meta.cmu_group8.cmu2.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu2.param.p2 =  param2;
+            meta.cmu_group8.cmu2.param.p2 = meta.cmu_group8.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4693,6 +4828,12 @@ control CMU_Group8 ( in header_t hdr,
     action process_cmu2_key(bit<16> offset){
         meta.cmu_group8.cmu2.key = meta.cmu_group8.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group8.cmu2.param.p1;
+          // meta.cmu_group8.cmu2.param.p1 = meta.cmu_group8.cmu2.param.p2;
+          // meta.cmu_group8.cmu2.param.p2 = temp;
+    //}
     @pragma stage 9
     table tbl_cmu2_preprocessing {
         key = {
@@ -4716,8 +4857,8 @@ control CMU_Group8 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group8.cmu2.param.p2){
                 value = value |+| meta.cmu_group8.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
@@ -4750,17 +4891,17 @@ control CMU_Group8 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group8.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+        meta.cmu_group8.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group8.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+        meta.cmu_group8.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group8.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+        meta.cmu_group8.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group8.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
+    //    meta.cmu_group8.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group8.cmu2.key[4:0]);
     //}
 
     @pragma stage 10
@@ -4780,14 +4921,14 @@ control CMU_Group8 ( in header_t hdr,
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group8.cmu3.task_id = task_id;
             meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key1[31:16];
-            meta.cmu_group8.cmu3.param.p1 =  param1;
-            meta.cmu_group8.cmu3.param.p2 =  param2;
+            meta.cmu_group8.cmu3.param.p1 = meta.cmu_group8.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group8.cmu3.param.p2 = meta.cmu_group8.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
             meta.cmu_group8.cmu3.task_id = task_id;
             meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu3.param.p1 =  param1;
-            meta.cmu_group8.cmu3.param.p2 =  param2;
+            meta.cmu_group8.cmu3.param.p1 = meta.cmu_group8.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group8.cmu3.param.p2 = meta.cmu_group8.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
@@ -4796,7 +4937,7 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu3.task_id = task_id;
             meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key1[31:16];
             meta.cmu_group8.cmu3.param.p1 =  meta.cmu_group8.compressed_key2[15:0];
-            meta.cmu_group8.cmu3.param.p2 =  param2;
+            meta.cmu_group8.cmu3.param.p2 = meta.cmu_group8.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4804,7 +4945,7 @@ control CMU_Group8 ( in header_t hdr,
             meta.cmu_group8.cmu3.task_id = task_id;
             meta.cmu_group8.cmu3.key[15:0] = meta.cmu_group8.compressed_key2[15:0];
             meta.cmu_group8.cmu3.param.p1 =  meta.cmu_group8.compressed_key1[15:0];
-            meta.cmu_group8.cmu3.param.p2 =  param2;
+            meta.cmu_group8.cmu3.param.p2 = meta.cmu_group8.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -4843,6 +4984,12 @@ control CMU_Group8 ( in header_t hdr,
     action process_cmu3_key(bit<16> offset){
         meta.cmu_group8.cmu3.key = meta.cmu_group8.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group8.cmu3.param.p1;
+          // meta.cmu_group8.cmu3.param.p1 = meta.cmu_group8.cmu3.param.p2;
+          // meta.cmu_group8.cmu3.param.p2 = temp;
+    //}
     @pragma stage 9
     table tbl_cmu3_preprocessing {
         key = {
@@ -4866,8 +5013,8 @@ control CMU_Group8 ( in header_t hdr,
             result = 0;
             if(value < meta.cmu_group8.cmu3.param.p2){
                 value = value |+| meta.cmu_group8.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
@@ -4900,17 +5047,17 @@ control CMU_Group8 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group8.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+        meta.cmu_group8.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group8.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+        meta.cmu_group8.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group8.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+        meta.cmu_group8.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group8.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
+    //    meta.cmu_group8.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group8.cmu3.key[4:0]);
     //}
 
     @pragma stage 10
@@ -4948,9 +5095,6 @@ control CMU_Group8 ( in header_t hdr,
 }
 // Definition for CMU-Group9
 
-// CMU_Group 9 reuses the metadata of CMU Group 5.
-//   a) Chain the two groups to enable inter-group collaboration.
-//   b) Reuse PHV bits. 
 
 control CMU_Group9 ( in header_t hdr,
                                in egress_intrinsic_metadata_t intr_md,
@@ -4966,10 +5110,10 @@ control CMU_Group9 ( in header_t hdr,
     //  a) Firstly, use different sub-range in the initialization stage.
     //  b) Secondly, add salts to hash outputs in the control plane.
     action hash1(){
-        meta.cmu_group5.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group9.compressed_key1 = hash_unit1.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
     action hash2(){
-        meta.cmu_group5.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
+        meta.cmu_group9.compressed_key2 = hash_unit2.get({ hdr.ipv4.src_addr,hdr.ipv4.dst_addr,hdr.ports.src_port,hdr.ports.dst_port,hdr.ipv4.protocol });
     }
 
     @pragma stage 8
@@ -4992,33 +5136,33 @@ control CMU_Group9 ( in header_t hdr,
     // Definition for Other Stages of Each CMU (SALU).
     // Initialization stage of CMU0.
     action set_cmu1_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  param1;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group9.cmu1.task_id = task_id;
+            meta.cmu_group9.cmu1.key[15:0] = meta.cmu_group9.compressed_key1[15:0];
+            meta.cmu_group9.cmu1.param.p1 = meta.cmu_group9.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group9.cmu1.param.p2 = meta.cmu_group9.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu1_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  param1;
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group9.cmu1.task_id = task_id;
+            meta.cmu_group9.cmu1.key[15:0] = meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu1.param.p1 = meta.cmu_group9.cmu1.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group9.cmu1.param.p2 = meta.cmu_group9.cmu1.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
 
     action set_cmu1_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group9.cmu1.task_id = task_id;
+            meta.cmu_group9.cmu1.key[15:0] = meta.cmu_group9.compressed_key1[15:0];
+            meta.cmu_group9.cmu1.param.p1 =  meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu1.param.p2 = meta.cmu_group9.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
     action set_cmu1_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu1.task_id = task_id;
-            meta.cmu_group5.cmu1.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu1.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu1.param.p2 =  param2;
+            meta.cmu_group9.cmu1.task_id = task_id;
+            meta.cmu_group9.cmu1.key[15:0] = meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu1.param.p1 =  meta.cmu_group9.compressed_key1[15:0];
+            meta.cmu_group9.cmu1.param.p2 = meta.cmu_group9.cmu1.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -5051,18 +5195,24 @@ control CMU_Group9 ( in header_t hdr,
 
     // Pre-processing stage of CMU0.
     action process_cmu1_key_param(bit<16> offset, bit<16> code){
-        meta.cmu_group5.cmu1.key = meta.cmu_group5.cmu1.key + offset; // Implementing '-' by '+' overflow.
-        meta.cmu_group5.cmu1.param.p1 = code;
+        meta.cmu_group9.cmu1.key = meta.cmu_group9.cmu1.key + offset; // Implementing '-' by '+' overflow.
+        meta.cmu_group9.cmu1.param.p1 = code;
     }
     action process_cmu1_key(bit<16> offset){
-        meta.cmu_group5.cmu1.key = meta.cmu_group5.cmu1.key + offset; // Implementing '-' by '+' overflow.
+        meta.cmu_group9.cmu1.key = meta.cmu_group9.cmu1.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu1_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group9.cmu1.param.p1;
+          // meta.cmu_group9.cmu1.param.p1 = meta.cmu_group9.cmu1.param.p2;
+          // meta.cmu_group9.cmu1.param.p2 = temp;
+    //}
     @pragma stage 10
     table tbl_cmu1_preprocessing {
         key = {
-            meta.cmu_group5.cmu1.task_id : exact;
-            meta.cmu_group5.cmu1.key     : ternary;
-            meta.cmu_group5.cmu1.param.p1  : ternary;
+            meta.cmu_group9.cmu1.task_id : exact;
+            meta.cmu_group9.cmu1.key     : ternary;
+            meta.cmu_group9.cmu1.param.p1  : ternary;
         }
         actions = {
             no_action;
@@ -5078,29 +5228,29 @@ control CMU_Group9 ( in header_t hdr,
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
-            if(value < meta.cmu_group5.cmu1.param.p2){
-                value = value |+| meta.cmu_group5.cmu1.param.p1;
+            if(value < meta.cmu_group9.cmu1.param.p2){
+                value = value |+| meta.cmu_group9.cmu1.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_max = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
-            if(value < meta.cmu_group5.cmu1.param.p1){
-                value = meta.cmu_group5.cmu1.param.p1;
+            if(value < meta.cmu_group9.cmu1.param.p1){
+                value = meta.cmu_group9.cmu1.param.p1;
                 result = value;
             }
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu1_buckets) cmu1_op_and_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            if(meta.cmu_group5.cmu1.param.p2 == 1) // bitwise_and
+            if(meta.cmu_group9.cmu1.param.p2 == 1) // bitwise_and
             {
-                value = meta.cmu_group5.cmu1.param.p1 & value;
+                value = meta.cmu_group9.cmu1.param.p1 & value;
             }
             else{           // bitwise_or
-                value = meta.cmu_group5.cmu1.param.p1 | value;
+                value = meta.cmu_group9.cmu1.param.p1 | value;
             }
             result = value;
         }
@@ -5114,23 +5264,23 @@ control CMU_Group9 ( in header_t hdr,
     //};
 
     action op_cmu1_cond_add(){
-        meta.cmu_group5.cmu1.param.p1 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param.p2 = cmu1_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
     }
     action op_cmu1_and_or(){
-        meta.cmu_group5.cmu1.param.p1 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param.p2 = cmu1_op_and_or.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
     }
     action op_cmu1_max(){
-        meta.cmu_group5.cmu1.param.p1 = cmu1_op_max.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+        meta.cmu_group9.cmu1.param.p2 = cmu1_op_max.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
     }
 
     //action op_cmu1_reserved(){
-    //    meta.cmu_group5.cmu1.param.p1 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group5.cmu1.key[4:0]);
+    //    meta.cmu_group9.cmu1.param.p2 = cmu1_op_reserved.execute((bit<16>)meta.cmu_group9.cmu1.key[4:0]);
     //}
 
     @pragma stage 11
     table tbl_cmu1_operation {
         key = {
-            meta.cmu_group5.cmu1.task_id : exact;
+            meta.cmu_group9.cmu1.task_id : exact;
         }
         actions = {
             op_cmu1_cond_add;
@@ -5142,33 +5292,33 @@ control CMU_Group9 ( in header_t hdr,
     }
     // Initialization stage of CMU1.
     action set_cmu2_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
-            meta.cmu_group5.cmu2.param.p1 =  param1;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group9.cmu2.task_id = task_id;
+            meta.cmu_group9.cmu2.key[15:0] = meta.cmu_group9.compressed_key1[23:8];
+            meta.cmu_group9.cmu2.param.p1 = meta.cmu_group9.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group9.cmu2.param.p2 = meta.cmu_group9.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu2_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p1 =  param1;
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group9.cmu2.task_id = task_id;
+            meta.cmu_group9.cmu2.key[15:0] = meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu2.param.p1 = meta.cmu_group9.cmu2.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group9.cmu2.param.p2 = meta.cmu_group9.cmu2.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
 
     action set_cmu2_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key1[23:8];
-            meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group9.cmu2.task_id = task_id;
+            meta.cmu_group9.cmu2.key[15:0] = meta.cmu_group9.compressed_key1[23:8];
+            meta.cmu_group9.cmu2.param.p1 =  meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu2.param.p2 = meta.cmu_group9.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
     action set_cmu2_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu2.task_id = task_id;
-            meta.cmu_group5.cmu2.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu2.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu2.param.p2 =  param2;
+            meta.cmu_group9.cmu2.task_id = task_id;
+            meta.cmu_group9.cmu2.key[15:0] = meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu2.param.p1 =  meta.cmu_group9.compressed_key1[15:0];
+            meta.cmu_group9.cmu2.param.p2 = meta.cmu_group9.cmu2.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -5201,18 +5351,24 @@ control CMU_Group9 ( in header_t hdr,
 
     // Pre-processing stage of CMU1.
     action process_cmu2_key_param(bit<16> offset, bit<16> code){
-        meta.cmu_group5.cmu2.key = meta.cmu_group5.cmu2.key + offset; // Implementing '-' by '+' overflow.
-        meta.cmu_group5.cmu2.param.p1 = code;
+        meta.cmu_group9.cmu2.key = meta.cmu_group9.cmu2.key + offset; // Implementing '-' by '+' overflow.
+        meta.cmu_group9.cmu2.param.p1 = code;
     }
     action process_cmu2_key(bit<16> offset){
-        meta.cmu_group5.cmu2.key = meta.cmu_group5.cmu2.key + offset; // Implementing '-' by '+' overflow.
+        meta.cmu_group9.cmu2.key = meta.cmu_group9.cmu2.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu2_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group9.cmu2.param.p1;
+          // meta.cmu_group9.cmu2.param.p1 = meta.cmu_group9.cmu2.param.p2;
+          // meta.cmu_group9.cmu2.param.p2 = temp;
+    //}
     @pragma stage 10
     table tbl_cmu2_preprocessing {
         key = {
-            meta.cmu_group5.cmu2.task_id : exact;
-            meta.cmu_group5.cmu2.key     : ternary;
-            meta.cmu_group5.cmu2.param.p1  : ternary;
+            meta.cmu_group9.cmu2.task_id : exact;
+            meta.cmu_group9.cmu2.key     : ternary;
+            meta.cmu_group9.cmu2.param.p1  : ternary;
         }
         actions = {
             no_action;
@@ -5228,29 +5384,29 @@ control CMU_Group9 ( in header_t hdr,
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
-            if(value < meta.cmu_group5.cmu2.param.p2){
-                value = value |+| meta.cmu_group5.cmu2.param.p1;
+            if(value < meta.cmu_group9.cmu2.param.p2){
+                value = value |+| meta.cmu_group9.cmu2.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_max = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
-            if(value < meta.cmu_group5.cmu2.param.p1){
-                value = meta.cmu_group5.cmu2.param.p1;
+            if(value < meta.cmu_group9.cmu2.param.p1){
+                value = meta.cmu_group9.cmu2.param.p1;
                 result = value;
             }
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu2_buckets) cmu2_op_and_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            if(meta.cmu_group5.cmu2.param.p2 == 1) // bitwise_and
+            if(meta.cmu_group9.cmu2.param.p2 == 1) // bitwise_and
             {
-                value = meta.cmu_group5.cmu2.param.p1 & value;
+                value = meta.cmu_group9.cmu2.param.p1 & value;
             }
             else{           // bitwise_or
-                value = meta.cmu_group5.cmu2.param.p1 | value;
+                value = meta.cmu_group9.cmu2.param.p1 | value;
             }
             result = value;
         }
@@ -5264,23 +5420,23 @@ control CMU_Group9 ( in header_t hdr,
     //};
 
     action op_cmu2_cond_add(){
-        meta.cmu_group5.cmu2.param.p1 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param.p2 = cmu2_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
     }
     action op_cmu2_and_or(){
-        meta.cmu_group5.cmu2.param.p1 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param.p2 = cmu2_op_and_or.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
     }
     action op_cmu2_max(){
-        meta.cmu_group5.cmu2.param.p1 = cmu2_op_max.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+        meta.cmu_group9.cmu2.param.p2 = cmu2_op_max.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
     }
 
     //action op_cmu2_reserved(){
-    //    meta.cmu_group5.cmu2.param.p1 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group5.cmu2.key[4:0]);
+    //    meta.cmu_group9.cmu2.param.p2 = cmu2_op_reserved.execute((bit<16>)meta.cmu_group9.cmu2.key[4:0]);
     //}
 
     @pragma stage 11
     table tbl_cmu2_operation {
         key = {
-            meta.cmu_group5.cmu2.task_id : exact;
+            meta.cmu_group9.cmu2.task_id : exact;
         }
         actions = {
             op_cmu2_cond_add;
@@ -5292,33 +5448,33 @@ control CMU_Group9 ( in header_t hdr,
     }
     // Initialization stage of CMU2.
     action set_cmu3_hkey1_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
-            meta.cmu_group5.cmu3.param.p1 =  param1;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group9.cmu3.task_id = task_id;
+            meta.cmu_group9.cmu3.key[15:0] = meta.cmu_group9.compressed_key1[31:16];
+            meta.cmu_group9.cmu3.param.p1 = meta.cmu_group9.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group9.cmu3.param.p2 = meta.cmu_group9.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.                                                                    
     }
     action set_cmu3_hkey2_cparam(bit<8> task_id, bit<16> param1, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p1 =  param1;
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group9.cmu3.task_id = task_id;
+            meta.cmu_group9.cmu3.key[15:0] = meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu3.param.p1 = meta.cmu_group9.cmu3.param.p1 + param1;  // NOTE: ADD is more flexible than SET.
+            meta.cmu_group9.cmu3.param.p2 = meta.cmu_group9.cmu3.param.p2 + param2;  //       If we don't want to change params, we can add 0 to the params.     
     }
 
 
 
     action set_cmu3_hkey1_hparam2(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key1[31:16];
-            meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group9.cmu3.task_id = task_id;
+            meta.cmu_group9.cmu3.key[15:0] = meta.cmu_group9.compressed_key1[31:16];
+            meta.cmu_group9.cmu3.param.p1 =  meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu3.param.p2 = meta.cmu_group9.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
     action set_cmu3_hkey2_hparam1(bit<8> task_id, bit<16> param2) {
-            meta.cmu_group5.cmu3.task_id = task_id;
-            meta.cmu_group5.cmu3.key[15:0] = meta.cmu_group5.compressed_key2[15:0];
-            meta.cmu_group5.cmu3.param.p1 =  meta.cmu_group5.compressed_key1[15:0];
-            meta.cmu_group5.cmu3.param.p2 =  param2;
+            meta.cmu_group9.cmu3.task_id = task_id;
+            meta.cmu_group9.cmu3.key[15:0] = meta.cmu_group9.compressed_key2[15:0];
+            meta.cmu_group9.cmu3.param.p1 =  meta.cmu_group9.compressed_key1[15:0];
+            meta.cmu_group9.cmu3.param.p2 = meta.cmu_group9.cmu3.param.p2 + param2;    // ADD is more flexible than SET.
     }
 
 
@@ -5351,18 +5507,24 @@ control CMU_Group9 ( in header_t hdr,
 
     // Pre-processing stage of CMU2.
     action process_cmu3_key_param(bit<16> offset, bit<16> code){
-        meta.cmu_group5.cmu3.key = meta.cmu_group5.cmu3.key + offset; // Implementing '-' by '+' overflow.
-        meta.cmu_group5.cmu3.param.p1 = code;
+        meta.cmu_group9.cmu3.key = meta.cmu_group9.cmu3.key + offset; // Implementing '-' by '+' overflow.
+        meta.cmu_group9.cmu3.param.p1 = code;
     }
     action process_cmu3_key(bit<16> offset){
-        meta.cmu_group5.cmu3.key = meta.cmu_group5.cmu3.key + offset; // Implementing '-' by '+' overflow.
+        meta.cmu_group9.cmu3.key = meta.cmu_group9.cmu3.key + offset; // Implementing '-' by '+' overflow.
     }
+    //action process_cmu3_param(){
+          // swap param1 and param2.
+          // bit<16> temp = meta.cmu_group9.cmu3.param.p1;
+          // meta.cmu_group9.cmu3.param.p1 = meta.cmu_group9.cmu3.param.p2;
+          // meta.cmu_group9.cmu3.param.p2 = temp;
+    //}
     @pragma stage 10
     table tbl_cmu3_preprocessing {
         key = {
-            meta.cmu_group5.cmu3.task_id : exact;
-            meta.cmu_group5.cmu3.key     : ternary;
-            meta.cmu_group5.cmu3.param.p1  : ternary;
+            meta.cmu_group9.cmu3.task_id : exact;
+            meta.cmu_group9.cmu3.key     : ternary;
+            meta.cmu_group9.cmu3.param.p1  : ternary;
         }
         actions = {
             no_action;
@@ -5378,29 +5540,29 @@ control CMU_Group9 ( in header_t hdr,
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_cond_add = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
-            if(value < meta.cmu_group5.cmu3.param.p2){
-                value = value |+| meta.cmu_group5.cmu3.param.p1;
+            if(value < meta.cmu_group9.cmu3.param.p2){
+                value = value |+| meta.cmu_group9.cmu3.param.p1;
+                result = value;
             }
-            result = value;
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_max = {
         void apply(inout bit<16> value, out bit<16> result) {
             result = 0;
-            if(value < meta.cmu_group5.cmu3.param.p1){
-                value = meta.cmu_group5.cmu3.param.p1;
+            if(value < meta.cmu_group9.cmu3.param.p1){
+                value = meta.cmu_group9.cmu3.param.p1;
                 result = value;
             }
         }
     };
     RegisterAction<bit<16>, bit<16>, bit<16>>(cmu3_buckets) cmu3_op_and_or = {
         void apply(inout bit<16> value, out bit<16> result) {
-            if(meta.cmu_group5.cmu3.param.p2 == 1) // bitwise_and
+            if(meta.cmu_group9.cmu3.param.p2 == 1) // bitwise_and
             {
-                value = meta.cmu_group5.cmu3.param.p1 & value;
+                value = meta.cmu_group9.cmu3.param.p1 & value;
             }
             else{           // bitwise_or
-                value = meta.cmu_group5.cmu3.param.p1 | value;
+                value = meta.cmu_group9.cmu3.param.p1 | value;
             }
             result = value;
         }
@@ -5414,23 +5576,23 @@ control CMU_Group9 ( in header_t hdr,
     //};
 
     action op_cmu3_cond_add(){
-        meta.cmu_group5.cmu3.param.p1 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param.p2 = cmu3_op_cond_add.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
     }
     action op_cmu3_and_or(){
-        meta.cmu_group5.cmu3.param.p1 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param.p2 = cmu3_op_and_or.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
     }
     action op_cmu3_max(){
-        meta.cmu_group5.cmu3.param.p1 = cmu3_op_max.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+        meta.cmu_group9.cmu3.param.p2 = cmu3_op_max.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
     }
 
     //action op_cmu3_reserved(){
-    //    meta.cmu_group5.cmu3.param.p1 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group5.cmu3.key[4:0]);
+    //    meta.cmu_group9.cmu3.param.p2 = cmu3_op_reserved.execute((bit<16>)meta.cmu_group9.cmu3.key[4:0]);
     //}
 
     @pragma stage 11
     table tbl_cmu3_operation {
         key = {
-            meta.cmu_group5.cmu3.task_id : exact;
+            meta.cmu_group9.cmu3.task_id : exact;
         }
         actions = {
             op_cmu3_cond_add;
@@ -5442,19 +5604,19 @@ control CMU_Group9 ( in header_t hdr,
     }
 
     apply {
-        // Shared Compression Stage for CMUG5.
+        // Shared Compression Stage for CMUG9.
         tbl_hash1.apply(); 
         tbl_hash2.apply(); 
 
-        // Initialization, Pre-processing, operation stages for CMU1 in CMUG5.
+        // Initialization, Pre-processing, operation stages for CMU1 in CMUG9.
         tbl_cmu1_initialization.apply();
         tbl_cmu1_preprocessing.apply();
         tbl_cmu1_operation.apply();
-        // Initialization, Pre-processing, operation stages for CMU2 in CMUG5.
+        // Initialization, Pre-processing, operation stages for CMU2 in CMUG9.
         tbl_cmu2_initialization.apply();
         tbl_cmu2_preprocessing.apply();
         tbl_cmu2_operation.apply();
-        // Initialization, Pre-processing, operation stages for CMU3 in CMUG5.
+        // Initialization, Pre-processing, operation stages for CMU3 in CMUG9.
         tbl_cmu3_initialization.apply();
         tbl_cmu3_preprocessing.apply();
         tbl_cmu3_operation.apply();
