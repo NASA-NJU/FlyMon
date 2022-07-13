@@ -5,6 +5,7 @@ from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 from flymonlib.location import Location
 from flymonlib.flymon_task import FlyMonTask
 from flymonlib.cmu_group import CMU_Group
+from flymonlib.utils import calc_keymapping
 
 class ResourceManager():
     """
@@ -32,7 +33,7 @@ class ResourceManager():
             self.cmu_groups.append(CMU_Group(group_id=id, 
                                              group_type=type, 
                                              cmu_num=cmu_num, 
-                                             key_bitw = key_bitw
+                                             key_bitw = key_bitw,
                                              memory_size=cmu_size, 
                                              stage_start=mau_start, 
                                              candidate_key_list=candidate_key_list, 
@@ -160,6 +161,8 @@ class ResourceManager():
                     location.resource_node.key_mapping = calc_keymapping(self.cmu_groups[location.group_id-1].key_bitw, 
                                                                          location.memory_type, 
                                                                          location.memory_idx)
+                    # set hasher
+                    location.hash = self.dhashes[(location.group_id, location.dhash_key)]
                     locations.append(location)
                 if all_ok:
                     final_locations += locations

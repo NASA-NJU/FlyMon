@@ -62,7 +62,7 @@ class FlyMonTask:
     
     @property
     def mem_num(self):
-        return self._attribute.algorithm.memory_num
+        return self._attribute.algorithm.cmu_num
             
     @property
     def locations(self):
@@ -87,7 +87,7 @@ class FlyMonTask:
         for nodes in resource_graph:
             for node in nodes:
                 node.filter = self.filter
-                node.task_id = self.task_id
+                node.task_id = self.id
                 node.key = self.key
                 if node.param1.type == ParamType.Key: # special case
                     node.param1.type = ParamType.CompressedKey

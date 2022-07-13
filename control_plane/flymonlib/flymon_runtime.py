@@ -153,7 +153,7 @@ class FlyMonRuntime_BfRt():
             if len(param_mappings) == 0:
                     match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
                                                         client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.key', key, mask),
-                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param1', 0, 0)])
+                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param.p1', 0, 0)])
                     action = perprocessing_table.make_data([ client.DataTuple('offset', key_mappings[(key, mask)])], 
                                                              prefix + f".process_cmu{cmu_id}_key")
                     batch_match.append(match)
@@ -162,7 +162,7 @@ class FlyMonRuntime_BfRt():
                 for param, pmask in param_mappings.keys():
                     match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
                                                         client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.key', key, mask),
-                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param1', param, pmask)])
+                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param.p1', param, pmask)])
                     action = perprocessing_table.make_data([ client.DataTuple('offset', key_mappings[(key, mask)]),
                                                              client.DataTuple('code', param_mappings[(param, pmask)])], 
                                                             prefix + f".process_cmu{cmu_id}_key_param")

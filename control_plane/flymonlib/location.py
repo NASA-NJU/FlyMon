@@ -117,6 +117,9 @@ class Location:
     @property
     def hash(self):
         return self._hash
+    @hash.setter
+    def hash(self, hash_obj):
+        self._hash = hash_obj
 
     @init_rules.setter
     def init_rules(self, rule_list):
@@ -130,9 +133,7 @@ class Location:
     def oper_rules(self, rule_list):
         self._oper_rules = rule_list
 
-    @hash.setter
-    def hash(self, hash_obj):
-        self._hash = hash_obj
+
 
     def __str__(self) -> str: 
         memory_type = MemoryType(self.memory_type)

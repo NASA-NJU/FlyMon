@@ -106,8 +106,8 @@ class CountMin(Algorithm):
         # Graph 1
         graph = []
         for _ in range(self._rows):
-            #                         Key   Param1            KeyMap                                     Mem div
-            graph.append([ResourceNode(None, None, self.param2, None, self.param_mapping, self.operation, 1/self.cmu_num)])
+            #                         Filter, Tid, Key   Param1            KeyMap                                     Mem div
+            graph.append([ResourceNode(None, None, None, None, self.param2, None, self.param_mapping, self.operation, 1/self.cmu_num)])
         return graph
 
         # Graph 2

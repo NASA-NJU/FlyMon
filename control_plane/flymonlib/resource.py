@@ -59,6 +59,11 @@ class ResourceNode:
     @property
     def key_mapping(self):
         return self._key_map
+    
+    @key_mapping.setter
+    def key_mapping(self, kmap):
+        self._key_map = kmap
+    
     @property
     def param_mapping(self):
         return self._param_map
