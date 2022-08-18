@@ -14,14 +14,6 @@ parser FlyMonIngressParser(
         out ingress_intrinsic_metadata_t ig_intr_md) {
     state start {
         pkt.extract(ig_intr_md);
-        // Enable bridge CMU Groups.
-        {%for CMUG in CMUG_GROUP_CONFIGS %}
-        {%if CMUG.type == 1 %}
-        {%for id in range(CMUG_GROUP_CONFIGS[0].cmu_num) %}
-        ig_md.cmu_group{{CMUG.id}}.cmu{{id+1}}.param.setValid();
-        {% endfor %}
-        {% endif %}
-        {%endfor%}
         // Start parsing the packet.
         transition select(ig_intr_md.resubmit_flag) {
             1 : parse_resubmit;
@@ -36,7 +28,6 @@ parser FlyMonIngressParser(
         pkt.advance(PORT_METADATA_SIZE);
         transition parse_ethernet;
     }
-
     state parse_ethernet {
         pkt.extract(hdr.ethernet);
         transition select (hdr.ethernet.ether_type) {
@@ -99,18 +90,8 @@ control FlyMonIngress(
         const default_action = miss;
         size = 64;
     }
-    {%for CMUG in CMUG_GROUP_CONFIGS %}
-    {%if CMUG.type == 1 %}
-    CMU_Group{{CMUG.id}}() cmu_group{{CMUG.id}};
-    {% endif %}
-    {%endfor%}
     apply {
         simple_fwd.apply();
-        {%for CMUG in CMUG_GROUP_CONFIGS %}
-        {%if CMUG.type == 1 %}
-        cmu_group{{CMUG.id}}.apply(hdr, ig_intr_md, ig_md);
-        {% endif %}
-        {%endfor%}
     }
 }
 
@@ -124,15 +105,6 @@ control FlyMonIngressDeparser(
         in ingress_metadata_t ig_md,
         in ingress_intrinsic_metadata_for_deparser_t ig_intr_dprsr_md) {
     apply {
-        // If needed, enable inter-group collaboration.
-        // Pass the execution results from the upstream to the downstream.
-        {%for CMUG in CMUG_GROUP_CONFIGS %}
-        {%if CMUG.type == 1 %}
-        {%for id in range(CMUG_GROUP_CONFIGS[0].cmu_num) %}
-        pkt.emit(ig_md.cmu_group{{CMUG.id}}.cmu{{id+1}}.param);
-        {% endfor %}
-        {% endif %}
-        {%endfor%}
         pkt.emit(hdr);
     }
 }
@@ -150,21 +122,6 @@ parser FlyMonEgressParser(
     state start {
         // Init intrinsic metadata.
         pkt.extract(eg_intr_md);
-        transition parse_flymeta;
-    }
-
-    state parse_flymeta{
-        // If needed, enable inter-group collaboration.
-        // Pass the execution results from the upstream to the downstream.
-        {% set ns = namespace(count=0) %}
-        {%for CMUG in CMUG_GROUP_CONFIGS %}
-        {%if CMUG.type == 2 and ns.count <= (CMUG_GROUP_CONFIGS|length)/2 - 1 %}
-        {%for id in range(CMUG_GROUP_CONFIGS[0].cmu_num) %}
-        pkt.extract(eg_md.cmu_group{{CMUG.id}}.cmu{{id+1}}.param);
-        {% endfor %}
-        {% set ns.count = ns.count + 1 %}
-        {% endif %}
-        {%endfor%}
         transition parse_ethernet;
     }
 
@@ -213,15 +170,11 @@ control FlyMonEgress(
         inout egress_intrinsic_metadata_for_output_port_t eg_intr_md_for_oport) {
 
     {%for CMUG in CMUG_GROUP_CONFIGS %}
-    {%if CMUG.type == 2 %}
     CMU_Group{{CMUG.id}}() cmu_group{{CMUG.id}};
-    {% endif %}
     {%endfor%}
     apply {
         {%for CMUG in CMUG_GROUP_CONFIGS %}
-        {%if CMUG.type == 2 %}
         cmu_group{{CMUG.id}}.apply(hdr, eg_intr_md, eg_md);
-        {% endif %}
         {%endfor%}
     }
 }

@@ -83,6 +83,8 @@ class CountMin(Algorithm):
         graph = []
         for _ in range(self._rows):
             graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 65535), None, self.param_mapping, OperationType.CondADD, 1/self.cmu_num)])
+                                                               # This is param2, param1 is specifed in the attribute.
+                                                               # see parse_attribute in flow_attribute.py
         return graph
     
     
@@ -124,8 +126,9 @@ class MRAC(Algorithm):
         """Return resource usage with linked resource nodes.
         """
         graph = []
-        for _ in range(self._rows):
+        for _ in range(self.cmu_num):
             graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 65535), None, self.param_mapping, OperationType.CondADD, 1/self.cmu_num)])
+            #                                                  param2                                                                          
         return graph
     
     
@@ -165,12 +168,12 @@ class SUMax(Algorithm):
     def resource_graph(self):
         """Return resource usage with linked resource nodes.
         """
-        graph = []
-        graph.append(ResourceNode(None, None, None, None, Param(ParamType.Const, 65535), None, self.param_mapping, OperationType.CondADD, 1/3))
+        graph = [[]]
+        graph[0].append(ResourceNode(None, None, None, None, Param(ParamType.Const, 65535), None, self.param_mapping, OperationType.CondADD, 1/3))
         # current min is output to param2 in the data plane.
-        graph.append(ResourceNode(None, None, None, None, Param(ParamType.Const, 0),     None, self.param_mapping, OperationType.CondADD, 1/3))
-        graph.append(ResourceNode(None, None, None, None, Param(ParamType.Const, 0),     None, self.param_mapping, OperationType.CondADD, 1/3))
-        return [graph] # Sumax is different from CMS, it needs 3 chained CMU Groups.
+        graph[0].append(ResourceNode(None, None, None, None, Param(ParamType.Const, 0),     None, self.param_mapping, OperationType.CondADD, 1/3))
+        graph[0].append(ResourceNode(None, None, None, None, Param(ParamType.Const, 0),     None, self.param_mapping, OperationType.CondADD, 1/3))
+        return graph # Sumax is different from CMS, it needs 3 chained CMU Groups.
     
 class HyperLogLog(Algorithm):
     """
@@ -237,8 +240,9 @@ class HyperLogLog(Algorithm):
     def resource_graph(self):
         """Return resource usage with linked resource nodes.
         """
-        return [[ResourceNode(None, None, None, None, Param(ParamType.Const, 0), None, self.param_mapping, OperationType.Max, 1)]]
-    
+        graph = []
+        graph.append([ResourceNode(None, None, None, None, Param(ParamType.Const, 0), None, self.param_mapping, OperationType.Max, 1)])
+        return graph
     
 class BeauCoup(Algorithm):
     """

@@ -5,6 +5,7 @@ from flymonlib.resource import *
 from flymonlib.utils import PerfectBinaryTree
 from flymonlib.flow_key import FlowKey
 from flymonlib.param import *
+import ipaddress
 
 class MemoryType(Enum):
     """
@@ -28,6 +29,7 @@ class CMU:
         max_div is the maximum memory divisions of a CMU, 32 is the default.
         """
         self.max_type = int(math.log(max_div, 2)) # maximum divisions : 2**types
+        self.filter_set = []
         self.mem_tree = PerfectBinaryTree()
         for i in range(self.max_type + 1):
             for j in range(2**i):
@@ -36,6 +38,8 @@ class CMU:
                 #  - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF), the mem_idx should be 1 or 2.
                 #  - task_id, who uses this memory block?
                 self.mem_tree.append([i+1, j, 0]) 
+
+
 
     def check_memory(self, type):
         """Only check but not allocate.
@@ -65,7 +69,7 @@ class CMU:
         nodes = self.mem_tree.inorderTraversal(root)
         for node in nodes:
             # Z the node's size suitable and the node is available
-            if node.data[0] == type and node.data[1] == type_idx:
+            if node.data[0] == memory_type and node.data[1] == type_idx:
                 sub_nodes = self.mem_tree.inorderTraversal(node)
                 is_ok = True
                 # Z check if all the subnode is available
@@ -117,7 +121,7 @@ class CMU:
 
 class CMU_Group():
     """Status of CMU_Group instance in control plane"""
-    def __init__(self, group_id, group_type, cmu_num, key_bitw, memory_size, stage_start, candidate_key_list, std_params, next_group):
+    def __init__(self, group_id, group_type, meta_id, cmu_num, key_bitw, memory_size, stage_start, candidate_key_list, std_params, next_group):
         """
         There are properties and status of CMU_Group class.
         As for properties, it loads them from "cmu_groups.json" file generated from the "flymon_compiler.py".
@@ -132,6 +136,7 @@ class CMU_Group():
         # Properties.
         self._group_id = group_id
         self._group_type = group_type
+        self._meta_id = meta_id
         self._cmu_num = cmu_num
         self._key_bitw = key_bitw
         self._memory_size = memory_size
@@ -152,7 +157,8 @@ class CMU_Group():
                                       [FlowKey(candidate_key_list), 16, []] ] 
         
         ## CMU and Memory Resources.
-        self._cmus = [[CMU(), self._memory_size] for i in range(self._cmu_num)]  # Currently we only support 32 divisions.
+        ###  #0 CMU Obj  #1 rest_memory  #2 existing filters
+        self._cmus = [[CMU(), self._memory_size, []] for i in range(self._cmu_num)]  # Currently we only support 32 divisions.
         pass
         
     @property
@@ -166,6 +172,10 @@ class CMU_Group():
     @property
     def group_type(self):
         return self._group_type
+
+    @property
+    def meta_id(self):
+        return self._meta_id
 
     @property
     def key_bitw(self):
@@ -193,7 +203,7 @@ class CMU_Group():
             else:
                 print("Compressed Key {} ({}b): {}".format(idx+1, ck[1], str(ck[0])))
         print('-'*LINE_LEN)
-        for idx, (cmu, rest_mem) in enumerate(self._cmus):
+        for idx, (cmu, rest_mem, _) in enumerate(self._cmus):
             print("CMU-{} Rest Memory: {}".format(idx+1, rest_mem))
             # cmu.show_memory()
         print('-'*LINE_LEN)
@@ -226,9 +236,12 @@ class CMU_Group():
                 return True
         return False
 
-    def check_memory(self, mem_size, mode=1):
-        """Check if there are CMUs have sufficient memory.
+
+
+    def check_filter_and_memory(self, task_filter, mem_size, mode=1):
+        """Check if there are CMUs have traffic intersection and sufficient memory.
         Args:
+            @filter: the new task's filter.
             @mem_size: required memory size.
             @mode: efficient(1) or accurate(2) mode?
         Return:
@@ -241,6 +254,22 @@ class CMU_Group():
         cmu_dict = {}
         for idx in range(self._cmu_num):
             cmu_id = idx + 1
+            # Check filter : Src Net and Dst Net
+            # Currently, our filter is src_ip/prefix, dst_ip/prefix
+            task_network_1 = ipaddress.ip_network(f"{task_filter[0][0]}/{task_filter[0][1]}")
+            task_network_2 = ipaddress.ip_network(f"{task_filter[1][0]}/{task_filter[1][1]}")
+            is_filter_ok = True
+            for existing_filter in self._cmus[idx][2]:
+                existing_network_1 = ipaddress.ip_network(f"{existing_filter[0][0]}/{existing_filter[0][1]}")
+                existing_network_2 = ipaddress.ip_network(f"{existing_filter[1][0]}/{existing_filter[1][1]}")
+                # Only when both src_net and dst_net have traffic intersection, the CMU cannot be used.
+                if ( task_network_1.subnet_of(existing_network_1) or task_network_1.supernet_of(existing_network_1) ) and (task_network_2.subnet_of(existing_network_2) or task_network_2.supernet_of(existing_network_2)):
+                    is_filter_ok = False
+                    break
+            if not is_filter_ok:
+                # There is a traffic intersection, check next CMU.
+                continue
+            # Check memory
             if mem_size > self._memory_size: 
                 print("Invalid memory size : {}".format(mem_size))
                 return {}
@@ -263,7 +292,6 @@ class CMU_Group():
                 cmu_dict[cmu_id] = (int(self._memory_size/memory_type), memory_type, memory_idx)
         return cmu_dict
 
-
     def allocate_compressed_keys(self, task_id, hkeys):
         """ Allocate compressed keys for a specific task.
         Args:
@@ -277,7 +305,7 @@ class CMU_Group():
             if task_id not in self._compressed_keys[idx][2]:
                 self._compressed_keys[idx][2].append(task_id)
 
-    def allocate_memory(self, task_id, cmu_id, memory_type, type_idx):
+    def allocate_filter_and_memory(self, task_id, cmu_id, task_filter, memory_type, type_idx):
         """ Try to allocate memory for a specific task.
         Args:
             @task_id: task id
@@ -289,8 +317,9 @@ class CMU_Group():
         cmu = self._cmus[id][0]
         cmu.alloc_memory(task_id, memory_type, type_idx)
         self._cmus[id][1] -= int(self._memory_size/memory_type)
+        self._cmus[id][2].append(task_filter)
 
-    def release_memory(self, task_id):
+    def release_filter_and_memory(self, task_id, task_filter):
         """
         Release memory for task_id.
         """
@@ -298,6 +327,7 @@ class CMU_Group():
             memory_type = self._cmus[idx][0].release_memory(task_id)
             if memory_type > 0:
                 self._cmus[idx][1] += int(self._memory_size/memory_type)
+                self._cmus[idx][2].remove(task_filter)
         pass
 
     def release_compressed_keys(self, task_id):

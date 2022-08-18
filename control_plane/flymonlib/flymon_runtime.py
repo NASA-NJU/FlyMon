@@ -19,12 +19,9 @@ class FlyMonRuntime_BfRt():
         }
         pass
 
-    def setup_dhash(self, group_id, group_type, dhash_id, hasher):
+    def setup_dhash(self, group_id, dhash_id, hasher):
         hash_algorithm_table = ""
-        if group_type == 1:
-            hash_algorithm_table = self.context.table_get(f"FlyMonIngress.cmu_group{group_id}.hash_unit{dhash_id}.algorithm")
-        else:
-            hash_algorithm_table = self.context.table_get(f"FlyMonEgress.cmu_group{group_id}.hash_unit{dhash_id}.algorithm")
+        hash_algorithm_table = self.context.table_get(f"FlyMonEgress.cmu_group{group_id}.hash_unit{dhash_id}.algorithm")
         if (group_id, dhash_id) not in self.hash_status.keys():
             data_algo = hash_algorithm_table.make_data([
                                                 client.DataTuple('msb', bool_val=False),
@@ -38,18 +35,14 @@ class FlyMonRuntime_BfRt():
             hash_algorithm_table.default_entry_set(self.conn, data_algo)
             # print(f"    [DHASH-{dhash_id}] : " + str(hasher))
 
-    def compression_stage_config(self, group_id, group_type, dhash_id, flow_key):
+    def compression_stage_config(self, group_id, dhash_id, flow_key):
         """
         Set hash unit mask portion of the fields.
             group_id: CMU-Group ID.
             dhash_id: hash unit ID.
             flow_key: FlowKey object in utils/flow_key.py
         """
-        hash_configure_table = ""
-        if group_type == 1:
-            hash_configure_table = self.context.table_get(f"FlyMonIngress.cmu_group{group_id}.hash_unit{dhash_id}.configure")
-        else:
-            hash_configure_table = self.context.table_get(f"FlyMonEgress.cmu_group{group_id}.hash_unit{dhash_id}.configure")
+        hash_configure_table = self.context.table_get(f"FlyMonEgress.cmu_group{group_id}.hash_unit{dhash_id}.configure")
         
         if (group_id, dhash_id) not in self.hash_status or self.hash_status[(group_id, dhash_id)] != flow_key:
             key_configs = flow_key.to_config_dict()
@@ -73,7 +66,7 @@ class FlyMonRuntime_BfRt():
             self.hash_status[(group_id, dhash_id)] = flow_key
         return True
 
-    def initialization_stage_add(self, group_id, group_type, cmu_id, filter, task_id, key, param1, param2):
+    def initialization_stage_add(self, group_id, cmu_id, filter, task_id, key, param1, param2):
         """
         Match fields:
             filter: [(ipsrc, mask1), (ipdst, mask2)]
@@ -90,11 +83,8 @@ class FlyMonRuntime_BfRt():
         Reutrns:
             Return match key list as rule handler (usded for deleting) / [] for failed.
         """
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         initialization_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_initialization")
         initialization_table.info.key_field_annotation_add("hdr.ipv4.src_addr", "ipv4") 
         initialization_table.info.key_field_annotation_add("hdr.ipv4.dst_addr", "ipv4")
@@ -119,50 +109,43 @@ class FlyMonRuntime_BfRt():
         initialization_table.entry_add(self.conn, [match], [action])
         return [match]
 
-    def initialization_stage_del(self, group_id, group_type, cmu_id, key_list):
+    def initialization_stage_del(self, group_id, cmu_id, key_list):
         """
         key_list: match key list return from initialization_stage_add. It should be maintained by task manager.
         """
         if len(key_list) == 0:
             return
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         initialization_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_initialization")
         initialization_table.entry_del(self.conn, key_list)
         pass
 
-    def preprocessing_stage_add(self, group_id, group_type, cmu_id, task_id, key_mappings, param_mappings):
+    def preprocessing_stage_add(self, group_id, meta_id, cmu_id, task_id, key_mappings, param_mappings):
         """
          task_id: which task to match.
          key_mappings: used to implement address translation. e.g., [(key1, mask1, key_offset)]
          param_mappings: used to encode the params. e.g., [(param1, mask1, new param)]
         """
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         perprocessing_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_preprocessing")
         # batch entries to make operations faster
         batch_match = []
         batch_action = []
         for key, mask in key_mappings.keys():
             if len(param_mappings) == 0:
-                    match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
-                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.key', key, mask),
-                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param.p1', 0, 0)])
+                    match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{meta_id}.cmu{cmu_id}.task_id', task_id),
+                                                        client.KeyTuple(f'meta.cmu_group{meta_id}.cmu{cmu_id}.key', key, mask),
+                                                        client.KeyTuple(f'meta.cmu_group{meta_id}.cmu{cmu_id}.param.p1', 0, 0)])
                     action = perprocessing_table.make_data([ client.DataTuple('offset', key_mappings[(key, mask)])], 
                                                              prefix + f".process_cmu{cmu_id}_key")
                     batch_match.append(match)
                     batch_action.append(action)
             else:
                 for param, pmask in param_mappings.keys():
-                    match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id),
-                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.key', key, mask),
-                                                        client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.param.p1', param, pmask)])
+                    match = perprocessing_table.make_key([client.KeyTuple(f'meta.cmu_group{meta_id}.cmu{cmu_id}.task_id', task_id),
+                                                        client.KeyTuple(f'meta.cmu_group{meta_id}.cmu{cmu_id}.key', key, mask),
+                                                        client.KeyTuple(f'meta.cmu_group{meta_id}.cmu{cmu_id}.param.p1', param, pmask)])
                     action = perprocessing_table.make_data([ client.DataTuple('offset', key_mappings[(key, mask)]),
                                                              client.DataTuple('code', param_mappings[(param, pmask)])], 
                                                             prefix + f".process_cmu{cmu_id}_key_param")
@@ -171,32 +154,26 @@ class FlyMonRuntime_BfRt():
         perprocessing_table.entry_add(self.conn, batch_match, batch_action)
         return batch_match
 
-    def preprocessing_stage_del(self, group_id, group_type, cmu_id, key_list):
+    def preprocessing_stage_del(self, group_id, cmu_id, key_list):
         """
         key_list: match key list return from initialization_stage_add. It should be maintained by task manager.
         """
         if len(key_list) == 0:
             return
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         perprocessing_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_preprocessing")
         perprocessing_table.entry_del(self.conn, key_list)
         pass
 
-    def operation_stage_add(self, group_id, group_type, cmu_id, task_id, operation_type):
+    def operation_stage_add(self, group_id, meta_id, cmu_id, task_id, operation_type):
         """
          task_id: which task to match.
         """
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         operation_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_operation")
-        match = operation_table.make_key([client.KeyTuple(f'meta.cmu_group{group_id}.cmu{cmu_id}.task_id', task_id)])
+        match = operation_table.make_key([client.KeyTuple(f'meta.cmu_group{meta_id}.cmu{cmu_id}.task_id', task_id)])
         if operation_type == OperationType.AndOr:
             action = operation_table.make_data([], prefix + f".op_cmu{cmu_id}_and_or")
         elif operation_type == OperationType.CondADD:
@@ -209,26 +186,20 @@ class FlyMonRuntime_BfRt():
         operation_table.entry_add(self.conn, [match], [action])
         return [match] # a key list. 
 
-    def operation_stage_del(self, group_id, group_type, cmu_id, key_list):
+    def operation_stage_del(self, group_id, cmu_id, key_list):
         if len(key_list) == 0:
             return
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         operation_table = self.context.table_get(prefix+f".tbl_cmu{cmu_id}_operation")
         operation_table.entry_del(self.conn, key_list)
 
-    def read(self, group_id, group_type, cmu_id, begin, end):
+    def read(self, group_id, cmu_id, begin, end):
         """
         read memories in [begin, end)
         """
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         register_table = self.context.table_get(prefix + f".cmu{cmu_id}_buckets")
         # buf = [0] * (end-begin)
         buf = []
@@ -253,15 +224,12 @@ class FlyMonRuntime_BfRt():
             buf.append(value_lo)
         return buf
     
-    def clear_data(self, group_id, group_type, cmu_id, begin, end):
+    def clear_data(self, group_id, cmu_id, begin, end):
         """
         reset memories in [begin, end)
         """
-        prefix = ""
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         register_table = self.context.table_get(prefix + f".cmu{cmu_id}_buckets")
         # buf = [0] * (end-begin)
         buf = []
@@ -280,14 +248,11 @@ class FlyMonRuntime_BfRt():
         register_table.entry_add( self.conn, batch_key, batch_data)
       
     
-    def clear_all(self, group_id, group_type, cmu_num):
+    def clear_all(self, group_id, cmu_num):
         """
         Clear all table rules.
         """
-        if group_type == 1:
-            prefix = f"FlyMonIngress.cmu_group{group_id}"
-        else:
-            prefix = f"FlyMonEgress.cmu_group{group_id}"
+        prefix = f"FlyMonEgress.cmu_group{group_id}"
         
         for idx in range(cmu_num):
             cmu_id = idx + 1

@@ -53,20 +53,20 @@ class TaskManager:
             for location in task_instance.locations:
                 # Install the compression stage.
                 # TODO: if the hash is already configured, do not configure again.
-                self.runtime.compression_stage_config(location.group_id, location.group_type,
-                                                      location.dhash_key, location.resource_node.key)
+                self.runtime.compression_stage_config(location.group_id, location.dhash_key, location.resource_node.key)
                 # Install the initialization stage.
                 if task_instance.attribute.param1.type == ParamType.CompressedKey:
-                    self.runtime.compression_stage_config(location.group_id, location.group_type,
-                                                          location.dhash_param, location.resource_node.param1.content)
-                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
+                    self.runtime.compression_stage_config(location.group_id, location.dhash_param, location.resource_node.param1.content)
+                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, 
+                                                            location.cmu_id,
                                                             location.resource_node.filter, # Filter
                                                             location.resource_node.task_id,
                                                             location.dhash_key,   # key
                                                             (location.resource_node.param1, location.dhash_param),
                                                             location.resource_node.param2)
                 else:
-                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, location.group_type, location.cmu_id,
+                    location.init_rules = self.runtime.initialization_stage_add(location.group_id, 
+                                                            location.cmu_id,
                                                             location.resource_node.filter, # Filter
                                                             location.resource_node.task_id,
                                                             location.dhash_key,
@@ -74,12 +74,12 @@ class TaskManager:
                                                             location.resource_node.param2)
                 # # Install the pre-processing stage.
                 if location.memory_type != MemoryType.WHOLE.value or len(task_instance.attribute.param_mapping) != 0:
-                    location.prep_rules = self.runtime.preprocessing_stage_add(location.group_id, location.group_type, location.cmu_id,
+                    location.prep_rules = self.runtime.preprocessing_stage_add(location.group_id, location.meta_id, location.cmu_id,
                                                         location.resource_node.task_id,
                                                         location.resource_node.key_mapping,   # Key mappings.
                                                         location.resource_node.param_mapping) # Param1 mappings.
                 # # Install the operation stage.
-                location.oper_rules = self.runtime.operation_stage_add(location.group_id, location.group_type, location.cmu_id,
+                location.oper_rules = self.runtime.operation_stage_add(location.group_id, location.meta_id, location.cmu_id,
                                                        location.resource_node.task_id, location.resource_node.operation)
                 # pass
             self.tasks[task_instance.id][0] = True
@@ -94,11 +94,11 @@ class TaskManager:
     def uninstall_task(self, task_id):
         task_instance = self.tasks[task_id][1]
         for loc in task_instance.locations:
-            self.runtime.initialization_stage_del(loc.group_id, loc.group_type, loc.cmu_id, loc.init_rules)
+            self.runtime.initialization_stage_del(loc.group_id, loc.cmu_id, loc.init_rules)
             loc.init_rules = []
-            self.runtime.preprocessing_stage_del(loc.group_id, loc.group_type, loc.cmu_id, loc.prep_rules)
+            self.runtime.preprocessing_stage_del(loc.group_id, loc.cmu_id, loc.prep_rules)
             loc.prep_rules = []
-            self.runtime.operation_stage_del(loc.group_id, loc.group_type, loc.cmu_id, loc.oper_rules)
+            self.runtime.operation_stage_del(loc.group_id, loc.cmu_id, loc.oper_rules)
             loc.oper_rules = []
         self.tasks[task_instance.id][0] = False
     

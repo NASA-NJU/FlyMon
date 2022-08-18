@@ -8,13 +8,15 @@ class Location:
     A location represents a CMU info about the task.
     '''
     def __init__(self, 
-                 group_id, group_type, key_dhash, param_dhash,
+                 group_id, group_type,
+                 meta_id, key_dhash,  param_dhash,
                  cmu_id, memory_type, memory_idx, 
                  resource_node, hasher):
 
         # location info, used to specify table.
         self._group_id = group_id
         self._group_type = group_type
+        self._meta_id = meta_id
         self._dhash_key = key_dhash
         self._dhash_param = param_dhash
         self._cmu_id = cmu_id
@@ -40,7 +42,7 @@ class Location:
             Real memory address.
         """
         offset = 0
-        if self.group_type == 2:
+        if self.group_type == 2 and self.dhash_key == 1: # it is a 32-bit key.
             offset = (self.cmu_id - 1) * 8
         mem_range = int( (2**phy_bitw)  /  (2**(self._memory_type-1)) )
         address_base = self._hash.compute(phy_bitw, buf, offset)
@@ -57,6 +59,10 @@ class Location:
     @property
     def group_type(self):
         return self._group_type
+
+    @property
+    def meta_id(self):
+        return self._meta_id
     
     @property
     def dhash_key(self):

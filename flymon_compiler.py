@@ -43,9 +43,8 @@ if args.memory not in MEM_CONFIGS.keys():
 # ===================================================
 # CMU_GROUPS configs.
 # ===================================================
-TOTAL_CMU_GROUP_NUM     = args.group_num
-INGRESS_CMU_GROUP_NUM   = int(TOTAL_CMU_GROUP_NUM/2)
-EGRESS_CMU_GROUP_NUM    = TOTAL_CMU_GROUP_NUM - INGRESS_CMU_GROUP_NUM
+GROUP_TYPES = [2, 1, 2, 1, 2, 1, 2, 1, 2]
+TOTAL_CMU_GROUP_NUM  = args.group_num
 
 CMU_PER_GROUP   = 3
 MEMORY_PER_CMU  = MEM_CONFIGS[args.memory]
@@ -58,46 +57,30 @@ CANDIDATE_KEY_LIST = {
     "hdr.ipv4.protocol" :  8
 }
 CANDIDATE_KEY_SET = ",".join(CANDIDATE_KEY_LIST.keys())
-
-                             
+                 
 CMUG_GROUP_CONFIGS = []
-CMUG_GROUP_CONFIGS += ([
-    {
-        "id" : id + 1,
-        "type" : 1,
-        "mau_start" : id,
-        "cmu_num" : CMU_PER_GROUP,
-        "cmu_size" : MEMORY_PER_CMU["size"],
-        "key_bitw" : MEMORY_PER_CMU["bit_width"],
-        "candidate_key_list" : CANDIDATE_KEY_LIST,
-        "next_group" : id + 1 + INGRESS_CMU_GROUP_NUM
-    }
-    for id in range(INGRESS_CMU_GROUP_NUM) 
-])
+# Definition for configurations of CMU Groups.
 CMUG_GROUP_CONFIGS += (
     [{
-            "id" : id + INGRESS_CMU_GROUP_NUM + 1,
-            "type" : 2,
-            "mau_start" : id + INGRESS_CMU_GROUP_NUM,
+            "id" : id + 1,
+            "type" : GROUP_TYPES[id],
+            "mau_start" : id,
+            # Meta ID is used for specifing which metadata tu use. It has two functions:
+                # a) Chain the two groups to enable inter-group collaboration.
+                # b) Reuse PHV bits. 
+            "meta_id" : (id % 4) + 1,
             "cmu_num" : CMU_PER_GROUP,
             "cmu_size" : MEMORY_PER_CMU["size"],
             "key_bitw" : MEMORY_PER_CMU["bit_width"],
             "candidate_key_list" : CANDIDATE_KEY_LIST,
-            "next_group" : 0, # only Group 5 may have successive CMU Group.
-    }for id in range(EGRESS_CMU_GROUP_NUM)]                #             |
-)                                                          #             |
-                                                           #             |
-if EGRESS_CMU_GROUP_NUM > 4:                               #             |
-    CMUG_GROUP_CONFIGS[5-1]["next_group"] = 9    # <---------------------|
-# Chain Graph of current CMU Groups.
-# G1 -> G5 -> G9
-# G2 -> G6 
-# G3 -> G7
-# G4 -> G8
+            # Next non-overlay group.
+            "next_group" : id + 1 + 4 if id + 1 + 4 < TOTAL_CMU_GROUP_NUM else 0
+    }for id in range(TOTAL_CMU_GROUP_NUM)]
+)
 
 # Add std params configs.
 for CMUG in CMUG_GROUP_CONFIGS:
-    if CMUG["type"] == 2 and CMUG["id"] == int(len(CMUG_GROUP_CONFIGS)/2) + 1:
+    if CMUG["id"] == 1:
         CMUG["std_params"] = { 
                                 "pkt_size" : "(bit<16>) intr_md.pkt_length",
                                 "queue_size" : "intr_md.enq_qdepth[15:0]",

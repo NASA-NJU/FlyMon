@@ -181,10 +181,10 @@ We demonstrate the dynamic features of FlyMon through several typical use cases.
 <details><summary><b>Frequency Estimation</b></summary>
 
 Suppose we want to measure the frequency (i.e., number of packets) of each SrcIP for the traffic with SrcIP in 10.0.0.0/8.
-We can define the key as SrcIP/24 and attribute as frequency(1). We can deploy this measurement task with the `add_task` command.
+We can define the key as `hdr.ipv4.src_addr` and attribute as frequency(1). We can deploy this measurement task with the `add_task` command.
 
 ```
-flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1,cms) -m 48
 ```
 
 The above command will deploy a Count-Min Sketch (d=3, w=16) in the data plane for this task.
@@ -193,25 +193,25 @@ If there are enough resources in the data plane to deploy this measurement task,
 
 ```
 Required resources:
-[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
-[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
-[ResourceType: CompressedKey, Content: hdr.ipv4.src_addr/32]
-[ResourceType: Memory, Content: 16]
-[ResourceType: Memory, Content: 16]
-[ResourceType: Memory, Content: 16]
+key=hdr.ipv4.src_addr/32, param1=1, param2=65535, operation=CondADD
+key=hdr.ipv4.src_addr/32, param1=1, param2=65535, operation=CondADD
+key=hdr.ipv4.src_addr/32, param1=1, param2=65535, operation=CondADD
+group_id=1, hkey=1, cmu_id=1, memory_type:HALF offset:0
+group_id=1, hkey=1, cmu_id=2, memory_type:HALF offset:0
+group_id=1, hkey=1, cmu_id=3, memory_type:HALF offset:0
 ----------------------------------------------------
 [Active Task] 
 Filter= [('10.0.0.0', '255.0.0.0'), ('0.0.0.0', '0.0.0.0')]
 ID = 1
 Key = hdr.ipv4.src_addr/32
-Attribute = frequency(1)
+Attribute = Frequency(param=1, algorithm=CMS)
 Memory = 48(3*16)
 Locations:
- - loc0 = group_id=5, group_type=2, hkeys=[1], cmu_id=1, memory_type:HALF offset:0)
- - loc1 = group_id=5, group_type=2, hkeys=[1], cmu_id=2, memory_type:HALF offset:0)
- - loc2 = group_id=5, group_type=2, hkeys=[1], cmu_id=3, memory_type:HALF offset:0)
+ - loc0 = group_id=1, hkey=1, cmu_id=1, memory_type:HALF offset:0
+ - loc1 = group_id=1, hkey=1, cmu_id=2, memory_type:HALF offset:0
+ - loc2 = group_id=1, hkey=1, cmu_id=3, memory_type:HALF offset:0
 
-[Success] Allocate TaskID: 1 
+[Success] Allocate TaskID: 1
 ```
 The above output tells us that the task is successfully deployed to CMU-Group 5 and the task identifier in FlyMon is 1. The controller deploys the task with a 3 rows CM-Sketch and divides the 48 counters evenly over the 3 rows. Since we set the memory of each CMU to 32 (i.e., `memory_level_mini`), the memory type of each row is HALF.
 We can check the status of CMU-Group and information about the task by `show_cmug` command and `show_task` command, respectively.
@@ -222,17 +222,17 @@ flymon> show_task -t 1
 Filter= [('10.0.0.0', '255.0.0.0'), ('0.0.0.0', '0.0.0.0')]
 ID = 1
 Key = hdr.ipv4.src_addr/32
-Attribute = frequency(1)
+Attribute = Frequency(param=1, algorithm=CMS)
 Memory = 48(3*16)
 Locations:
- - loc0 = group_id=5, group_type=2, hkeys=[1], cmu_id=1, memory_type:HALF offset:0)
- - loc1 = group_id=5, group_type=2, hkeys=[1], cmu_id=2, memory_type:HALF offset:0)
- - loc2 = group_id=5, group_type=2, hkeys=[1], cmu_id=3, memory_type:HALF offset:0)
+ - loc0 = group_id=1, hkey=1, cmu_id=1, memory_type:HALF offset:0
+ - loc1 = group_id=1, hkey=1, cmu_id=2, memory_type:HALF offset:0
+ - loc2 = group_id=1, hkey=1, cmu_id=3, memory_type:HALF offset:0
 
 
-flymon> show_cmug -g 5
+flymon> show_cmug -g 1
 ------------------------------------------------------------
-                   Status of CMU-Group 5                    
+                   Status of CMU-Group 1                    
 ------------------------------------------------------------
 Compressed Key 1 (32b): hdr.ipv4.src_addr/32
 Compressed Key 2 (16b): Empty
@@ -269,7 +269,7 @@ Send a packet with src_ip=10.0.0.3, dst_ip=30.60.90.1, pktlen=64.
 ...
 ```
 
-The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port-0 to Port-1 (i.e., DP Port). The `send_packets` command sends 5 packets with length 64 and SrcIP in network range 10.0.0.0/8.
+The `add_forward` command inserts a forwarding rule in `simple_fwd` table of the data plane. It will forward the packets from Port-0 to Port-1 (i.e., DP Port). The `send_packets` command sends 20 packets with length 64 and SrcIP in network range 10.0.0.0/8.
 
 After generating the traffic, we can check the memory of the task again.
 
@@ -288,6 +288,8 @@ flymon> query_task -t 1 -k 10.0.0.1,*,*,*,*
 1
 ```
 
+Note that the queried key must be a complete 5-tuple.
+
 </details>
 
 <details><summary><b>Set arbitrary flow key from a candidate key set</b></summary>
@@ -297,7 +299,7 @@ With the dynamic feature of Tofino's hash computation unit, FlyMon can support s
 
 ```
 flymon> reset_all
-flymon> add_task -f *,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
+flymon> add_task -f *,* -k hdr.ipv4.src_addr/24 -a frequency(1,cms) -m 48
 ```
 
 > 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
@@ -305,6 +307,7 @@ flymon> add_task -f *,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
 We then generate traffic with SrcIP in 192.168.0.0/24. As the task only care about the first 24 bits of SrcIP, all the packets will be treated as a single flow. Count-Min Sketch should have only one non-zero counter in each row.
 
 ```
+flymon> add_forward -s 0 -d 1
 flymon> send_packets -p 0 -s 192.168.0.0/24 -n 10
 Send a packet with src_ip=192.168.0.1, dst_ip=30.60.90.1, pktlen=64.
 Send a packet with src_ip=192.168.0.2, dst_ip=30.60.90.1, pktlen=64.
@@ -325,7 +328,7 @@ The experimental result is consistent with our expectation.
 We use following command to deploy this task. The controller will assign this task as Task 2.
 
 ```
-add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 48
+add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1,cms) -m 48
 ...
 ...
 [Success] Allocate TaskID: 2
@@ -352,7 +355,7 @@ The experimental result is consistent with our expectation.
 Follow the Task 2, if we add a prefix length of 24 to the DstIP in the key. There should be only one non-zero counter per row in the measurement data.
 
 ```
-flymon> add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr/24 -a frequency(1) -m 48
+flymon> add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr/24 -a frequency(1,cms) -m 48
 ...
 [Success] Allocate TaskID: 3
 
@@ -381,8 +384,8 @@ Below we show FlyMon's dynamic memory allocation. First we issue two tasks with 
 
 ```
 flymon> reset_all
-flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 48
-flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 24
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1,cms) -m 48
+flymon> add_task -f 20.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1,cms) -m 24
 ```
 These two tasks have the same key and attribute, but focus on different sets of traffic. The resource manager will assign them to the same CMU-Group.
 
@@ -410,8 +413,8 @@ Send a packet with src_ip=20.0.0.2, pktlen=64.
 After injecting the traffic of 10.0.0.0/8 and 20.0.0.0/8, we observe the memory status of whole CMU-Group, Task 1, and Task 2 respectively.
 
 ```
-flymon> read_cmug -g 5
-Read all data for CMU-Group 5
+flymon> read_cmug -g 1
+Read all data for CMU-Group 1
 [0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
 [0, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 2, 4, 0, 0, 3, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 [0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 2, 2, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -430,15 +433,15 @@ Read all data for task: 2
 [1, 1, 0, 2, 2, 1, 1, 2]
 ```
 
-We can find that the data of both Task 1 and Task 2 are on CMU-Group 5. The memory range of task 1 is [0,16), while the memory range of task 2 is [16,24).
+We can find that the data of both Task 1 and Task 2 are on CMU-Group 1. The memory range of task 1 is [0,16), while the memory range of task 2 is [16,24).
 
 Next, we delete task 1 and its data.
 
 ```
-flymon> del_task -t 1 -c True
+flymon> del_task -t 1 -c True            # The '-c' option will clear the data of the task when deleting.
 
-flymon> read_cmug -g 5
-Read all data for task: 5
+flymon> read_cmug -g 1
+Read all data for task: 1
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 2, 2, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -456,7 +459,7 @@ FlyMon uses the HyperLogLog algorithm to implement single-key distinct Count sta
 
 ```
 flymon> reset_all
-flymon> add_task -f *,* -k hdr.ipv4.src_addr -a distinct() -m 32
+flymon> add_task -f *,* -k None -a distinct(hdr.ipv4.src_addr,hll) -m 32
 ```
 > 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
 
@@ -483,14 +486,14 @@ After inserting the traffic, we can query the measurement data of the single-key
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[0, 49151, 57113, 0, 34029, 49119, 57145, 0, 42159, 40861, 65403, 0, 0, 40893, 65371, 0, 57113, 58411, 38092, 49151, 57145, 0, 0, 49119, 65403, 0, 0, 40861, 65371, 0, 46222, 40893]
+[56233, 59082, 38840, 43739, 64347, 50744, 46922, 35369, 39501, 42798, 54876, 60223, 47807, 34780, 63150, 52173, 59120, 56211, 43745, 38786, 50690, 64353, 35347, 46960, 42772, 39543, 60165, 54886, 34790, 47749, 52215, 63124]
 
 ```
 As you can see, the output of the original measurement data is not intuitive. We implement the HLL algorithm data parsing in the `query_test` command.
 
 ```
 flymon> query_task -t 1
-133
+173
 ```
 
 The results seem not accurate enough because we used a minimal number of packets and a tiny amount of memory. HyperLogLog usually yields more reliable measurements (i.e., more minor variance) in more significant traffic scenarios. More importantly, adjusting the data plane hash function parameters is also a technical task. We will further optimize the configuration of the FlyMon data plane's hash functions in the future.
@@ -505,7 +508,7 @@ We do this by measuring the maximum packet size for each flow. We can deploy suc
 
 ```
 flymon> reset_all
-flymon> add_task -f *,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 48
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size,sumax) -m 48
 ```
 
 > 🔔 The `reset_all` command is optional. It will clear all data plane tasks and controller plane status. The purpose of executing this command here is to make it easier for users to follow this manual. In other words, when this command is executed, all subsequent tasks will be allocated from TaskID=1, which is convenient for later manuals with the fixed task_id and CMU-Group allocations. If you do not execute this command. You need to correctly select the TaskID assigned to you by the task manager when you read/query the task.
@@ -549,7 +552,7 @@ We can issue an existence collection task with the following command.
 
 ```
 flymon> reset_all   # optional 
-flymon> add_task -f *,* -k hdr.ipv4.src_addr -a existence() -m 32
+flymon> add_task -f *,* -k None -a existence(hdr.ipv4.src_addr,bloomfilter) -m 32
 ```
 
 Then we inject some traffic. If you are using a Tofino Model, we provide some commands to help you perform the tests.
@@ -565,7 +568,7 @@ Then, we can query the measurement data of the data plane.
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-[0, 44271, 56328, 0, 0, 0, 19745, 0, 0, 0, 28003, 0, 0, 36013, 32768, 0, 0, 0, 0, 0, 52265, 0, 0, 48334, 0, 0, 0, 40076, 32066, 0, 0, 0]
+[0, 0, 0, 43739, 0, 0, 46922, 0, 39501, 0, 0, 0, 0, 34780, 0, 4078, 0, 0, 28354, 0, 0, 32768, 0, 0, 0, 24148, 0, 54886, 0, 0, 52215, 0]
 ```
 
 As shown above, the measurement result of the bloom filter in FlyMon is not intuitive because we use all the 16 bits of each counter by encoding the param in the pre-processing stage. Despite this, it is easy to expand this bloom filter into its original form.
@@ -578,7 +581,7 @@ Distinct counting for multiple keys means that measurement are performed for a s
 
 ```
 flymon> reset_all   # optional 
-flymon> add_task -f *,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 48
+flymon> add_task -f 10.0.0.0/8,* -k hdr.ipv4.dst_addr    -a distinct(hdr.ipv4.src_addr,beaucoup) -m 96
 ```
 
 The above command deploys a measurement task that counts different DstIPs for each SrcIP (i.e., super spreader detection). The processing of flows that meet the threshold needs to be combined with other network components depending on user's scenarios (e.g., combined with a reporting module like [SketchLib](https://github.com/SketchLib/P4_SketchLib)). Here we only demonstrate how the measurement is performed.
@@ -600,16 +603,16 @@ When the traffic generation is finished, we can read the memory of this task.
 
 ```
 flymon> read_task -t 1
-[15523, 30460, 0, 0, 12795, 31652, 0, 44721, 32768, 27724, 62214, 47449, 32768, 0, 65118, 46081]
-[0, 0, 65455, 0, 65533, 0, 0, 0, 0, 65525, 0, 0, 0, 0, 0, 65511]
-[14167, 30460, 62890, 46081, 62214, 45741, 12795, 28752, 65118, 49141, 15523, 0, 14863, 31652, 63730, 47449]
+[8937, 8074, 43739, 0, 0, 0, 0, 46922, 0, 39501, 12060, 4735, 34780, 0, 4078, 0, 0, 59120, 0, 28354, 32768, 0, 29523, 20016, 24148, 0, 54886, 60165, 32422, 17349, 0, 52215]
+[0, 0, 0, 26386, 0, 17996, 58504, 16867, 34868, 11615, 0, 10992, 44741, 2990, 43370, 0, 30653, 53974, 28690, 0, 20812, 32768, 0, 0, 0, 0, 15856, 39067, 7342, 0, 6913, 48746]
+[0, 0, 0, 52209, 47894, 43831, 39764, 35701, 0, 0, 0, 0, 0, 0, 0, 0, 32768, 59811, 55744, 51681, 47366, 43303, 0, 35173, 30858, 26795, 22728, 18665, 14350, 10287, 6220, 2157]
 ```
 
 There are two different ways to deploy for this task. One with a threshold-triggered approach similar to BeauCoup's. The other is a maximum likelihood estimation (MLE) approach similar to [Linear Couting](https://www.waitingforcode.com/big-data-algorithms/cardinality-estimation-linear-probabilistic-counting/read). 
 
 </details>
 
-<details><summary><b>Deployment Delay of Built-in Algorithms</b></summary>
+<!-- <details><summary><b>Deployment Delay of Built-in Algorithms</b></summary>
 
 We also provide a command to measure the deployment latencies of task deployment in FlyMon. 
 
@@ -635,7 +638,7 @@ The results of the delay experiments are shown below:
 ```
 Note that this delay includes processing time of the software stack.
 
-</details>
+</details> -->
 
 ## 📏 Simulation Framework
 
@@ -643,9 +646,10 @@ For the convenience of accuracy estimation, we implemented a simulated version o
 In addition, we built an automated testing framework for repeating the experiments. The simulation codes are located in the [simulations directory](./simulations).
 
 
+
 ## 📖 License
 
-The project is released under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
+T.B.D.
 
 ## 🔗 Links
 

@@ -1,4 +1,0 @@
-#include "HowLog.h"
-
-
-// Empty

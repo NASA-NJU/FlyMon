@@ -25,14 +25,16 @@ class ResourceManager():
             cmu_num = cmug["cmu_num"]
             cmu_size = cmug["cmu_size"]
             mau_start = cmug["mau_start"]
+            meta_id = cmug["meta_id"]
             candidate_key_list = cmug["candidate_key_list"]
             std_params = cmug["std_params"]
             type = cmug["type"]
-            next_group = cmug["next_group"]
             key_bitw = cmug["key_bitw"]
             id = cmug["id"]
+            next_group = cmug["next_group"]
             self.cmu_groups.append(CMU_Group(group_id=id, 
                                              group_type=type, 
+                                             meta_id=meta_id,
                                              cmu_num=cmu_num, 
                                              key_bitw = key_bitw,
                                              memory_size=cmu_size, 
@@ -40,7 +42,7 @@ class ResourceManager():
                                              candidate_key_list=candidate_key_list, 
                                              std_params=std_params,
                                              next_group=next_group))
-            self.runtime.clear_all(id, type, cmu_num)
+            self.runtime.clear_all(id, cmu_num)
             # Setup Dashes.
             dhash_num = 0
             if type == 1:
@@ -51,13 +53,13 @@ class ResourceManager():
             for idx in range(dhash_num):
                 dhash_id = idx + 1
                 if type == 2 and dhash_id == 1:
-                    self.runtime.setup_dhash(id, type, dhash_id, HASHES_32[hash_32_id])
+                    self.runtime.setup_dhash(id, dhash_id, HASHES_32[hash_32_id])
                     self.dhashes[(id, dhash_id)] = HASHES_32[hash_32_id]
                     hash_32_id += 1
                 else:
-                    self.runtime.setup_dhash(id, type, dhash_id, HASHES_16[hash_16_id])
+                    self.runtime.setup_dhash(id, dhash_id, HASHES_16[hash_16_id])
                     self.dhashes[(id, dhash_id)] = HASHES_16[hash_16_id]       
-                    hash_16_id += 1        
+                    hash_16_id += 1      
 
     def show_status(self, group_id):
         if group_id > len(self.cmu_groups):
@@ -72,15 +74,15 @@ class ResourceManager():
             @annotation: The task already used Resources.
                             [
                                 [DHASH IDs], [CMU IDs]
-                            ]
-            @resource_list: Resource List.
+                            ]  ## The task cannot use them again.
+            @resource_node: ResourceNode object in utils/resource.py
         Return:
             Valid Location or None.
         """
         # We get avalible keys here. But the task may already use the keys.
         # We should note that 32-bit keys can be reused by different CMU of a CMU Group.
         # According to the annnotation, we can efficiently allocate the CMUs.
-        location = Location(cmu_group.group_id, cmu_group.group_type, None, None, None, None, None, resource_node, None)
+        location = Location(cmu_group.group_id, cmu_group.group_type, cmu_group.meta_id, None, None, None, None, None, resource_node, None)
         if resource_node.param1.type == ParamType.StdParam:
             has_param = cmu_group.check_parameter(resource_node.param1.content)
             if has_param is False:
@@ -120,9 +122,10 @@ class ResourceManager():
         if location.dhash_key is None:
             return None 
 
-        avalible_cmus = cmu_group.check_memory(resource_node.memory)
+        # Check if there is traffic intersection and if there are sufficient memory.
+        avalible_cmus = cmu_group.check_filter_and_memory(resource_node.filter, resource_node.memory)
         for cmu_id in avalible_cmus.keys():
-            if cmu_id not in annotation[1]:
+            if cmu_id not in annotation[1]:  
                 # a task can only use a CMU once.
                 annotation[1].append(cmu_id)
                 location.cmu_id = cmu_id
@@ -148,7 +151,9 @@ class ResourceManager():
         """
         priority_cmug_list = self.cmu_groups
         if len(resource_graph) > 1 and attribute.cmu_num > 1:
-            priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type)
+            # Prefer to allocate multi-cmu tasks to group type 2.
+            # because it can reuse the 32-bit comressed keys.
+            priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type) 
         # Annotations is used to help CMU Group's mark which Groups are used for this task to facilitate better use of resources.
         # It records which CMUs of each Group were used for this task.
         annotations = {}
@@ -204,7 +209,7 @@ class ResourceManager():
                 required_keys.append([loc.dhash_param, loc.resource_node.param1.content])
             group_id = loc.group_id
             self.cmu_groups[group_id-1].allocate_compressed_keys(task_id, required_keys)
-            self.cmu_groups[group_id-1].allocate_memory(task_id, loc.cmu_id, loc.memory_type, loc.memory_idx)
+            self.cmu_groups[group_id-1].allocate_filter_and_memory(task_id, loc.cmu_id, loc.resource_node.filter, loc.memory_type, loc.memory_idx)
 
     def release_task(self, task_instance: FlyMonTask):
         """
@@ -212,6 +217,6 @@ class ResourceManager():
         """
         for loc in task_instance.locations:
             group_id = loc.group_id
-            self.cmu_groups[group_id-1].release_memory(task_instance.id)
+            self.cmu_groups[group_id-1].release_filter_and_memory(task_instance.id, task_instance.filter)
             self.cmu_groups[group_id-1].release_compressed_keys(task_instance.id)
         pass

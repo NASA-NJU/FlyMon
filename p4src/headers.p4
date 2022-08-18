@@ -5,9 +5,7 @@
 // Metadata
 // ---------------------------------------------------------------------------
 
-
-@flexible
-header cmu_param_t {
+struct cmu_param_t {
     bit<16>    p1;  // flexible header may pass from ingress to egress.
     bit<16>    p2;  // also used as the output of SALU.
 }
@@ -36,18 +34,14 @@ struct cmu_group_metadata_b_t {
 }
 
 struct ingress_metadata_t {
-    cmu_group_metadata_a_t cmu_group1;
-    cmu_group_metadata_a_t cmu_group2;
-    cmu_group_metadata_a_t cmu_group3;
-    cmu_group_metadata_a_t cmu_group4;
 }
 
 struct egress_metadata_t {
-    cmu_group_metadata_b_t cmu_group5;
-    cmu_group_metadata_b_t cmu_group6;
-    cmu_group_metadata_b_t cmu_group7;
-    cmu_group_metadata_b_t cmu_group8;
-    cmu_group_metadata_b_t cmu_group9;
+    cmu_group_metadata_b_t cmu_group1;
+    cmu_group_metadata_a_t cmu_group2;
+    cmu_group_metadata_b_t cmu_group3;
+    cmu_group_metadata_a_t cmu_group4;
+    // CMU Groups larger than 4 reuse the metadata of CMU Groups 1, 2, 3, 4.
 }
 
 // ---------------------------------------------------------------------------
@@ -55,9 +49,9 @@ struct egress_metadata_t {
 // ---------------------------------------------------------------------------
 
 #define IPV4        0x0800 // ETHERTYPE_IPV4
-#define IPV6        0x86DD // ETHERTYPE_IPV4
-#define UDP         0x11   // PROTO_UDP
-#define TCP         0x06   // PROTO_TCP
+#define IPV6        0x86DD// ETHERTYPE_IPV4
+#define UDP         0x11  // PROTO_UDP
+#define TCP         0x06  // PROTO_TCP
 
 header ethernet_h {
     bit<48> dst_addr;

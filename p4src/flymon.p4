@@ -14,19 +14,6 @@ parser FlyMonIngressParser(
         out ingress_intrinsic_metadata_t ig_intr_md) {
     state start {
         pkt.extract(ig_intr_md);
-        // Enable bridge CMU Groups.
-        ig_md.cmu_group1.cmu1.param.setValid();
-        ig_md.cmu_group1.cmu2.param.setValid();
-        ig_md.cmu_group1.cmu3.param.setValid();
-        ig_md.cmu_group2.cmu1.param.setValid();
-        ig_md.cmu_group2.cmu2.param.setValid();
-        ig_md.cmu_group2.cmu3.param.setValid();
-        ig_md.cmu_group3.cmu1.param.setValid();
-        ig_md.cmu_group3.cmu2.param.setValid();
-        ig_md.cmu_group3.cmu3.param.setValid();
-        ig_md.cmu_group4.cmu1.param.setValid();
-        ig_md.cmu_group4.cmu2.param.setValid();
-        ig_md.cmu_group4.cmu3.param.setValid();
         // Start parsing the packet.
         transition select(ig_intr_md.resubmit_flag) {
             1 : parse_resubmit;
@@ -41,7 +28,6 @@ parser FlyMonIngressParser(
         pkt.advance(PORT_METADATA_SIZE);
         transition parse_ethernet;
     }
-
     state parse_ethernet {
         pkt.extract(hdr.ethernet);
         transition select (hdr.ethernet.ether_type) {
@@ -104,16 +90,8 @@ control FlyMonIngress(
         const default_action = miss;
         size = 64;
     }
-    CMU_Group1() cmu_group1;
-    CMU_Group2() cmu_group2;
-    CMU_Group3() cmu_group3;
-    CMU_Group4() cmu_group4;
     apply {
         simple_fwd.apply();
-        cmu_group1.apply(hdr, ig_intr_md, ig_md);
-        cmu_group2.apply(hdr, ig_intr_md, ig_md);
-        cmu_group3.apply(hdr, ig_intr_md, ig_md);
-        cmu_group4.apply(hdr, ig_intr_md, ig_md);
     }
 }
 
@@ -127,20 +105,6 @@ control FlyMonIngressDeparser(
         in ingress_metadata_t ig_md,
         in ingress_intrinsic_metadata_for_deparser_t ig_intr_dprsr_md) {
     apply {
-        // If needed, enable inter-group collaboration.
-        // Pass the execution results from the upstream to the downstream.
-        pkt.emit(ig_md.cmu_group1.cmu1.param);
-        pkt.emit(ig_md.cmu_group1.cmu2.param);
-        pkt.emit(ig_md.cmu_group1.cmu3.param);
-        pkt.emit(ig_md.cmu_group2.cmu1.param);
-        pkt.emit(ig_md.cmu_group2.cmu2.param);
-        pkt.emit(ig_md.cmu_group2.cmu3.param);
-        pkt.emit(ig_md.cmu_group3.cmu1.param);
-        pkt.emit(ig_md.cmu_group3.cmu2.param);
-        pkt.emit(ig_md.cmu_group3.cmu3.param);
-        pkt.emit(ig_md.cmu_group4.cmu1.param);
-        pkt.emit(ig_md.cmu_group4.cmu2.param);
-        pkt.emit(ig_md.cmu_group4.cmu3.param);
         pkt.emit(hdr);
     }
 }
@@ -158,24 +122,6 @@ parser FlyMonEgressParser(
     state start {
         // Init intrinsic metadata.
         pkt.extract(eg_intr_md);
-        transition parse_flymeta;
-    }
-
-    state parse_flymeta{
-        // If needed, enable inter-group collaboration.
-        // Pass the execution results from the upstream to the downstream.
-        pkt.extract(eg_md.cmu_group5.cmu1.param);
-        pkt.extract(eg_md.cmu_group5.cmu2.param);
-        pkt.extract(eg_md.cmu_group5.cmu3.param);
-        pkt.extract(eg_md.cmu_group6.cmu1.param);
-        pkt.extract(eg_md.cmu_group6.cmu2.param);
-        pkt.extract(eg_md.cmu_group6.cmu3.param);
-        pkt.extract(eg_md.cmu_group7.cmu1.param);
-        pkt.extract(eg_md.cmu_group7.cmu2.param);
-        pkt.extract(eg_md.cmu_group7.cmu3.param);
-        pkt.extract(eg_md.cmu_group8.cmu1.param);
-        pkt.extract(eg_md.cmu_group8.cmu2.param);
-        pkt.extract(eg_md.cmu_group8.cmu3.param);
         transition parse_ethernet;
     }
 
@@ -223,12 +169,20 @@ control FlyMonEgress(
         inout egress_intrinsic_metadata_for_deparser_t eg_intr_md_for_dprsr,
         inout egress_intrinsic_metadata_for_output_port_t eg_intr_md_for_oport) {
 
+    CMU_Group1() cmu_group1;
+    CMU_Group2() cmu_group2;
+    CMU_Group3() cmu_group3;
+    CMU_Group4() cmu_group4;
     CMU_Group5() cmu_group5;
     CMU_Group6() cmu_group6;
     CMU_Group7() cmu_group7;
     CMU_Group8() cmu_group8;
     CMU_Group9() cmu_group9;
     apply {
+        cmu_group1.apply(hdr, eg_intr_md, eg_md);
+        cmu_group2.apply(hdr, eg_intr_md, eg_md);
+        cmu_group3.apply(hdr, eg_intr_md, eg_md);
+        cmu_group4.apply(hdr, eg_intr_md, eg_md);
         cmu_group5.apply(hdr, eg_intr_md, eg_md);
         cmu_group6.apply(hdr, eg_intr_md, eg_md);
         cmu_group7.apply(hdr, eg_intr_md, eg_md);
