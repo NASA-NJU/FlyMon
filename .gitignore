@@ -5,7 +5,6 @@ build
 pcap_output
 simulations/bin/test*
 simulations/build
-simulations/data/*
 .vscode
 control_plane/trace_info
 zlog-cfg-cur
