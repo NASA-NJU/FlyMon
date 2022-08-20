@@ -128,7 +128,7 @@ class FlyMonController(cmd.Cmd):
             No exception here.
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-t", "--task_id", dest="task_id", type=int, default=-1, help="e.g., 1")
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, default=-1, help="the task id. e.g., 1")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
@@ -170,8 +170,8 @@ class FlyMonController(cmd.Cmd):
         parser = FlyMonArgumentParser()
         parser.add_argument("-f", "--filter", dest="filter", type=str, required=True, default="*,*", help="e.g., 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,*  Default: *,*")
         parser.add_argument("-k", "--key", dest="key", type=str, required=True, help="e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32")
-        parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., frequency(1)")
-        parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="e.g., 32768")
+        parser.add_argument("-a", "--attribute", dest="attribute", type=str, required=True, help="e.g., the attribute, e.g., frequency(1, cms)")
+        parser.add_argument("-m", "--mem_size", dest="mem_size", type=int, required=True, help="e.g., the number of buckets, e.g., 32768")
         parser.add_argument("-q", "--quiet", "--flag", action="store_true", required=False, help="do not need the log?")
         try:
             args = parser.parse_args(arg.split())
@@ -215,7 +215,7 @@ class FlyMonController(cmd.Cmd):
             Parse error?
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="the task id, e.g., 1")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
@@ -246,7 +246,7 @@ class FlyMonController(cmd.Cmd):
             Parse error?
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-g", "--group_id", dest="group_id", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-g", "--group_id", dest="group_id", type=int, required=True, help="the group id, e.g., 1")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
@@ -272,7 +272,7 @@ class FlyMonController(cmd.Cmd):
         """
         parser = FlyMonArgumentParser()
         parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
-        parser.add_argument("-c", "--clear", dest="clear", type=bool, required=False, default=False, help="e.g., False")
+        parser.add_argument("-c", "--clear", dest="clear", type=bool, required=False, default=False, help="if need to clear the stateful data, e.g., False")
         try:
             args = parser.parse_args(arg.split())
             if parser.error_message or args is None:
@@ -448,7 +448,7 @@ class FlyMonController(cmd.Cmd):
                  e.g., 10.0.0.0/24,*,*,*,*
         """
         parser = FlyMonArgumentParser()
-        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
+        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="the task id, e.g., 1")
         parser.add_argument("-k", "--key", dest="key", type=str, required=False, default= None,
                                      help="e.g., 10.0.0.0/24,*,*,*,*, \
                                            need to follow the seq of : src_ip/prefix1,dst_ip/prefix2,src_port/prefix3,dst_port/prefix4,protocol/prefix5")
@@ -485,50 +485,50 @@ class FlyMonController(cmd.Cmd):
             print(f"{e} when reset.")
             exit(1)
 
-    def do_delay_test(self, arg):
-        """
-        Perform the delay test corresponding to the experiments in the paper.
-        """
-        try:
-            # the dict of the commands: {"name of algorithm": [commands]}
-            command_dict = {
-                "CM Sketch" :    ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1,default)                     -m 96"],
-                "BeauCoup" :     ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr,beaucoup)     -m 48"],
-                "Bloom Filter" : ["-f 10.0.0.0/8,* -k None              -a existence(hdr.ipv4.src_addr,bloomfilter) -m 32"],
-                "SuMax(Max)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size,sumax)                      -m 48"],
-                "HyperLogLog" :  ["-f 10.0.0.0/8,* -k None              -a distinct(hdr.ipv4.dst_addr,hll)          -m 32"],
-                # "SuMax(Sum)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
-                #                   "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
-                #                   "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"],
-                # "MRAC" :         ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"]
-            }
-            # the dict of the delay: {"name of algorithm": [delay]} 
-            delay_dict = {k:[] for k,_ in command_dict.items()}
+    # def do_delay_test(self, arg):
+    #     """
+    #     Perform the delay test corresponding to the experiments in the paper.
+    #     """
+    #     try:
+    #         # the dict of the commands: {"name of algorithm": [commands]}
+    #         command_dict = {
+    #             "CM Sketch" :    ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1,default)                     -m 96"],
+    #             "BeauCoup" :     ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr,beaucoup)     -m 48"],
+    #             "Bloom Filter" : ["-f 10.0.0.0/8,* -k None              -a existence(hdr.ipv4.src_addr,bloomfilter) -m 32"],
+    #             "SuMax(Max)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size,sumax)                      -m 48"],
+    #             "HyperLogLog" :  ["-f 10.0.0.0/8,* -k None              -a distinct(hdr.ipv4.dst_addr,hll)          -m 32"],
+    #             # "SuMax(Sum)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
+    #             #                   "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
+    #             #                   "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"],
+    #             # "MRAC" :         ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"]
+    #         }
+    #         # the dict of the delay: {"name of algorithm": [delay]} 
+    #         delay_dict = {k:[] for k,_ in command_dict.items()}
 
-            # the delay experiment is performed five time, and the avg. value is used
-            for _ in range(5):
-                for alg, cmds in command_dict.items():
-                    start_time = time.time()
-                    for cmd in cmds:
-                        print(cmd)
-                        _ = self.do_add_task(cmd)
-                    end_time = time.time()
-                    delay_dict[alg].append(end_time - start_time)
-                    self.do_reset_all("")
+    #         # the delay experiment is performed five time, and the avg. value is used
+    #         for _ in range(5):
+    #             for alg, cmds in command_dict.items():
+    #                 start_time = time.time()
+    #                 for cmd in cmds:
+    #                     print(cmd)
+    #                     _ = self.do_add_task(cmd)
+    #                 end_time = time.time()
+    #                 delay_dict[alg].append(end_time - start_time)
+    #                 self.do_reset_all("")
             
-            # print the result
-            print("The results of the delay experiments are shown below:")
-            tb = pt.PrettyTable()
-            tb.field_names = ["Algorithm on CMU", "Deployment Delay (ms)"]
-            for alg, lats in delay_dict.items():
-                # print(alg, f"'s average delay is:\t{sum(lats)/len(lats)*1e3}ms")
-                tb.add_row([alg, '%.2f'%(sum(lats)/len(lats)*1e3)])
-            print(tb)
+    #         # print the result
+    #         print("The results of the delay experiments are shown below:")
+    #         tb = pt.PrettyTable()
+    #         tb.field_names = ["Algorithm on CMU", "Deployment Delay (ms)"]
+    #         for alg, lats in delay_dict.items():
+    #             # print(alg, f"'s average delay is:\t{sum(lats)/len(lats)*1e3}ms")
+    #             tb.add_row([alg, '%.2f'%(sum(lats)/len(lats)*1e3)])
+    #         print(tb)
                     
-        except Exception as e:
-            print(traceback.format_exc())
-            print(f"{e} when reset.")
-            exit(1)
+    #     except Exception as e:
+    #         print(traceback.format_exc())
+    #         print(f"{e} when reset.")
+    #         exit(1)
 
     def emptyline(self):
         pass

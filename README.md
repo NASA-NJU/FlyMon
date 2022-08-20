@@ -129,14 +129,11 @@ flymon>
 
 ```
 flymon> <tab><tab>
-EOF            default_setup  read_cmug      show_task
-add_forward    del_task       read_task      
-add_port       help           shell          
-add_task       query_task     show_cmug   
-
+EOF           add_port      del_forward   help          read_cmug     reset_all     shell         show_task     
+add_forward   add_task      del_task      query_task    read_task     send_packets  show_cmug
 
 flymon> add_task -h
-usage: controller_main.py [-h] -f FILTER -k KEY -a ATTRIBUTE -m MEM_SIZE
+usage: controller_main.py [-h] -f FILTER -k KEY -a ATTRIBUTE -m MEM_SIZE [-q]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -144,26 +141,34 @@ optional arguments:
                         e.g., 10.0.0.0/8,20.0.0.0/16 or 10.0.0.0/8,* or *,* Default: *,*
   -k KEY, --key KEY     e.g., hdr.ipv4.src_addr/24, hdr.ipv4.dst_addr/32
   -a ATTRIBUTE, --attribute ATTRIBUTE
-                        e.g., frequency(1)
+                        e.g., the attribute, e.g., frequency(1, cms)
   -m MEM_SIZE, --mem_size MEM_SIZE
-                        e.g., 32768
+                        e.g., the number of buckets, e.g., 32768
+  -q, --quiet, --flag   do not need the log?
 
 
 flymon> help add_task
  Add a task to CMU-Group.
         Args:
-            "-f", "--filter" required=True, e.g., SrcIP=10.0.0.*,DstIP=*.*.*.*
-            "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24,hdr.ipv4.dst_addr
-            "-a", "--attribute" type=[frequency, distinct, max, existence], required=True,
-            "-m", "--mem_size" type=int, required=True
-            **A Complete Example** : 
-                add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
-                        This will allocate the task, which monitors on packet with SrcIP=10.0.0.*, 
-                        and count for key=SrcIP/24, attribute=PacketCount, memory with 48 counters (3x16 count-min sketch)
+            "-f", "--filter" : what traffic does this task focus on
+            "-k", "--key"    : flow key of the task
+            "-a", "--attribute" : flow attribute of the task
+            "-m", "--mem_size" : memory size in number of buckets
+            **Examples** : 
+                a) [Per-flow Size]       
+                   add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr    -a frequency(1,cms) -m 48
+                b) [Single-key Distinct]
+                   add_task -f 10.0.0.0/8,* -k None                 -a distinct(hdr.ipv4.src_addr,hll) -m 32
+                c) [Multi-key Distinct]  
+                   add_task -f 10.0.0.0/8,* -k hdr.ipv4.dst_addr    -a distinct(hdr.ipv4.src_addr,beaucoup) -m 96
+                d) [Bloom Filter]        
+                   add_task -f 10.0.0.0/8,* -k None                 -a existence(hdr.ipv4.src_addr,bloomfilter) -m 32
+                e) [Max Packet Size]    
+                   add_task -f 20.0.0.0/8,* -k hdr.ipv4.dst_addr    -a max(pkt_size,sumax) -m 48
         Returns:
-            Added task id or -1.
+            Added task id with task info.
         Exceptions:
-            parser error of the key, the attribute, the memory. 
+            parser error of the key, the attribute, the memory.
 ```
 </details>
 
@@ -323,11 +328,7 @@ The experimental result is consistent with our expectation.
 We use following command to deploy this task. The controller will assign this task as Task 2.
 
 ```
-<<<<<<< HEAD
-flymon> add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1) -m 48
-=======
 add_task -f *,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a frequency(1,cms) -m 48
->>>>>>> dev
 ...
 ...
 [Success] Allocate TaskID: 2
@@ -485,23 +486,14 @@ After inserting the traffic, we can query the measurement data of the single-key
 ```
 flymon> read_task -t 1
 Read all data for task: 1
-<<<<<<< HEAD
-[38620, 47870, 56328, 58939, 34029, 48862, 55336, 62474, 42159, 40604, 63594, 54344, 46750, 39612, 64586, 50809, 56856, 58411, 38092, 47342, 55864, 63002, 37100, 48334, 64122, 54872, 45230, 40076, 65114, 50281, 46222, 39084]
-
-=======
 [56233, 59082, 38840, 43739, 64347, 50744, 46922, 35369, 39501, 42798, 54876, 60223, 47807, 34780, 63150, 52173, 59120, 56211, 43745, 38786, 50690, 64353, 35347, 46960, 42772, 39543, 60165, 54886, 34790, 47749, 52215, 63124]
->>>>>>> dev
 
 ```
 As you can see, the output of the original measurement data is not intuitive. We implement the HLL algorithm data parsing in the `query_test` command.
 
 ```
 flymon> query_task -t 1
-<<<<<<< HEAD
-132
-=======
 173
->>>>>>> dev
 ```
 
 The results seem not accurate enough because we used a minimal number of packets and a tiny amount of memory. HyperLogLog usually yields more reliable measurements (i.e., more minor variance) in more significant traffic scenarios. More importantly, adjusting the data plane hash function parameters is also a technical task. We will further optimize the configuration of the FlyMon data plane's hash functions in the future.
