@@ -149,8 +149,8 @@ class FlyMonRuntime_BfRt():
                     action = perprocessing_table.make_data([ client.DataTuple('offset', key_mappings[(key, mask)]),
                                                              client.DataTuple('code', param_mappings[(param, pmask)])], 
                                                             prefix + f".process_cmu{cmu_id}_key_param")
-                batch_match.append(match)
-                batch_action.append(action)
+                    batch_match.append(match)
+                    batch_action.append(action)
         perprocessing_table.entry_add(self.conn, batch_match, batch_action)
         return batch_match
 

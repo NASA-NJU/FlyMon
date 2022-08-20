@@ -92,8 +92,7 @@ class ResourceManager():
             if len(avalible_hparams) <= 0:
                 return None
             for hparam in avalible_hparams.keys():
-                if hparam not in annotation[0] and avalible_hparams[hparam] != 32:
-                    # key and param can not select the same dhash currently.
+                if avalible_hparams[hparam] != 32:
                     # we prefer use 32-bit key as flow key, not param.
                     annotation[0].append(hparam)
                     # print(hparam)
