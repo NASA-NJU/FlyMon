@@ -610,13 +610,13 @@ There are two different ways to deploy for this task. One with a threshold-trigg
 
 </details>
 
-For measurement tasks requiring cooperation of multiple CMU Groups, a more "advanced" FlyMon implementation is required. We are refactoring the implementation, but will not merge it into the main branch. Because the "advanced" implementation introduces additional design tricks, which are relatively difficult to understand the intents.
+For measurement tasks requiring cooperation of multiple CMU Groups, a more "advanced" FlyMon implementation is required. We are refactoring the implementation, but will not merge it into the main branch. Because the "advanced" implementation introduces additional design tricks, which are relatively difficult to understand the intents behind.
 
 ## 📏 Simulations
 
 For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. In this simulation, we implement various measurement algorithms based on CMU, including BeauCoup, SuMax, CM-Sketch, BloomFilter, MRAC, and HyperLogLog. 
 
-> 😔 However, the current simulation implementation is obsolete and inefficient. Maybe I will find a time to refactor it step by step in the future.
+> 😔 However, the current simulations of FlyMon is messy, inefficient or even ugly. Maybe I will find a time to refactor it step by step.
 
 The simulation codes are located in the [simulations directory](./simulations).
 
