@@ -74,8 +74,7 @@ When all tests are completed, you can view the results in the [result](./result/
     * `TBC_BEAUCOUP_XXX` tests FlyMon-based BeauCoup.
     * `TBC_BLOOMFILTER` tests FlyMon-based BloomFilter.
     * `TBC_CMSketch` and `TBC_CUSketch` tests FlyMon-based Count-min Sketch and SuMax(Sum).
-    * `TBC_HYPERLOGLOG` tests FlyMon-based HyperLogLog.
+    * `TBC_CARDINALITY` tests FlyMon-based HyperLogLog.
     * `TBC_MAX_TABBLE` tests FlyMon-based SuMax(Max).
     * `TBC_MRAC` tests FlyMon-based MRAC.
     * `BeauCoup` tests original BeauCoup algorithm.
-* `scripts/test_xxx.py` are scripts to automate test measurement algorithms.
