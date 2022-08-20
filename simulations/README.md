@@ -1,6 +1,8 @@
 # FlyMon Simulation
 
-This is the simulation implementation part of flymon. We have implemented related measurement algorithms based on CMU-Groups. In addition, we constructed an automated testing framework to repeat the experiments.
+This is the simulation implementation part of flymon. We have implemented related measurement algorithms based on CMU-Groups. 
+
+> ⚠️ Part of the algorithm implementations reference the codes of [Elastic Sketch](https://github.com/BlockLiu/ElasticSketchCode).
 
 ## Get Started
 
@@ -17,6 +19,18 @@ Below we show how to perform the tests.
 Our packet trace is download from [the MAWI Working Group of the WIDE Project](http://mawi.wide.ad.jp/mawi/). 
 We preprocessed the trace according to the period (e.g., 15s and 30s) and kept only the information related to the flows (i.e., 5-tuple).
 Here is a [guide](./data/README.md) to download these pre-processed traces.
+
+The corresponding BiBTeX entry:
+```
+ @inproceedings{mawilab,
+  author = {Fontugne, Romain and Borgnat, Pierre and Abry, Patrice and Fukuda, Kensuke},
+  title = {{MAWILab: Combining Diverse Anomaly Detectors for Automated Anomaly Labeling and Performance Benchmarking}},
+  booktitle = {ACM CoNEXT '10},
+  month = {December},
+  year = {2010},
+  address = {Philadelphia, PA},
+  numpages = {12}}
+```
 
 ### Build Project
 
@@ -48,11 +62,11 @@ This script provides two mode for testing :
 
 Look at the `test_all.py` to see the difference between their memory configurations.
  
-When all tests are completed, you can view the results in the [result](./result/) directory. We also provide [a snapshot of the test results](./result_snapshot/) under all memory configurations (i.e., the `all` mode), which also contains the explanation of the CSV files' columns.
+When all tests are completed, you can view the results in the [result](./result/) directory. 
 
 ## File Description
 
-> 🔔 For historical reasons, the Transformable Measurement Block (TBC) is referred to as Composable Measurement Unit (CMU).
+> 🔔 For historical reasons, the Transformable Measurement Block (TBC) is referred to as Composable Measurement Unit (CMU). This simulation codes are extremely ugly. Maybe I am interested in refactoring it step by step in the future.
 
 * `include/tbc` contains the simulation of the CMU-Groups and builds a set of table structures, which can be configured as many measurement algorithms (in `include/tbc_manager.h`).
 * The other files in `include/` includes other measurement algorithms and utilts.
@@ -60,9 +74,7 @@ When all tests are completed, you can view the results in the [result](./result/
     * `TBC_BEAUCOUP_XXX` tests FlyMon-based BeauCoup.
     * `TBC_BLOOMFILTER` tests FlyMon-based BloomFilter.
     * `TBC_CMSketch` and `TBC_CUSketch` tests FlyMon-based Count-min Sketch and SuMax(Sum).
-    * `TBC_HYPERLOGLOG` tests FlyMon-based HyperLogLog.
+    * `TBC_CARDINALITY` tests FlyMon-based HyperLogLog.
     * `TBC_MAX_TABBLE` tests FlyMon-based SuMax(Max).
     * `TBC_MRAC` tests FlyMon-based MRAC.
     * `BeauCoup` tests original BeauCoup algorithm.
-* `scripts/test_xxx.py` are scripts to automate test measurement algorithms.
-

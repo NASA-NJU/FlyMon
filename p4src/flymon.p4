@@ -14,6 +14,7 @@ parser FlyMonIngressParser(
         out ingress_intrinsic_metadata_t ig_intr_md) {
     state start {
         pkt.extract(ig_intr_md);
+        // Start parsing the packet.
         transition select(ig_intr_md.resubmit_flag) {
             1 : parse_resubmit;
             0 : parse_port_metadata;
@@ -27,7 +28,6 @@ parser FlyMonIngressParser(
         pkt.advance(PORT_METADATA_SIZE);
         transition parse_ethernet;
     }
-
     state parse_ethernet {
         pkt.extract(hdr.ethernet);
         transition select (hdr.ethernet.ether_type) {
@@ -118,7 +118,9 @@ parser FlyMonEgressParser(
         out header_t hdr,
         out egress_metadata_t eg_md,
         out egress_intrinsic_metadata_t eg_intr_md) {
+
     state start {
+        // Init intrinsic metadata.
         pkt.extract(eg_intr_md);
         transition parse_ethernet;
     }
@@ -168,8 +170,24 @@ control FlyMonEgress(
         inout egress_intrinsic_metadata_for_output_port_t eg_intr_md_for_oport) {
 
     CMU_Group1() cmu_group1;
+    CMU_Group2() cmu_group2;
+    CMU_Group3() cmu_group3;
+    CMU_Group4() cmu_group4;
+    CMU_Group5() cmu_group5;
+    CMU_Group6() cmu_group6;
+    CMU_Group7() cmu_group7;
+    CMU_Group8() cmu_group8;
+    CMU_Group9() cmu_group9;
     apply {
         cmu_group1.apply(hdr, eg_intr_md, eg_md);
+        cmu_group2.apply(hdr, eg_intr_md, eg_md);
+        cmu_group3.apply(hdr, eg_intr_md, eg_md);
+        cmu_group4.apply(hdr, eg_intr_md, eg_md);
+        cmu_group5.apply(hdr, eg_intr_md, eg_md);
+        cmu_group6.apply(hdr, eg_intr_md, eg_md);
+        cmu_group7.apply(hdr, eg_intr_md, eg_md);
+        cmu_group8.apply(hdr, eg_intr_md, eg_md);
+        cmu_group9.apply(hdr, eg_intr_md, eg_md);
     }
 }
 

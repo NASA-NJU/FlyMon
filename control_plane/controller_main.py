@@ -76,6 +76,25 @@ class FlyMonController(cmd.Cmd):
             print(f"{e} when loading configure file.")
             exit(1)
 
+    def grpc_setup(self, client_id=0, p4_name=None):
+        '''
+        Set up connection to gRPC server and bind
+        Args: 
+         - client_id Client ID
+         - p4_name Name of P4 program, 'flymon' in this controller.
+        '''
+        self.bfrt_info = None
+
+        grpc_addr = 'localhost:50052'        
+
+        self.interface = gc.ClientInterface(grpc_addr, client_id=client_id,
+                device_id=0, notifications=None, perform_subscribe=True)
+        self.interface.bind_pipeline_config(p4_name)
+        self.bfrt_info = self.interface.bfrt_info_get()
+
+        self.target = gc.Target(device_id=0, pipe_id=0xffff)
+
+        self.runtime = FlyMonRuntime_BfRt(self.target, self.bfrt_info)
 
     def do_show_cmug(self, arg):
         """
@@ -128,16 +147,23 @@ class FlyMonController(cmd.Cmd):
     def do_add_task(self, arg):
         """ Add a task to CMU-Group.
         Args:
-            "-f", "--filter" required=True, e.g., SrcIP=10.0.0.*,DstIP=*.*.*.*
-            "-k", "--key" required=True, e.g., hdr.ipv4.src_addr/24,hdr.ipv4.dst_addr
-            "-a", "--attribute" type=[frequency, distinct, max, existence], required=True,
-            "-m", "--mem_size" type=int, required=True
-            **A Complete Example** : 
-                add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr/24 -a frequency(1) -m 48
-                        This will allocate the task, which monitors on packet with SrcIP=10.0.0.*, 
-                        and count for key=SrcIP/24, attribute=PacketCount, memory with 48 counters (3x16 count-min sketch)
+            "-f", "--filter" : what traffic does this task focus on
+            "-k", "--key"    : flow key of the task
+            "-a", "--attribute" : flow attribute of the task
+            "-m", "--mem_size" : memory size in number of buckets
+            **Examples** : 
+                a) [Per-flow Size]       
+                   add_task -f 10.0.0.0/8,* -k hdr.ipv4.src_addr    -a frequency(1,cms) -m 48
+                b) [Single-key Distinct]
+                   add_task -f 10.0.0.0/8,* -k None                 -a distinct(hdr.ipv4.src_addr,hll) -m 32
+                c) [Multi-key Distinct]  
+                   add_task -f 10.0.0.0/8,* -k hdr.ipv4.dst_addr    -a distinct(hdr.ipv4.src_addr,beaucoup) -m 96
+                d) [Bloom Filter]        
+                   add_task -f 10.0.0.0/8,* -k None                 -a existence(hdr.ipv4.src_addr,bloomfilter) -m 32
+                e) [Max Packet Size]    
+                   add_task -f 20.0.0.0/8,* -k hdr.ipv4.dst_addr    -a max(pkt_size,sumax) -m 48
         Returns:
-            Added task id or -1.
+            Added task id with task info.
         Exceptions:
             parser error of the key, the attribute, the memory.
         """
@@ -155,9 +181,12 @@ class FlyMonController(cmd.Cmd):
             task_instance = self.task_manager.register_task(args.filter, args.key, args.attribute, args.mem_size)
             if not args.quiet:
                 print("Required resources:")
-                for re in task_instance.resource_list():
-                    print(str(re))
-            locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.resource_list())
+                for nodes in task_instance.resource_graph():
+                    for node in nodes:
+                        print(str(node))
+            locations = self.resource_manager.allocate_resources(task_instance.id, task_instance.attribute, task_instance.resource_graph())
+            for loc in locations:
+                print(str(loc))
             if locations is not None:
                 task_instance.locations = locations
                 re = self.task_manager.install_task(task_instance.id)
@@ -200,46 +229,6 @@ class FlyMonController(cmd.Cmd):
             print(f"Read all data for task: {task_instance.id}")
             for row in data:
                 print(row)
-            print("")
-        except Exception as e:
-            print(traceback.format_exc())
-            print(e)
-            return
-
-    def do_evaluate_are(self, arg):
-        """
-        Evaluation ARE.
-        Args list:
-            "-t" "--task_id" the ID of a task, e.g., 1
-            "-f" :--groud_true_file
-        Return:
-            The ARE of the frequency task.
-        Exception:
-            Parse error?
-        """
-        parser = FlyMonArgumentParser()
-        parser.add_argument("-t", "--task_id", dest="task_id", type=int, required=True, help="e.g., 1")
-        parser.add_argument("-f", "--gd_file", dest="gd_file", type=str, required=True, help="e.g., xxxx.json")
-        try:
-            args = parser.parse_args(arg.split())
-            if parser.error_message or args is None:
-                print(parser.error_message)
-                return          
-            task_instance = self.task_manager.get_instance(args.task_id)
-            if task_instance is None:
-                print(f"Invalid task id {args.task_id}")
-                return
-            # data = self.data_collector.read_task(task_instance)
-            pcap_statistics = loadJsonToDict( args.gd_file )
-            RE_SUM = 0.0
-            for ip_pair in pcap_statistics['ip_pair_pkt_cnt_table']:
-                key_str = ip_pair[1] + "," + ip_pair[0] + ",*,*,*"
-                key_bytes = task_instance.generate_key_bytes(key_str)
-                real = pcap_statistics['ip_pair_pkt_cnt_table'][ip_pair]
-                estimate = self.data_collector.query_task2(task_instance, key_bytes)
-                print(f"key={key_str}, real={real}, estimate={estimate}")
-                RE_SUM += abs(estimate - real) / real
-            print(f"ARE = {RE_SUM/len(pcap_statistics['ip_pair_pkt_cnt_table'])}")
             print("")
         except Exception as e:
             print(traceback.format_exc())
@@ -396,30 +385,6 @@ class FlyMonController(cmd.Cmd):
             print("OK, the forwarding rules already exist.")
             return
 
-    def do_default_setup(self, arg):
-        """Default configs in our testbd.
-            self.do_add_port("-p 16 -s 40G")
-            self.do_add_port("-p 24 -s 40G")
-            self.do_add_forward("-s 16 -d 24")
-            self.do_add_forward("-s 24 -d 16")
-        """
-        self.do_add_port("-p 16 -s 100G")
-        self.do_add_port("-p 8 -s 100G")
-        self.do_add_forward("-s 16 -d 8")
-        self.do_add_forward("-s 8 -d 16")
-
-    def do_teardown(self, arg):
-        """Default configs in our testbd.
-            self.do_add_port("-p 16 -s 40G")
-            self.do_add_port("-p 24 -s 40G")
-            self.do_add_forward("-s 16 -d 24")
-            self.do_add_forward("-s 24 -d 16")
-        """
-        self.port_table = self.bfrt_info.table_get("$PORT")
-        self.port_table.entry_del(self.target)
-        self.forward_table = self.bfrt_info.table_get("FlyMonIngress.simple_fwd")
-        self.forward_table.entry_del(self.target)
-
     def do_send_packets(self, arg):
         """Send several packets to model's virtual ports.
             -n packet_num
@@ -527,15 +492,15 @@ class FlyMonController(cmd.Cmd):
         try:
             # the dict of the commands: {"name of algorithm": [commands]}
             command_dict = {
-                "CM Sketch" :    ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1) -m 96"],
-                "BeauCoup" :     ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr) -m 48"],
-                "Bloom Filter" : ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a existence() -m 32"],
-                "SuMax(Max)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size) -m 48"],
-                "HyperLogLog" :  ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct() -m 32"],
-                "SuMax(Sum)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
-                                  "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
-                                  "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"],
-                "MRAC" :         ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"]
+                "CM Sketch" :    ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency(1,default)                     -m 96"],
+                "BeauCoup" :     ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a distinct(hdr.ipv4.dst_addr,beaucoup)     -m 48"],
+                "Bloom Filter" : ["-f 10.0.0.0/8,* -k None              -a existence(hdr.ipv4.src_addr,bloomfilter) -m 32"],
+                "SuMax(Max)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a max(pkt_size,sumax)                      -m 48"],
+                "HyperLogLog" :  ["-f 10.0.0.0/8,* -k None              -a distinct(hdr.ipv4.dst_addr,hll)          -m 32"],
+                # "SuMax(Sum)" :   ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
+                #                   "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32",
+                #                   "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"],
+                # "MRAC" :         ["-f 10.0.0.0/8,* -k hdr.ipv4.src_addr -a frequency_sumax(1) -m 32"]
             }
             # the dict of the delay: {"name of algorithm": [delay]} 
             delay_dict = {k:[] for k,_ in command_dict.items()}
@@ -565,63 +530,6 @@ class FlyMonController(cmd.Cmd):
             print(f"{e} when reset.")
             exit(1)
 
-
-    def do_reconfigure_test(self, arg):
-        """
-        We initiate 8 reconfiguration events to evaluate 
-        the forwarding performance of the network during reconfiguration.
-        """
-        try:
-            event_list = [
-                # Batch 1, T = 20
-                ("add" , "-f 10.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ports.src_port -a max(queue_size) -m 24 -q"),
-                ("add" , "-f 20.0.0.0/8,* -k hdr.ipv4.dst_addr -a frequency(1) -m 12 -q"),
-                # Batch 2, T = 50
-                ("del" , "-t 1"),
-                ("add" , "-f 30.0.0.0/8,* -k hdr.ipv4.src_addr -a existence() -m 12 -q"),
-                ("realoc" , 
-                    [
-                        ("del" , "-t 2"),
-                        ("add" , "-f 20.0.0.0/8,* -k hdr.ipv4.dst_addr -a frequency(1) -m 24 -q")
-                    ]
-                ),
-                # Batch 3, T = 90
-                ("del" , "-t 3"),
-                ("add" , "-f 40.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 32 -q"),
-                ("del" , "-t 2"),
-                ("realoc" , 
-                    [
-                        ("del" , "-t 4"),
-                        ("add" , "-f 40.0.0.0/8,* -k hdr.ipv4.src_addr,hdr.ipv4.dst_addr -a distinct() -m 16 -q"),
-                    ]
-                ),
-            ]
-            self.do_reset_all("")
-            sec = 1
-            while len(event_list) != 0:
-                time.sleep(10)
-                tp, cmd = event_list.pop(0)
-                print(f"Time {sec*10} event type: {tp}.")
-                sec = sec + 1
-                if tp == "add":
-                    _ = self.do_add_task(cmd)
-                elif tp == "del":
-                    _ = self.do_del_task(cmd)
-                else:
-                    for tb2, cmd2 in cmd:
-                        if tb2 == "add":
-                            _ = self.do_add_task(cmd2)
-                        elif tb2 == "del":
-                            _ = self.do_del_task(cmd2)
-                
-            self.do_reset_all("")
-        except Exception as e:
-            print(traceback.format_exc())
-            print(f"{e} when reset.")
-            exit(1)
-
-
-
     def emptyline(self):
         pass
     
@@ -635,26 +543,6 @@ class FlyMonController(cmd.Cmd):
         output = os.popen(line).read()
         print(output)
         self.last_output = output
-
-    def grpc_setup(self, client_id=0, p4_name=None):
-        '''
-        Set up connection to gRPC server and bind
-        Args: 
-         - client_id Client ID
-         - p4_name Name of P4 program, 'flymon' in this controller.
-        '''
-        self.bfrt_info = None
-
-        grpc_addr = 'localhost:50052'        
-
-        self.interface = gc.ClientInterface(grpc_addr, client_id=client_id,
-                device_id=0, notifications=None, perform_subscribe=True)
-        self.interface.bind_pipeline_config(p4_name)
-        self.bfrt_info = self.interface.bfrt_info_get()
-
-        self.target = gc.Target(device_id=0, pipe_id=0xffff)
-
-        self.runtime = FlyMonRuntime_BfRt(self.target, self.bfrt_info)
 
 if __name__ == "__main__":
     FlyMonController().cmdloop()

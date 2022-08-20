@@ -14,6 +14,7 @@ parser FlyMonIngressParser(
         out ingress_intrinsic_metadata_t ig_intr_md) {
     state start {
         pkt.extract(ig_intr_md);
+        // Start parsing the packet.
         transition select(ig_intr_md.resubmit_flag) {
             1 : parse_resubmit;
             0 : parse_port_metadata;
@@ -27,7 +28,6 @@ parser FlyMonIngressParser(
         pkt.advance(PORT_METADATA_SIZE);
         transition parse_ethernet;
     }
-
     state parse_ethernet {
         pkt.extract(hdr.ethernet);
         transition select (hdr.ethernet.ether_type) {
@@ -90,18 +90,8 @@ control FlyMonIngress(
         const default_action = miss;
         size = 64;
     }
-    {%for CMUG in CMUG_GROUP_CONFIGS %}
-    {%if CMUG.type == 1 %}
-    CMU_Group{{CMUG.id}}() cmu_group{{CMUG.id}};
-    {% endif %}
-    {%endfor%}
     apply {
         simple_fwd.apply();
-        {%for CMUG in CMUG_GROUP_CONFIGS %}
-        {%if CMUG.type == 1 %}
-        cmu_group{{CMUG.id}}.apply(hdr, ig_intr_md, ig_md);
-        {% endif %}
-        {%endfor%}
     }
 }
 
@@ -128,7 +118,9 @@ parser FlyMonEgressParser(
         out header_t hdr,
         out egress_metadata_t eg_md,
         out egress_intrinsic_metadata_t eg_intr_md) {
+
     state start {
+        // Init intrinsic metadata.
         pkt.extract(eg_intr_md);
         transition parse_ethernet;
     }
@@ -178,15 +170,11 @@ control FlyMonEgress(
         inout egress_intrinsic_metadata_for_output_port_t eg_intr_md_for_oport) {
 
     {%for CMUG in CMUG_GROUP_CONFIGS %}
-    {%if CMUG.type == 2 %}
     CMU_Group{{CMUG.id}}() cmu_group{{CMUG.id}};
-    {% endif %}
     {%endfor%}
     apply {
         {%for CMUG in CMUG_GROUP_CONFIGS %}
-        {%if CMUG.type == 2 %}
         cmu_group{{CMUG.id}}.apply(hdr, eg_intr_md, eg_md);
-        {% endif %}
         {%endfor%}
     }
 }

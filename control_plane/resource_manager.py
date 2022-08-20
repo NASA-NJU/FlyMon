@@ -1,9 +1,11 @@
+from __future__ import annotations
+from flymonlib.param import ParamType
 from flymonlib.hash import HASHES_16, HASHES_32
 from flymonlib.flymon_runtime import FlyMonRuntime_BfRt
 from flymonlib.location import Location
 from flymonlib.flymon_task import FlyMonTask
-from flymonlib.resource import ResourceType
 from flymonlib.cmu_group import CMU_Group
+from flymonlib.utils import calc_keymapping
 
 class ResourceManager():
     """
@@ -23,18 +25,24 @@ class ResourceManager():
             cmu_num = cmug["cmu_num"]
             cmu_size = cmug["cmu_size"]
             mau_start = cmug["mau_start"]
+            meta_id = cmug["meta_id"]
             candidate_key_list = cmug["candidate_key_list"]
             std_params = cmug["std_params"]
             type = cmug["type"]
+            key_bitw = cmug["key_bitw"]
             id = cmug["id"]
+            next_group = cmug["next_group"]
             self.cmu_groups.append(CMU_Group(group_id=id, 
                                              group_type=type, 
+                                             meta_id=meta_id,
                                              cmu_num=cmu_num, 
+                                             key_bitw = key_bitw,
                                              memory_size=cmu_size, 
                                              stage_start=mau_start, 
                                              candidate_key_list=candidate_key_list, 
-                                             std_params=std_params))
-            self.runtime.clear_all(id, type, cmu_num)
+                                             std_params=std_params,
+                                             next_group=next_group))
+            self.runtime.clear_all(id, cmu_num)
             # Setup Dashes.
             dhash_num = 0
             if type == 1:
@@ -45,13 +53,13 @@ class ResourceManager():
             for idx in range(dhash_num):
                 dhash_id = idx + 1
                 if type == 2 and dhash_id == 1:
-                    self.runtime.setup_dhash(id, type, dhash_id, HASHES_32[hash_32_id])
+                    self.runtime.setup_dhash(id, dhash_id, HASHES_32[hash_32_id])
                     self.dhashes[(id, dhash_id)] = HASHES_32[hash_32_id]
                     hash_32_id += 1
                 else:
-                    self.runtime.setup_dhash(id, type, dhash_id, HASHES_16[hash_16_id])
+                    self.runtime.setup_dhash(id, dhash_id, HASHES_16[hash_16_id])
                     self.dhashes[(id, dhash_id)] = HASHES_16[hash_16_id]       
-                    hash_16_id += 1        
+                    hash_16_id += 1      
 
     def show_status(self, group_id):
         if group_id > len(self.cmu_groups):
@@ -59,106 +67,156 @@ class ResourceManager():
             return
         self.cmu_groups[group_id-1].show_status()
     
-    def allocate_resources(self, task_id, resource_list, mode=1):
+    def check_cmug(self, cmu_group, annotation, resource_node):
+        """Judge if there is a cmu meets the resource_list requirements.
+        Args:
+            @cmu_group: CMU Group object.
+            @annotation: The task already used Resources.
+                            [
+                                [DHASH IDs], [CMU IDs]
+                            ]  ## The task cannot use them again.
+            @resource_node: ResourceNode object in utils/resource.py
+        Return:
+            Valid Location or None.
         """
-        Dynamic allocate resources for a task.
-        Args: 
-         - A list of resource object.
-         - task_id : used for mark the memory.
-        Returns:
-         - [locations] : a list of Location(group_id, group_type, (hkey1, ...), cmu_id, memory_type, memory_idx)
-         - mem_idx is offset on the type of memory, for example ,if the type is 2(HALF)
-         - the mem_idx should be 1 or 2.
-         - (hkey1, ...) denotes the hash_ids that will be used by key and param1, respectively. 
-        --------------------------------------------------------------------------------
-        Current Strategy: 
-            a) Try to allocate them in a CMU-Group.
-            b) Iterate all CMU-Group one by one.
-                b1) Check Key Resources
-                b2) Check Param Resources.
-                c) If b1 && b2 are satisfied, iterate alls CMU in this group one by one:
-                    c1) Read a memory resource, if the CMU has enough memory, append 
-                        (group_id, group_type, cmu_id, memory_type, memory_idx) to locations.
-                        then remove the memory resource.
-                d) If all the memory resources are removed: return locations.
-                e) Else, iterate the next CMU-Group.
-            f) If don't have enough memory for all CMU-Groups. Release Resources and Return None.
-        --------------------------------------------------------------------------------
-        TODO: Implement a Smarter Allocation strategy. 
-        For example, we need to carefully allocate compressed keys to save hash resources.
-         - If the required compressed key can be generated from XOR from existing keys, we should also reuse the hash results.
-         - How to efficient allocate the memory (I mean, improved memory utilization)?
-        """
-        locations = []
-        if resource_list is None:
-            return locations
-        required_keys = []
-        required_params = []
-        required_memorys = []
-        for resource in resource_list:
-            if resource.type == ResourceType.Memory:
-                required_memorys.append(resource)
-            elif resource.type == ResourceType.CompressedKey:
-                required_keys.append(resource)
-            elif resource.type == ResourceType.StdParam:
-                required_params.append(resource)
-        
-        priority_cmug_list = self.cmu_groups
-        if len(required_memorys) > 1:
-            # We favor group_type 2 for multi-row algorithms.
-            priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type)
-        for cmug in priority_cmug_list:
-            # TODO: each cmug need not to have all required_keys, just at least one flowkey.
-            hkeys = cmug.allocate_compressed_keys(task_id, required_keys) 
-            has_param = cmug.check_parameters(required_params)
-            if hkeys is not None and has_param:
-                used_cmu = []
-                for required_memory in list(required_memorys): # shallow copy
-                    if len(used_cmu) == cmug.cmu_num : 
-                        break
-                    for id in range(cmug.cmu_num):
-                        cmu_id = id + 1
-                        if cmu_id not in used_cmu:
-                            # Each task cannot use the same CMU twice.
-                            re = cmug.allocate_memory(cmu_id, task_id, required_memory.content, mode=1)
-                            if re is not None:
-                                memory_type = re[0]
-                                memory_idx = re[1]
-                                hkeys_for_this_location = [hkeys[0]] + hkeys[len(required_memorys):]
-                                flow_key = hkeys.pop(0) # use this hkey as flow key
-                                locations.append(Location(                                
-                                                           [cmug.group_id, cmug.group_type, hkeys_for_this_location, cmu_id, memory_type, memory_idx], 
-                                                           hasher=self.dhashes[(cmug.group_id, flow_key)] 
-                                                         )
-                                                )
-                                required_memorys.remove(required_memory)
-                                required_keys.pop(0) # Dangers, remove a required flow/compressed key.
-                                used_cmu.append(cmu_id)
-                                break # To allocate the next required_memory
-                            else:
-                                # print("No enough memory")
-                                pass
-                # if len(hkeys) != 0:
-                #     cmug.release_compressed_keys(task_id, hkeys) # release unused hkeys.
-                if len(required_memorys) == 0:
+        # We get avalible keys here. But the task may already use the keys.
+        # We should note that 32-bit keys can be reused by different CMU of a CMU Group.
+        # According to the annnotation, we can efficiently allocate the CMUs.
+        location = Location(cmu_group.group_id, cmu_group.group_type, cmu_group.meta_id, None, None, None, None, None, resource_node, None)
+        if resource_node.param1.type == ParamType.StdParam:
+            has_param = cmu_group.check_parameter(resource_node.param1.content)
+            if has_param is False:
+                return None
+        if resource_node.param1.type == ParamType.CompressedKey:
+            avalible_hparams = cmu_group.check_compressed_key(resource_node.param1.content)
+            if len(avalible_hparams) <= 0:
+                return None
+            for hparam in avalible_hparams.keys():
+                if hparam not in annotation[0] and avalible_hparams[hparam] != 32:
+                    # key and param can not select the same dhash currently.
+                    # we prefer use 32-bit key as flow key, not param.
+                    annotation[0].append(hparam)
+                    # print(hparam)
+                    location.dhash_param = hparam
+                    # print(location.dhash_param)
                     break
-        if len(required_memorys) != 0:
-            # Allocation Failed. Need to recycle the memory.
-            for location in locations:
-                group_id = location.group_id
-                memory_type = location.memory_type
-                self.cmu_groups[group_id-1].release_memory(task_id, memory_type)
-                self.cmu_groups[group_id-1].release_compressed_keys(task_id, location.hkeys)
+            if location.dhash_param is None:
+                return None
+
+        avalible_hkeys = cmu_group.check_compressed_key(resource_node.key)
+        for used_key in annotation[0]:
+            # prefer to use already-in-use 32-bit keys.
+            if used_key in avalible_hkeys.keys():
+                if avalible_hkeys[used_key] == 32:
+                    # can be reused.
+                    location.dhash_key = used_key
+                    break
+        if location.dhash_key is None:
+            # need to occupy a new avalible compressed key.
+            for selected_key in avalible_hkeys.keys():
+                if selected_key not in annotation[0]:
+                    # can not reuse 16-bit keys.    
+                    annotation[0].append(selected_key)
+                    location.dhash_key = selected_key
+                    break
+        if location.dhash_key is None:
+            return None 
+
+        # Check if there is traffic intersection and if there are sufficient memory.
+        avalible_cmus = cmu_group.check_filter_and_memory(resource_node.filter, resource_node.memory)
+        for cmu_id in avalible_cmus.keys():
+            if cmu_id not in annotation[1]:  
+                # a task can only use a CMU once.
+                annotation[1].append(cmu_id)
+                location.cmu_id = cmu_id
+                location.memory_type = avalible_cmus[cmu_id][1]
+                location.memory_idx = avalible_cmus[cmu_id][2]
+                break
+        if location.cmu_id is None:
             return None
-        return locations
+        return location
+
+    def allocate_resources(self, task_id, attribute, resource_graph, mode=1):
+        """Dynamic allocate resources for a task.
+        Args:
+            @task_id.
+            @resource graph. Each node represents resources of a CMU.
+                each edge between two nodes represents the connection demand of two CMUs.
+                e.g., [ [ [resource_list1], [resource_list2] ], [ [resource_list3] ] ] require 3 CMU,
+                    CMU1 and CMU2 needs to be adjacent, while CMU3 does not.
+            @mode. TODO. Memory Allocation Mode.
+        Return:
+            A set of Locations whicn can directly used to install rules in the data plane.
+            Otherwise, None
+        """
+        priority_cmug_list = self.cmu_groups
+        if len(resource_graph) > 1 and attribute.cmu_num > 1:
+            # Prefer to allocate multi-cmu tasks to group type 2.
+            # because it can reuse the 32-bit comressed keys.
+            priority_cmug_list = sorted(self.cmu_groups, key=lambda x: -x.group_type) 
+        # Annotations is used to help CMU Group's mark which Groups are used for this task to facilitate better use of resources.
+        # It records which CMUs of each Group were used for this task.
+        annotations = {}
+        for cmu_group in priority_cmug_list:
+            annotations[cmu_group.group_id] = [[], []]   
+        final_locations = []
+        for nodes in resource_graph:
+            locations = []
+            chain_len = len(nodes)
+            if chain_len > 3:
+                print("Cannot support chain length larger than 3!")
+                return None
+            for i in range(len(priority_cmug_list) - (chain_len - 1)):
+                all_ok = True
+                # get a valid chain (non-overlab CMU Groups)
+                chain_of_groups = [priority_cmug_list[i]]
+                head = chain_of_groups[0]
+                while head.next_group != 0:
+                    chain_of_groups.append(self.cmu_groups[head.next_group-1])
+                    head = self.cmu_groups[head.next_group-1]
+                # done
+                for j in range(chain_len):
+                    cmu_group = chain_of_groups[j]
+                    location = self.check_cmug(cmu_group, annotations[cmu_group.group_id], nodes[j])
+                    if location is None:
+                        all_ok = False
+                        break
+                    # calc key mapping.
+                    location.resource_node.key_mapping = calc_keymapping(self.cmu_groups[location.group_id-1].key_bitw, 
+                                                                         location.memory_type, 
+                                                                         location.memory_idx)
+                    # set hasher
+                    location.hash = self.dhashes[(location.group_id, location.dhash_key)]
+                    locations.append(location)
+                if all_ok:
+                    final_locations += locations
+                    break
+                else:
+                    locations = []
+        if final_locations is not None:
+            # allocate it.
+            self.allocate_locations(task_id, final_locations)
+        return final_locations
+
+    def allocate_locations(self, task_id, locations):
+        """
+        Allocate a list of locations.
+        """
+        for loc in locations:
+            required_keys = [] # [(dhash_id, flowkeyobj)]
+            required_keys.append([loc.dhash_key, loc.resource_node.key])
+            if loc.resource_node.param1.type == ParamType.CompressedKey:
+                required_keys.append([loc.dhash_param, loc.resource_node.param1.content])
+            group_id = loc.group_id
+            self.cmu_groups[group_id-1].allocate_compressed_keys(task_id, required_keys)
+            self.cmu_groups[group_id-1].allocate_filter_and_memory(task_id, loc.cmu_id, loc.resource_node.filter, loc.memory_type, loc.memory_idx)
 
     def release_task(self, task_instance: FlyMonTask):
         """
         Dynamic release memorys and compressed keys for a task.
         """
-        for location in task_instance.locations:
-            group_id = location.group_id
-            memory_type = location.memory_type
-            self.cmu_groups[group_id-1].release_memory(task_instance.id, memory_type)
-            self.cmu_groups[group_id-1].release_compressed_keys(task_instance.id, location.hkeys)
+        for loc in task_instance.locations:
+            group_id = loc.group_id
+            self.cmu_groups[group_id-1].release_filter_and_memory(task_instance.id, task_instance.filter)
+            self.cmu_groups[group_id-1].release_compressed_keys(task_instance.id)
         pass

@@ -7,3 +7,6 @@ class OperationType(Enum):
     CondADD = 1
     Max     = 2
     AndOr   = 3
+    
+    def __str__(self):
+        return self.name

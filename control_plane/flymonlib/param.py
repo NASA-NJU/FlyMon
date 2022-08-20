@@ -52,8 +52,6 @@ def parse_param(param_str):
             print(f"{e} when parse the param_str for the attribute.")
             print(f"WARN: Set the param to Const 1.")
             param = Param(ParamType.Const, 1)
-    elif param_str == "KEY":
-        param = Param(ParamType.Key) # Special treatment, set to the same as Key
     elif param_str == 'pkt_size':
         param = Param(ParamType.StdParam, "pkt_size")
     elif param_str == 'timestamp':

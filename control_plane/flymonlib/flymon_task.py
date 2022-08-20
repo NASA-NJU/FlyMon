@@ -62,10 +62,7 @@ class FlyMonTask:
     
     @property
     def mem_num(self):
-        return self._attribute.memory_num
-    
-    def set_locations(self, locations):
-        self._locations = locations
+        return self._attribute.algorithm.cmu_num
             
     @property
     def locations(self):
@@ -73,8 +70,7 @@ class FlyMonTask:
     
     @locations.setter
     def locations(self, locations):
-        self.set_locations(locations)
-    
+        self._locations = locations
     
     def __str__(self) -> str:
         info = f"Filter= {self.filter}\nID = {self._id}\nKey = {str(self._key)}\nAttribute = {str(self._attribute)}\nMemory = {self.mem_size}({self.mem_num}*{int(self.mem_size/self.mem_num)})"
@@ -83,28 +79,21 @@ class FlyMonTask:
             info += f" - loc{idx} = " + str(loc) + "\n"
         return info
 
-    def resource_list(self):
+    def resource_graph(self):
         """
-        The returned resources should be ordered:
-            1. key resources from flow key.
-            2. memory resources from cmu.
-            3. other resources from attribute.
+        [[node1, node2] [node3]]
         """
-        resource_list = []
-        # Add key resource.
-        for _ in range(self.mem_num):
-            resource_list.append(Resource(ResourceType.CompressedKey, self.key))
-        # Add memory resource.
-        memory_num = self.mem_num
-        for _ in range(memory_num):
-            resource_list.append(Resource(ResourceType.Memory, int(self.mem_size/memory_num)))
-        # Add attribute resource (param)
-        if self._attribute.param1.type == ParamType.Key:
-            resource_list.append(Resource(ResourceType.CompressedKey, self.key))
-        else:
-            resource_list.extend(self._attribute.resource_list)
-        return resource_list
-
+        resource_graph = self._attribute.resource_graph()
+        for nodes in resource_graph:
+            for node in nodes:
+                node.filter = self.filter
+                node.task_id = self.id
+                if self.key is None:
+                    node.key = self.attribute.param1.content
+                else:
+                    node.key = self.key
+                node.memory = int(self.mem_size * node.memory)
+        return resource_graph
 
     def generate_key_bytes(self, key_str, candidate_key_set = ["src_addr", "dst_addr", "src_port", "dst_port", "protocol"]):
         """Parse key string to a flowKey object.
@@ -116,7 +105,7 @@ class FlyMonTask:
         buf = b''
         # full_name_dict = {
         #     "src_addr" : "hdr.ipv4.src_addr",
-        #     "dst_addr" : "hdr.ipv4.dst_addr",
+        #     "dst_addr" : "hdr.ipv4.dst_addr", 
         #     "src_port" : "hdr.ports.src_port",
         #     "dst_port" : "hdr.ports.dst_port",
         #     "protocol" : "hdr.ipv4.protocol"

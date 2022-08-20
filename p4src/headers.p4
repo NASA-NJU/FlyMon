@@ -5,17 +5,18 @@
 // Metadata
 // ---------------------------------------------------------------------------
 
-
-// CMU with 2 paramters.
-struct cmu_metadata_t{
-    bit<8> task_id;
-    bit<16>    key;
-    bit<16>    param1;
-    bit<16>    param2;  // also used as the output of SALU.
+struct cmu_param_t {
+    bit<16>    p1;  // flexible header may pass from ingress to egress.
+    bit<16>    p2;  // also used as the output of SALU.
 }
 
+struct cmu_metadata_t {
+    bit<8>       task_id;
+    bit<16>      key;
+    cmu_param_t  param;
+}
 
-struct cmu_group_metadata_a_t{
+struct cmu_group_metadata_a_t {
     bit<16> compressed_key1; 
     bit<16> compressed_key2;  
     bit<16> compressed_key3;  
@@ -24,7 +25,7 @@ struct cmu_group_metadata_a_t{
     cmu_metadata_t cmu3;
 }
 
-struct cmu_group_metadata_b_t{
+struct cmu_group_metadata_b_t {
     bit<32> compressed_key1;
     bit<16> compressed_key2;
     cmu_metadata_t cmu1;
@@ -37,6 +38,10 @@ struct ingress_metadata_t {
 
 struct egress_metadata_t {
     cmu_group_metadata_b_t cmu_group1;
+    cmu_group_metadata_a_t cmu_group2;
+    cmu_group_metadata_b_t cmu_group3;
+    cmu_group_metadata_a_t cmu_group4;
+    // CMU Groups larger than 4 reuse the metadata of CMU Groups 1, 2, 3, 4.
 }
 
 // ---------------------------------------------------------------------------
