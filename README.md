@@ -6,7 +6,7 @@
 <h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
 <p align="center">
   <a href="#-key-features">Key Features</a> •
-  <a href="#-get-started">Hardware Implementation</a> •
+  <a href="#-get-started">Get Started</a> •
   <a href="#-key-features">Key Features</a> •
   <a href="#-simulations">Simulations</a> •
   <a href="#-license">License</a> •
@@ -19,8 +19,6 @@
 * Jinja2 templates used to generate P4 codes according to variable configurations (e.g., CMU-Groups, Memory Size, Candidate Key Set).
 * Several built-in algorithms used to measure various flow attributes.
 * A reference control plane framework realizing task reconfiguration, resource management, data collection, and task query.
-
-> 🔔 We are improving the richness and reliability of this project. Please submit an issue if you find any problems or suggestiones.
 
 ## 🚄 Get Started
 
