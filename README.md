@@ -7,7 +7,6 @@
 <p align="center">
   <a href="#-key-features">Key Features</a> •
   <a href="#-get-started">Get Started</a> •
-  <a href="#-key-features">Key Features</a> •
   <a href="#-simulations">Simulations</a> •
   <a href="#-license">License</a> •
   <a href="#-links">Links</a>
