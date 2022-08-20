@@ -6,8 +6,9 @@
 <h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
 <p align="center">
   <a href="#-key-features">Key Features</a> •
-  <a href="#-hardware-implementation">Hardware Implementation</a> •
-  <a href="#-simulation-framework">Simulation Framework</a> •
+  <a href="#-get-started">Hardware Implementation</a> •
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-simulations">Simulations</a> •
   <a href="#-license">License</a> •
   <a href="#-links">Links</a>
 </p>
@@ -18,13 +19,10 @@
 * Jinja2 templates used to generate P4 codes according to variable configurations (e.g., CMU-Groups, Memory Size, Candidate Key Set).
 * Several built-in algorithms used to measure various flow attributes.
 * A reference control plane framework realizing task reconfiguration, resource management, data collection, and task query.
-* A simulation framework to fast explore built-in algorithms' accuracy.
 
 > 🔔 We are improving the richness and reliability of this project. Please submit an issue if you find any problems or suggestiones.
 
-> ⚠️ This repository serves as an early exploration for academics purpose. We do not provide production-level quality assurance. Please deploy the codes cautiously in your environment.
-
-## 🚄 Hardware Implementation
+## 🚄 Get Started
 
 ### 🕶️ Overview
 
@@ -612,40 +610,15 @@ There are two different ways to deploy for this task. One with a threshold-trigg
 
 </details>
 
-<!-- <details><summary><b>Deployment Delay of Built-in Algorithms</b></summary>
-
-We also provide a command to measure the deployment latencies of task deployment in FlyMon. 
-
-```
-flymon> delay_test
-```
-
-This command repeats the deployment delay for multiple measurements and calculates the average of the delays. Finally it will print the results.
-
-```
-The results of the delay experiments are shown below:
-+------------------+-----------------------+
-| Algorithm on CMU | Deployment Delay (ms) |
-+------------------+-----------------------+
-|    CM Sketch     |         16.93         |
-|     BeauCoup     |         40.18         |
-|   Bloom Filter   |         13.67         |
-|    SuMax(Max)    |         19.68         |
-|   HyperLogLog    |          5.98         |
-|    SuMax(Sum)    |         19.47         |
-|       MRAC       |          6.51         |
-+------------------+-----------------------+
-```
-Note that this delay includes processing time of the software stack.
-
-</details> -->
+For measurement tasks requiring cooperation of multiple CMU Groups, a more "advanced" FlyMon implementation is required. We are refactoring the implementation, but will not merge it into the main branch. Because the "advanced" implementation introduces additional design tricks, which are relatively difficult to understand the intents.
 
 ## 📏 Simulation Framework
 
-For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. Note that the simulation is not a simple implementation of the algorithms with c++. It also uses match-action tables to construct the measurement algorithms, just like the hardware implementation. In this simulation, we implement various measurement algorithms based on CMU, including BeauCoup, SuMax, CM-Sketch, BloomFilter, MRAC, and HyperLogLog.
-In addition, we built an automated testing framework for repeating the experiments. The simulation codes are located in the [simulations directory](./simulations).
+For the convenience of accuracy estimation, we implemented a simulated version of FlyMon in C++ to test the algorithms' accuracy. In this simulation, we implement various measurement algorithms based on CMU, including BeauCoup, SuMax, CM-Sketch, BloomFilter, MRAC, and HyperLogLog. 
 
+> 🔔 However, the current simulation implementation is obsolete and inefficient. Maybe I will be interested in refactoring it step by step in the future.
 
+The simulation codes are located in the [simulations directory](./simulations).
 
 ## 📖 License
 

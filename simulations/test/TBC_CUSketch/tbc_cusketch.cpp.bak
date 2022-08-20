@@ -1,0 +1,186 @@
+
+#include <unordered_map>
+#include "tbc/tbc_manager.h"
+#include "DataTrace.h"
+#include <ctime>
+#include <fstream>
+
+
+#define HH_THRESHOLD 0.0001
+
+const uint32_t MEMORY_0_0_2_BLOCK_SIZE = 0.02 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_0_4_BLOCK_SIZE = 0.04 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_0_6_BLOCK_SIZE = 0.06 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_0_8_BLOCK_SIZE = 0.08 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_1_0_BLOCK_SIZE = 0.10 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_1_2_BLOCK_SIZE = 0.12 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_1_4_BLOCK_SIZE = 0.14 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_1_6_BLOCK_SIZE = 0.16 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_1_8_BLOCK_SIZE = 0.18 * 1024 * 1024 / 3 / 4;
+const uint32_t MEMORY_0_2_0_BLOCK_SIZE = 0.20 * 1024 * 1024 / 3 / 4;
+
+
+template<uint32_t TBC_NUM, uint32_t BLOCK_NUM, uint32_t BLOCK_SIZE>
+uint32_t count_min( TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>& manager,
+                    int task_id,
+                    map<uint32_t, map<uint32_t, vector<uint32_t>>>& sketch,
+                    const uint8_t* key,
+                    int key_len, int coff)
+{
+    uint32_t min = 0x1f1f1f1f;
+    for(auto& tbc : sketch){ // tbc, block, coin, data.
+        uint32_t tbc_id = tbc.first;
+        double value = 0.0;
+        for(auto& block : tbc.second){
+            uint32_t block_id = block.first;
+            uint32_t address = manager.get_address(task_id, tbc_id, block_id, key, key_len);
+            value = coff * sketch[tbc_id][block_id][address];
+            if(value < min)
+                min = value;
+        }
+    }
+    if(min == 0x1f1f1f1f)
+        min = 0;
+    return min;
+}
+
+
+template<uint32_t TBC_NUM, uint32_t BLOCK_NUM, uint32_t BLOCK_SIZE>
+vector<double> measure_main(DataTrace& trace, TBC_Manager<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>& tbc_manager, const string& coin, int coff){
+    // HOW_LOG(L_INFO, "Construct CM Sketch on TBC, Total Memory %d, %d rows, each with %d counters.", TOTAL_MEM, d, w);
+    FTupleMatch* filter = new FTupleMatch("*.*.*.*", "*.*.*.*", "*", "*", "*");
+    int task_id = tbc_manager.allocate_cusketch(BLOCK_NUM, BLOCK_SIZE, filter, ACTION_SET_KEY_IPPAIR, ACTION_SET_VAL_CONST, coin);
+    if(task_id < 0){
+        return {0,0,0,0};
+    }
+    unordered_map<string, int> Real_Freq;
+    uint64_t total_size = 0;
+    for (auto it=trace.begin(); it!=trace.end(); ++it){
+        tbc_manager.apply(*it);
+        string str((const char*)((*it)->getFlowKey_IPPair()), 8);
+        Real_Freq[str]++;
+        total_size++;
+    }
+
+    map<uint32_t, map<uint32_t, vector<uint32_t>>> sketch; //tbc, block, array.
+    map<uint32_t, map<uint32_t, BOBHash32*>>  key_hashes;   //tbc, block, array.
+    tbc_manager.query(task_id, sketch);
+    vector< pair<string, int> > Esti_HH;
+    vector< pair<string, int> > Real_HH;
+    double temp_weighted_error_sum = 0;
+    double temp_relative_error_sum = 0;
+    for (auto& item : Real_Freq){
+        string key = item.first;
+ 		int estimate = count_min<TBC_NUM, BLOCK_NUM, BLOCK_SIZE>(tbc_manager, task_id, sketch, (const uint8_t *)key.c_str(), 8, coff);
+		double relative_error = abs(item.second - estimate) / (double)item.second;
+        double x_error = abs(item.second - estimate) / (double)item.second;
+        if(item.second > HH_THRESHOLD*trace.size()){
+            Real_HH.push_back(make_pair(key, item.second));
+        }
+        if(estimate > HH_THRESHOLD*trace.size()){
+            Esti_HH.push_back(make_pair(key, estimate));
+        }
+		temp_weighted_error_sum += x_error;
+        temp_relative_error_sum += x_error/item.second;
+        // HOW_LOG(L_DEBUG, "Flow %s=>%s, real=%d, estimate=%d.", TracePacket::bytes_to_ip_str((uint8_t*)item.first.c_str()).c_str(), 
+        //                              TracePacket::bytes_to_ip_str((uint8_t*)item.first.c_str()+4).c_str(), item.second, estimate);   
+    }
+
+    int estimate_right = 0;
+    double hh_relative_error_sum = 0;
+    for(int i = 0; i < (int)Esti_HH.size(); ++i)
+    {
+        string key = Esti_HH[i].first;
+        // HOW_LOG(L_DEBUG, "<%s, %d>", TracePacket::b, est_heavy_hitters[i].second); 
+        for(int j = 0; j < (int)Real_HH.size(); ++j)
+        {
+            if(Real_HH[j].first == key){
+                hh_relative_error_sum +=  abs(Real_HH[j].second - Esti_HH[i].second) / (double)Real_HH[j].second;
+                // HOW_LOG(L_DEBUG, "Heavy Hitter %d, Real %d, Estimate %d", j, Real_HH[j].second, Esti_HH[i].second); 
+                estimate_right += 1;
+                break;
+            }
+        }
+    }
+    double precision =  (double)estimate_right / (double)Esti_HH.size();
+    double recall = (double)estimate_right / (double)Real_HH.size();
+    double f1 =  (2 * precision * recall) / (precision + recall);
+    // HOW_LOG(L_DEBUG, "Real Heavyhitter = %d, Estimate Heavyhitter = %d, PR = %.2f, RR = %.2f, F1 Score = %.2f", Real_HH.size(), Esti_HH.size(), precision, recall, f1); 
+    delete filter;
+    return {temp_relative_error_sum/Real_Freq.size(), temp_weighted_error_sum/total_size, precision, recall, f1, hh_relative_error_sum/estimate_right};
+    // HOW_LOG(L_DEBUG, "Total %d packets, %d flows, ARE = %f", trace.size(), 
+    //                 Real_Freq.size(), 
+    //                 temp_relation_error_sum/Real_Freq.size());
+}
+
+int main(){
+
+    clock_t start = clock();
+    DataTrace trace;
+    // trace.LoadFromFile("../data/WIDE/one_sec_15.dat");
+    // trace.LoadFromFile("../data/WIDE/head1000.dat");
+    // trace.LoadFromFile("../data/WIDE/test.dat");
+    // trace.LoadFromFile("../data/WIDE/ten_sec_1.dat");
+    trace.LoadFromFile("../data/WIDE/fifteen0.dat");
+    auto& tbc_manager_0_1 = TBC_Manager<1, 3, MEMORY_0_0_2_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_2 = TBC_Manager<1, 3, MEMORY_0_0_4_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_3 = TBC_Manager<1, 3, MEMORY_0_0_6_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_4 = TBC_Manager<1, 3, MEMORY_0_0_8_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_5 = TBC_Manager<1, 3, MEMORY_0_1_0_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_6 = TBC_Manager<1, 3, MEMORY_0_1_2_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_7 = TBC_Manager<1, 3, MEMORY_0_1_4_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_8 = TBC_Manager<1, 3, MEMORY_0_1_6_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_0_9 = TBC_Manager<1, 3, MEMORY_0_1_8_BLOCK_SIZE>::getDataplane();
+    auto& tbc_manager_1_0 = TBC_Manager<1, 3, MEMORY_0_2_0_BLOCK_SIZE>::getDataplane();
+
+    vector<string> coins = {"***", "0**", "00*", "000"};
+    vector<int>    coffs = {1, 2, 4, 8};
+    vector<map<string, vector<double>>> results(10);
+    map<uint32_t, double> memory_map = {{0, 0.02}, {1, 0.04}, {2, 0.06}, {3, 0.08}, {4, 0.10}, {5, 0.12}, {6, 0.14}, {7, 0.16}, {8, 0.18}, {9, 0.2}};
+
+    for(int t=0; t<4; ++t){
+        const string& coin = coins[t];
+        int coff = coffs[t];
+        vector<double> result0_1 = measure_main<1, 3, MEMORY_0_0_2_BLOCK_SIZE>(trace, tbc_manager_0_1, coin, coff);
+        results[0][coin] = result0_1;
+        vector<double> result0_2 = measure_main<1, 3, MEMORY_0_0_4_BLOCK_SIZE>(trace, tbc_manager_0_2, coin, coff);
+        results[1][coin] = result0_2;
+        vector<double> result0_3 = measure_main<1, 3, MEMORY_0_0_6_BLOCK_SIZE>(trace, tbc_manager_0_3, coin, coff);
+        results[2][coin] = result0_3;
+        vector<double> result0_4 = measure_main<1, 3, MEMORY_0_0_8_BLOCK_SIZE>(trace, tbc_manager_0_4, coin, coff);
+        results[3][coin] = result0_4;
+        vector<double> result0_5 = measure_main<1, 3, MEMORY_0_1_0_BLOCK_SIZE>(trace, tbc_manager_0_5, coin, coff);
+        results[4][coin] = result0_5;
+        vector<double> result0_6 = measure_main<1, 3, MEMORY_0_1_2_BLOCK_SIZE>(trace, tbc_manager_0_6, coin, coff);
+        results[5][coin] = result0_6;
+        vector<double> result0_7 = measure_main<1, 3, MEMORY_0_1_4_BLOCK_SIZE>(trace, tbc_manager_0_7, coin, coff);
+        results[6][coin] = result0_7;
+        vector<double> result0_8 = measure_main<1, 3, MEMORY_0_1_6_BLOCK_SIZE>(trace, tbc_manager_0_8, coin, coff);
+        results[7][coin] = result0_8;
+        vector<double> result0_9 = measure_main<1, 3, MEMORY_0_1_8_BLOCK_SIZE>(trace, tbc_manager_0_9, coin, coff);
+        results[8][coin] = result0_9;
+        vector<double> result1_0 = measure_main<1, 3, MEMORY_0_2_0_BLOCK_SIZE>(trace, tbc_manager_1_0, coin, coff);
+        results[9][coin] = result1_0;
+        tbc_manager_0_1.reset();
+        tbc_manager_0_2.reset();
+        tbc_manager_0_3.reset();
+        tbc_manager_0_4.reset();
+        tbc_manager_0_5.reset();
+        tbc_manager_0_6.reset();
+        tbc_manager_0_7.reset();
+        tbc_manager_0_8.reset();
+        tbc_manager_0_9.reset();
+        tbc_manager_1_0.reset();
+    }
+    for(int i=0; i<results.size(); ++i){
+        HOW_LOG(L_INFO, "Test TBC CM Sketch with %f memory:", memory_map[i]);
+        for(auto& coin_result : results[i]){
+            const string & coin = coin_result.first;
+            const vector<double>& result = coin_result.second;
+            HOW_LOG(L_INFO, "Coin %s, ARE(all)=%.2f, WARE(all)=%.2f, HH Precision=%.2f, HH Recall=%.2f, F1 Score=%.2f, ARE(hh)%.2f.", 
+                                                    coin.c_str(), result[0], result[1], result[2], result[3], result[4], result[5]);
+        }
+    }
+    clock_t ends = clock();
+    cout <<"Running Time : "<<(double)(ends - start)/ CLOCKS_PER_SEC << endl;
+}
