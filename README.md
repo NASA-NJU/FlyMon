@@ -3,7 +3,7 @@
   FlyMon
   <br>
 </h1>
-<h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="www.google.com" target="_blank">FlyMon</a>.</h4>
+<h4 align="center">A reference implementation of SIGCOMM'22 Paper <a href="https://dl.acm.org/doi/10.1145/3544216.3544239" target="_blank">FlyMon</a>.</h4>
 <p align="center">
   <a href="#-key-features">Key Features</a> •
   <a href="#-get-started">Get Started</a> •
@@ -628,6 +628,8 @@ T.B.D.
 
 ## 🔗 Links
 
+If you find the code useful, please consider citing [our paper](https://dl.acm.org/doi/10.1145/3544216.3544239).
+Below are some links that may also be helpful to you:
 * [Open-source Tofino](https://github.com/barefootnetworks/Open-Tofino).
 * [Intel Tofino](https://www.intel.com/content/www/us/en/products/network-io/programmable-ethernet-switch.html)
 * [BeauCoup](https://github.com/Princeton-Cabernet/BeauCoup).
