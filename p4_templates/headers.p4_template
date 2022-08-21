@@ -6,8 +6,8 @@
 // ---------------------------------------------------------------------------
 
 struct cmu_param_t {
-    bit<16>    p1;  // flexible header may pass from ingress to egress.
-    bit<16>    p2;  // also used as the output of SALU.
+    bit<16>    p1;  
+    bit<16>    p2;  
 }
 
 struct cmu_metadata_t {
