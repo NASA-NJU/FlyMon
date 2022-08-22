@@ -624,7 +624,7 @@ The simulation codes are located in the [simulations directory](./simulations).
 
 ## 📖 License
 
-T.B.D.
+The project is released under the GNU Affero General Public License v3.
 
 ## 🔗 Links
 
