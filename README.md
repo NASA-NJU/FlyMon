@@ -619,9 +619,9 @@ The above examples cover most of the feature of FlyMon: the dynamic key, the dyn
 
 There are some other features in FlyMon: 
 
-1. ** Cooperation of multiple CMU Groups. ** The upstream CMU can output its result to a downstream CMU to implement some multi-level algorithms or combinational tasks. The feature is not included in current implementation because it introduces additional design tricks, which are relatively difficult to understand the intents behind. Maybe I will try to provide the refactored code in an isolated branch.
+1. **Cooperation of multiple CMU Groups.** The upstream CMU can output its result to a downstream CMU to implement some multi-level algorithms or combinational tasks. The feature is not included in current implementation because it introduces additional design tricks, which are relatively difficult to understand the intents behind. Maybe I will try to provide the refactored code in an isolated branch.
 
-2. ** Potential Extensions with Tofino2. ** Tofino2 introduces many new features, which can enable a more powerful FlyMon implemantion. For example, SALUs can accomdate more "if" condition judgements, which can let the aggregation step of the Reduced Operation Set more efficiently. In orther words, we can use less stateful actions to enable the built-in sketches. However, there are few public discussions on tofino2, and I don't want to be too rigidly stuck in the details of hardware. Maybe there will be new possibilities based on new hardware.
+2. **Potential Extensions with Tofino2.** Tofino2 introduces many new features, which can enable a more powerful FlyMon implementation. For example, SALUs can accommodate more "if" condition judgments, which can make the Reduced Operation Set aggregation step more efficient. In other words, we can use less stateful actions to enable the built-in sketches. 
 
 </details>
 
