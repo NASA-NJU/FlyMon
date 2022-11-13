@@ -19,6 +19,8 @@
 * Several built-in algorithms used to measure various flow attributes.
 * A reference control plane framework realizing task reconfiguration, resource management, data collection, and task query.
 
+> 🔔 Our slides can be downloaded [here](slides/SIGCOMM_22_FlyMon_Public_Slides.pptx).
+
 ## 🚄 Get Started
 
 ### 🕶️ Overview
